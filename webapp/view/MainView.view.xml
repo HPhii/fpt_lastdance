@@ -1,0 +1,36 @@
+<mvc:View controllerName="z.wf.zwfmanagement.controller.MainView"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <Table id="idProductsTable"
+                inset="false"
+                items="{
+                    path: '/WfTasks',
+                    sorter: { path: 'CreationDate', descending: true }
+                }">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="Danh sách công việc" level="H2"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column><Text text="Task" /></Column>
+                    <Column><Text text="Mô tả" /></Column>
+                    <Column hAlign="End"><Text text="Ngày tạo" /></Column>
+                    <Column hAlign="End"><Text text="Ưu tiên" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Navigation" press=".onListItemPress">
+                        <cells>
+                            <ObjectIdentifier title="{TaskText}" text="{WorkItemID}"/>
+                            <Text text="{WorkItemText}" />
+                            <Text text="{CreationDate}" />
+                            <ObjectStatus text="{Priority}" state="{= ${Priority} === '1' ? 'Error' : 'None' }" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

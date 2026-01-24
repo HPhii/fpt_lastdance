@@ -1,0 +1,136 @@
+{
+  "_version": "1.81.0",
+  "sap.app": {
+    "id": "z.wf.zwfmanagement",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.20.1",
+      "toolsId": "0487930c-6b22-4293-8ab6-acde417421b4"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata4/iwbep/all/srvd/sap/zsd_gsp26sap02_wf_task/0001/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "ZWorkflow-display": {
+          "semanticObject": "ZWorkflow",
+          "action": "display",
+          "title": "{{ZWorkflow-display.flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.143.2",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "z.wf.zwfmanagement.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+"routing": {
+  "config": {
+    "routerClass": "sap.m.routing.Router",
+    "viewType": "XML",
+    "viewPath": "z.wf.zwfmanagement.view",
+    "controlId": "app",
+    "controlAggregation": "pages",
+    "async": true
+  },
+  "routes": [
+    {
+      "name": "RouteMainView",
+      "pattern": ":?query:",
+      "target": "TargetMainView"
+    },
+    {
+      "name": "RouteDetail",
+      "pattern": "WfTasks({propertyPath})", 
+      "target": "TargetDetail"
+    }
+  ],
+  "targets": {
+    "TargetMainView": {
+      "viewId": "MainView",
+      "viewName": "MainView"
+    },
+    "TargetDetail": {
+      "viewId": "Detail",
+      "viewName": "Detail"
+    }
+  }
+},
+    "rootView": {
+      "viewName": "z.wf.zwfmanagement.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  }
+}

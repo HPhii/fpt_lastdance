@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="SAP__measures"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="SAP__aggregation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="SAP__validation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="SAP__UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HTML5',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.HTML5.v1" Alias="SAP__HTML5"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PDF',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.PDF.v1" Alias="SAP__PDF"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_SESSION',Version='0001',SAP__Origin='LOCAL_324')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Session.v1" Alias="SAP__session"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001" Alias="SAP__self">
+            <Annotation Term="SAP__core.SchemaVersion" String="1.0.0"/>
+            <EntityType Name="WfTasksType">
+                <Key>
+                    <PropertyRef Name="WorkItemID"/>
+                    <PropertyRef Name="UserID"/>
+                </Key>
+                <Property Name="WorkItemID" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="UserID" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="TaskID" Type="Edm.String" Nullable="false" MaxLength="14"/>
+                <Property Name="TaskText" Type="Edm.String" Nullable="false" MaxLength="40"/>
+                <Property Name="WorkItemText" Type="Edm.String" Nullable="false" MaxLength="120"/>
+                <Property Name="TechnicalStatus" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="WorkItemType" Type="Edm.String" Nullable="false" MaxLength="1"/>
+                <Property Name="TopWorkItemID" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="CreationDate" Type="Edm.Date"/>
+                <Property Name="CreationTime" Type="Edm.TimeOfDay" Nullable="false"/>
+                <Property Name="EndDate" Type="Edm.Date"/>
+                <Property Name="DeadlineStatus" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="DeadlineCriticality" Type="Edm.Byte" Nullable="false"/>
+                <Property Name="Priority" Type="Edm.String" Nullable="false" MaxLength="1"/>
+                <Property Name="PriorityText" Type="Edm.String" Nullable="false" MaxLength="17"/>
+                <Property Name="DaysToDeadline" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="__OperationControl" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksOperationControl"/>
+                <Property Name="SAP__Messages" Type="Collection(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.SAP__Message)" Nullable="false"/>
+                <NavigationProperty Name="_DecisionOptions" Type="Collection(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.DecisionOptionsType)"/>
+            </EntityType>
+            <EntityType Name="DecisionOptionsType">
+                <Key>
+                    <PropertyRef Name="WorkItemID"/>
+                    <PropertyRef Name="DecisionKey"/>
+                </Key>
+                <Property Name="WorkItemID" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="DecisionKey" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="DecisionText" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Nature" Type="Edm.String" Nullable="false" MaxLength="20"/>
+            </EntityType>
+            <ComplexType Name="WfTasksOperationControl">
+                <Property Name="approve" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="claim" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="executionDecision" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="forward" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="reject" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="showLog" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="suspend" Type="Edm.Boolean" Nullable="false"/>
+            </ComplexType>
+            <ComplexType Name="SAP__Message">
+                <Property Name="code" Type="Edm.String" Nullable="false"/>
+                <Property Name="message" Type="Edm.String" Nullable="false"/>
+                <Property Name="target" Type="Edm.String"/>
+                <Property Name="additionalTargets" Type="Collection(Edm.String)" Nullable="false"/>
+                <Property Name="transition" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="numericSeverity" Type="Edm.Byte" Nullable="false"/>
+                <Property Name="longtextUrl" Type="Edm.String"/>
+            </ComplexType>
+            <Action Name="reject" EntitySetPath="_it" IsBound="true">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+                <ReturnType Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+            </Action>
+            <Action Name="claim" EntitySetPath="_it" IsBound="true">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+                <ReturnType Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+            </Action>
+            <Action Name="approve" EntitySetPath="_it" IsBound="true">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+                <ReturnType Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+            </Action>
+            <Action Name="forward" EntitySetPath="_it" IsBound="true">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+                <ReturnType Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+            </Action>
+            <Action Name="showLog" EntitySetPath="_it" IsBound="true">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+                <ReturnType Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+            </Action>
+            <Action Name="suspend" EntitySetPath="_it" IsBound="true">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+                <ReturnType Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+            </Action>
+            <Action Name="executionDecision" EntitySetPath="_it" IsBound="true">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+                <Parameter Name="DecisionKey" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Parameter Name="DecisionComment" Type="Edm.String" Nullable="false"/>
+                <Parameter Name="WorkItemID" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <ReturnType Type="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType" Nullable="false"/>
+            </Action>
+            <EntityContainer Name="Container">
+                <EntitySet Name="DecisionOptions" EntityType="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.DecisionOptionsType"/>
+                <EntitySet Name="WfTasks" EntityType="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType">
+                    <NavigationPropertyBinding Path="_DecisionOptions" Target="DecisionOptions"/>
+                </EntitySet>
+            </EntityContainer>
+            <Annotations Target="SAP__self.WfTasksType/WorkItemID">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__common.IsDigitSequence"/>
+                <Annotation Term="SAP__common.Label" String="Work Item ID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Work item ID"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/UserID">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__common.IsUpperCase"/>
+                <Annotation Term="SAP__common.Label" String="User"/>
+                <Annotation Term="SAP__common.Heading" String="User Name"/>
+                <Annotation Term="SAP__common.QuickInfo" String="User Name in User Master Record"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/TaskID">
+                <Annotation Term="SAP__common.IsUpperCase"/>
+                <Annotation Term="SAP__common.Label" String="Task"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Task ID"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/TaskText">
+                <Annotation Term="SAP__common.IsUpperCase"/>
+                <Annotation Term="SAP__common.Label" String="Task text"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Short Text from Task"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/TechnicalStatus">
+                <Annotation Term="SAP__common.IsUpperCase"/>
+                <Annotation Term="SAP__common.Label" String="Status"/>
+                <Annotation Term="SAP__common.Heading" String="Technical Status"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Processing Status of a Work Item"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/WorkItemType">
+                <Annotation Term="SAP__common.IsUpperCase"/>
+                <Annotation Term="SAP__common.Label" String="Type"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Work item type"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/TopWorkItemID">
+                <Annotation Term="SAP__common.IsDigitSequence"/>
+                <Annotation Term="SAP__common.Label" String="Top Level Workflow"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Workflow: Unique ID of Top-Level Instance (6.1/get)"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/DeadlineStatus">
+                <Annotation Term="SAP__common.Text" Path="DeadlineCriticality">
+                    <Annotation Term="SAP__UI.TextArrangement" EnumMember="SAP__UI.TextArrangementType/TextOnly"/>
+                </Annotation>
+                <Annotation Term="SAP__common.IsDigitSequence"/>
+                <Annotation Term="SAP__common.Label" String="Deadline Status"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Deadline Status of a Work Item"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/Priority">
+                <Annotation Term="SAP__common.Text" Path="PriorityText"/>
+                <Annotation Term="SAP__common.IsDigitSequence"/>
+                <Annotation Term="SAP__common.Label" String="Priority"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Priority of a Work Item"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/DaysToDeadline">
+                <Annotation Term="SAP__common.Label" String="Days To Deadline"/>
+                <Annotation Term="SAP__core.Computed"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/__OperationControl">
+                <Annotation Term="SAP__core.Computed"/>
+                <Annotation Term="SAP__UI.HiddenFilter"/>
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Container/WfTasks">
+                <Annotation Term="SAP__capabilities.NavigationRestrictions">
+                    <Record>
+                        <PropertyValue Property="RestrictedProperties">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_DecisionOptions"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.SearchRestrictions">
+                    <Record>
+                        <PropertyValue Property="Searchable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonFilterableProperties">
+                            <Collection>
+                                <PropertyPath>DaysToDeadline</PropertyPath>
+                                <PropertyPath>__OperationControl</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.SortRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonSortableProperties">
+                            <Collection>
+                                <PropertyPath>__OperationControl</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.InsertRestrictions">
+                    <Record>
+                        <PropertyValue Property="Insertable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.DeleteRestrictions">
+                    <Record>
+                        <PropertyValue Property="Deletable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="Updatable" Bool="false"/>
+                        <PropertyValue Property="QueryOptions">
+                            <Record>
+                                <PropertyValue Property="SelectSupported" Bool="true"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__core.OptimisticConcurrency">
+                    <Collection/>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.reject(SAP__self.WfTasksType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/reject"/>
+            </Annotations>
+            <Annotations Target="SAP__self.claim(SAP__self.WfTasksType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/claim"/>
+            </Annotations>
+            <Annotations Target="SAP__self.approve(SAP__self.WfTasksType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/approve"/>
+            </Annotations>
+            <Annotations Target="SAP__self.forward(SAP__self.WfTasksType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/forward"/>
+            </Annotations>
+            <Annotations Target="SAP__self.showLog(SAP__self.WfTasksType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/showLog"/>
+            </Annotations>
+            <Annotations Target="SAP__self.suspend(SAP__self.WfTasksType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/suspend"/>
+            </Annotations>
+            <Annotations Target="SAP__self.executionDecision(SAP__self.WfTasksType)/DecisionComment">
+                <Annotation Term="SAP__common.Label" String="Decision Comment"/>
+            </Annotations>
+            <Annotations Target="SAP__self.executionDecision(SAP__self.WfTasksType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/executionDecision"/>
+            </Annotations>
+            <Annotations Target="SAP__self.executionDecision(SAP__self.WfTasksType)/DecisionKey">
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/zce_wf_decision_option/0001;ps='srvd-zsd_gsp26sap02_wf_task-0001';va='com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.ae-zcr_gsp26sap02_wf_task.executiondecision.decisionkey.WfTasksType'/$metadata</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType">
+                <Annotation Term="SAP__common.Label" String="Projection for Workflow Task Root"/>
+                <Annotation Term="SAP__UI.Facets">
+                    <Collection>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="General Data"/>
+                            <PropertyValue Property="ID" String="General"/>
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Identification"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.FieldGroup" Qualifier="GeneralData">
+                    <Record>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="WorkItemID"/>
+                                </Record>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="WorkItemText"/>
+                                </Record>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="TechnicalStatus"/>
+                                </Record>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="UserID"/>
+                                </Record>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="EndDate"/>
+                                </Record>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="DeadlineStatus"/>
+                                </Record>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="DaysToDeadline"/>
+                                </Record>
+                                <Record Type="SAP__UI.DataField">
+                                    <PropertyValue Property="Value" Path="Priority"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.HeaderInfo">
+                    <Record>
+                        <PropertyValue Property="TypeName" String="Work Item"/>
+                        <PropertyValue Property="TypeNamePlural" String="Work Items"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="SAP__UI.DataField">
+                                <PropertyValue Property="Value" Path="WorkItemText"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="SAP__UI.DataField">
+                                <PropertyValue Property="Value" Path="WorkItemID"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.Identification">
+                    <Collection>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="WorkItemID"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="WorkItemText"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="TechnicalStatus"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="UserID"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="EndDate"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Criticality" Path="DeadlineCriticality"/>
+                            <PropertyValue Property="Value" Path="DeadlineStatus"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="DaysToDeadline"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="Priority"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Approve"/>
+                            <PropertyValue Property="Action" String="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.approve(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType)"/>
+                            <PropertyValue Property="InvocationGrouping" EnumMember="SAP__UI.OperationGroupingType/Isolated"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Reject"/>
+                            <PropertyValue Property="Action" String="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.reject(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType)"/>
+                            <PropertyValue Property="InvocationGrouping" EnumMember="SAP__UI.OperationGroupingType/Isolated"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Show Log"/>
+                            <PropertyValue Property="Action" String="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.showLog(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType)"/>
+                            <PropertyValue Property="InvocationGrouping" EnumMember="SAP__UI.OperationGroupingType/Isolated"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Reject"/>
+                            <PropertyValue Property="Action" String="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.claim(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType)"/>
+                            <PropertyValue Property="InvocationGrouping" EnumMember="SAP__UI.OperationGroupingType/Isolated"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Forward"/>
+                            <PropertyValue Property="Action" String="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.forward(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType)"/>
+                            <PropertyValue Property="InvocationGrouping" EnumMember="SAP__UI.OperationGroupingType/Isolated"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Suspend"/>
+                            <PropertyValue Property="Action" String="com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.suspend(com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.WfTasksType)"/>
+                            <PropertyValue Property="InvocationGrouping" EnumMember="SAP__UI.OperationGroupingType/Isolated"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.LineItem">
+                    <Collection>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="WorkItemID"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="WorkItemText"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="TechnicalStatus"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Medium"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="UserID"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Low"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="EndDate"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Low"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Criticality" Path="DeadlineCriticality"/>
+                            <PropertyValue Property="Value" Path="DeadlineStatus"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Low"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="DaysToDeadline"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Low"/>
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="Priority"/>
+                            <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Low"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Messages" Path="SAP__Messages"/>
+            </Annotations>
+            <Annotations Target="SAP__self.DecisionOptionsType/WorkItemID">
+                <Annotation Term="SAP__common.IsDigitSequence"/>
+                <Annotation Term="SAP__common.Label" String="Work Item ID"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Work item ID"/>
+            </Annotations>
+            <Annotations Target="SAP__self.DecisionOptionsType/DecisionKey">
+                <Annotation Term="SAP__common.IsDigitSequence"/>
+                <Annotation Term="SAP__common.Label" String="Index"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Index of an Alternative of a User Decision"/>
+            </Annotations>
+            <Annotations Target="SAP__self.DecisionOptionsType/Nature">
+                <Annotation Term="SAP__common.IsUpperCase"/>
+                <Annotation Term="SAP__common.Label" String="Character"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Workflow: Property: Positive, Negative...."/>
+            </Annotations>
+            <Annotations Target="SAP__self.DecisionOptionsType">
+                <Annotation Term="SAP__common.Label" String="Custom Entity for WI Decision Options"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Container/DecisionOptions">
+                <Annotation Term="SAP__capabilities.SearchRestrictions">
+                    <Record>
+                        <PropertyValue Property="Searchable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.InsertRestrictions">
+                    <Record>
+                        <PropertyValue Property="Insertable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.DeleteRestrictions">
+                    <Record>
+                        <PropertyValue Property="Deletable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="Updatable" Bool="false"/>
+                        <PropertyValue Property="QueryOptions">
+                            <Record>
+                                <PropertyValue Property="SelectSupported" Bool="true"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__core.OptimisticConcurrency">
+                    <Collection/>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="FilterExpressionRestrictions">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Nature"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.Container">
+                <Annotation Term="SAP__aggregation.ApplySupported">
+                    <Record>
+                        <PropertyValue Property="Transformations">
+                            <Collection>
+                                <String>aggregate</String>
+                                <String>groupby</String>
+                                <String>filter</String>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Rollup" EnumMember="SAP__aggregation.RollupType/None"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+                <Annotation Term="SAP__capabilities.FilterFunctions">
+                    <Collection>
+                        <String>eq</String>
+                        <String>ne</String>
+                        <String>gt</String>
+                        <String>ge</String>
+                        <String>lt</String>
+                        <String>le</String>
+                        <String>and</String>
+                        <String>or</String>
+                        <String>contains</String>
+                        <String>startswith</String>
+                        <String>endswith</String>
+                        <String>any</String>
+                        <String>all</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.SupportedFormats">
+                    <Collection>
+                        <String>application/json</String>
+                        <String>application/pdf</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__PDF.Features">
+                    <Record>
+                        <PropertyValue Property="DocumentDescriptionReference" String="../../../../default/iwbep/common/0001/$metadata"/>
+                        <PropertyValue Property="DocumentDescriptionCollection" String="MyDocumentDescriptions"/>
+                        <PropertyValue Property="ArchiveFormat" Bool="true"/>
+                        <PropertyValue Property="Border" Bool="true"/>
+                        <PropertyValue Property="CoverPage" Bool="true"/>
+                        <PropertyValue Property="FitToPage" Bool="true"/>
+                        <PropertyValue Property="FontName" Bool="true"/>
+                        <PropertyValue Property="FontSize" Bool="true"/>
+                        <PropertyValue Property="Margin" Bool="true"/>
+                        <PropertyValue Property="Signature" Bool="true"/>
+                        <PropertyValue Property="ResultSizeDefault" Int="20000"/>
+                        <PropertyValue Property="ResultSizeMaximum" Int="20000"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.executionDecision(SAP__self.WfTasksType)/WorkItemID">
+                <Annotation Term="SAP__UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/WorkItemText">
+                <Annotation Term="SAP__common.Label" String="Work item text"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/CreationDate">
+                <Annotation Term="SAP__common.Label" String="Creation Date"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Creation Date of Work Item"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/CreationTime">
+                <Annotation Term="SAP__common.Label" String="Creation Time"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Creation Time of Work Item"/>
+            </Annotations>
+            <Annotations Target="SAP__self.WfTasksType/EndDate">
+                <Annotation Term="SAP__common.Label" String="Done On"/>
+                <Annotation Term="SAP__common.Heading" String="Actual End Date of Work Item"/>
+                <Annotation Term="SAP__common.QuickInfo" String="End Date of Work Item"/>
+            </Annotations>
+            <Annotations Target="SAP__self.DecisionOptionsType/DecisionText">
+                <Annotation Term="SAP__common.Label" String="Alternative"/>
+                <Annotation Term="SAP__common.QuickInfo" String="Text of an Alternative of a User Decision"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

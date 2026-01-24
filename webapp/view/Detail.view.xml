@@ -1,0 +1,45 @@
+<mvc:View controllerName="z.wf.zwfmanagement.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    
+    <Page id="detailPage" title="{WorkItemText}" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <ObjectHeader 
+                intro="{TaskText}"
+                title="{WorkItemText}"
+                number="{Priority}"
+                numberUnit="Priority">
+                <attributes>
+                    <ObjectAttribute title="Work Item ID" text="{WorkItemID}" />
+                    <ObjectAttribute title="User ID" text="{UserID}" />
+                    <ObjectAttribute title="Status" text="{TechnicalStatus}" />
+                </attributes>
+            </ObjectHeader>
+            
+            <VBox class="sapUiSmallMargin">
+                <Text text="Alo alo" />
+            </VBox>
+        </content>
+
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                
+                <HBox items="{_DecisionOptions}">
+                    <Button 
+                        text="{DecisionText}" 
+                        type="Emphasized" 
+                        press=".onDecisionPress"
+                        class="sapUiTinyMarginBegin">
+                        
+                        <customData>
+                            <core:CustomData key="DecisionKey" value="{DecisionKey}" />
+                            <core:CustomData key="WorkItemID" value="{WorkItemID}" />
+                        </customData>
+                    </Button>
+                </HBox>
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>
