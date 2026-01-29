@@ -1,4 +1,5 @@
 <mvc:View
+    xmlns:simple="sap.gantt.simple"
     controllerName="z.wf.zwfmanagement.controller.MainView"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
@@ -8,6 +9,10 @@
     <Page
         id="page"
         title="{i18n>title}"
+        titleLevel="Auto"
+        class="sapUiHeaderPadding"
+        showFooter="{= !${worklistView>/detailVisible} }"
+        enableScrolling="false"
     >
         <headerContent>
             <Select
@@ -131,10 +136,25 @@
                                 <headerToolbar>
                                     <Toolbar>
                                         <Title
-                                            text="{worklistView>/worklistTableTitle}"
+                                            text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
                                             level="H2"
                                         />
                                         <ToolbarSpacer />
+                                        <Button
+                                            icon="sap-icon://sort"
+                                            press=".onSort"
+                                            tooltip="Sort"
+                                        />
+                                        <Button
+                                            icon="sap-icon://filter"
+                                            press=".onFilter"
+                                            tooltip="Filter"
+                                        />
+                                        <Button
+                                            icon="sap-icon://group-2"
+                                            press=".onGroup"
+                                            tooltip="Group"
+                                        />
                                         <Button
                                             text="{i18n>tableHeaderSelectAll}"
                                             press=".onSelectAll"
@@ -217,6 +237,16 @@
                                 busyIndicatorDelay="0"
                                 busy="{worklistView>/detailBusy}"
                             >
+                                <OverflowToolbar
+                                    style="Clear"
+                                    design="Transparent"
+                                >
+                                    <Button
+                                        type="Neutral"
+                                        icon="sap-icon://nav-back"
+                                        press=".onCloseDetail"
+                                    />
+                                </OverflowToolbar>
                                 <ObjectHeader
                                     intro="{TaskText}"
                                     title="{WorkItemText}"
@@ -304,5 +334,57 @@
                 </l:Splitter>
             </content>
         </IconTabBar>
+        <footer>
+            <OverflowToolbar id="otbFooter">
+                <ToolbarSpacer />
+                <Button
+                    type="Default"
+                    text="Delegate"
+                >
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow" />
+                    </layoutData>
+                </Button>
+                <Button
+                    type="Emphasized"
+                    text="Subtitute"
+                >
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow" />
+                    </layoutData>
+                </Button>
+                <OverflowToolbarButton
+                    tooltip="Delete"
+                    text="Delete"
+                    icon="sap-icon://delete"
+                />
+                <OverflowToolbarButton
+                    tooltip="Edit"
+                    text="Edit"
+                    icon="sap-icon://edit"
+                />
+                <OverflowToolbarButton
+                    tooltip="Add"
+                    text="Add"
+                    icon="sap-icon://add"
+                />
+                <OverflowToolbarButton
+                    tooltip="Favorite"
+                    text="Favorite"
+                    icon="sap-icon://favorite"
+                />
+                <OverflowToolbarButton
+                    tooltip="Flag"
+                    text="Flag"
+                    icon="sap-icon://flag"
+                />
+                <OverflowToolbarToggleButton
+                    tooltip="Toggle"
+                    text="Toggle"
+                    icon="sap-icon://touch"
+                    press="onTogglePress"
+                />
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>

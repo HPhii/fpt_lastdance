@@ -5,8 +5,11 @@ sap.ui.define([
   "sap/ui/model/FilterOperator",
   "sap/ui/core/BusyIndicator",
   "sap/m/MessageBox",
+  "sap/m/ViewSettingsDialog",
+  "sap/m/ViewSettingsItem",
+  "sap/ui/model/Sorter",
   "../model/formatter"
-], function (Controller, JSONModel, Filter, FilterOperator, BusyIndicator, MessageBox, formatter)
+], function (Controller, JSONModel, Filter, FilterOperator, BusyIndicator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, formatter)
 {
   "use strict";
 
@@ -24,8 +27,9 @@ sap.ui.define([
 
       // Model used to manipulate control states
       oViewModel = new JSONModel({
-        worklistTableTitle: this.getOwnerComponent().getModel("i18n").getResourceBundle().getText("tableHeaderTitle"),
+        worklistTableTitle: "",
         tableBusyDelay: 0,
+        countAll: 0,
         ready: 0,
         selected: 0,
         started: 0,
@@ -94,6 +98,7 @@ sap.ui.define([
       oBinding.requestContexts(0, Infinity).then(function (aContexts)
       {
         var oCounts = {
+          countAll: aContexts.length,
           ready: 0,
           selected: 0,
           started: 0,
@@ -135,6 +140,174 @@ sap.ui.define([
       });
     },
 
+    onSort: function ()
+    {
+      if (!this._oSortDialog)
+      {
+        this._oSortDialog = new ViewSettingsDialog({
+          sortItems: [
+            new ViewSettingsItem({
+              text: "Task Name",
+              key: "TaskText"
+            }),
+            new ViewSettingsItem({
+              text: "Creation Date",
+              key: "CreationDate"
+            }),
+            new ViewSettingsItem({
+              text: "Priority",
+              key: "Priority"
+            }),
+            new ViewSettingsItem({
+              text: "Days to Deadline",
+              key: "DaysToDeadline"
+            }),
+            new ViewSettingsItem({
+              text: "User ID",
+              key: "UserID"
+            })
+          ],
+          confirm: function (oEvent)
+          {
+            var oParams = oEvent.getParameters();
+            var oBinding = this._oList.getBinding("items");
+            var aSorters = [];
+
+            if (oParams.sortItem)
+            {
+              var sPath = oParams.sortItem.getKey();
+              var bDescending = oParams.sortDescending;
+              aSorters.push(new Sorter(sPath, bDescending));
+            }
+
+            oBinding.sort(aSorters);
+          }.bind(this)
+        });
+      }
+
+      this._oSortDialog.open();
+    },
+
+    onFilter: function ()
+    {
+      if (!this._oFilterDialog)
+      {
+        this._oFilterDialog = new ViewSettingsDialog({
+          filterItems: [
+            new ViewSettingsItem({
+              text: "Priority",
+              key: "Priority",
+              items: [
+                new ViewSettingsItem({
+                  text: "High",
+                  key: "Priority___1"
+                }),
+                new ViewSettingsItem({
+                  text: "Medium",
+                  key: "Priority___5"
+                }),
+                new ViewSettingsItem({
+                  text: "Low",
+                  key: "Priority___9"
+                })
+              ]
+            }),
+            new ViewSettingsItem({
+              text: "Status",
+              key: "TechnicalStatus",
+              items: [
+                new ViewSettingsItem({
+                  text: "Ready",
+                  key: "TechnicalStatus___READY"
+                }),
+                new ViewSettingsItem({
+                  text: "Started",
+                  key: "TechnicalStatus___STARTED"
+                }),
+                new ViewSettingsItem({
+                  text: "Completed",
+                  key: "TechnicalStatus___COMPLETED"
+                })
+              ]
+            })
+          ],
+          confirm: function (oEvent)
+          {
+            var oParams = oEvent.getParameters();
+            var oBinding = this._oList.getBinding("items");
+            var aFilters = [];
+
+            oParams.filterItems.forEach(function (oItem)
+            {
+              var sPath = oItem.getKey().split("___")[0];
+              var sValue = oItem.getKey().split("___")[1];
+              var oFilter = new Filter(sPath, FilterOperator.EQ, sValue);
+              aFilters.push(oFilter);
+            });
+
+            oBinding.filter(aFilters);
+          }.bind(this)
+        });
+      }
+
+      this._oFilterDialog.open();
+    },
+
+    onGroup: function ()
+    {
+      if (!this._oGroupDialog)
+      {
+        this._oGroupDialog = new ViewSettingsDialog({
+          groupItems: [
+            new ViewSettingsItem({
+              text: "Status",
+              key: "TechnicalStatus"
+            }),
+            new ViewSettingsItem({
+              text: "Priority",
+              key: "Priority"
+            }),
+            new ViewSettingsItem({
+              text: "User",
+              key: "UserID"
+            })
+          ],
+          confirm: function (oEvent)
+          {
+            var oParams = oEvent.getParameters();
+            var oBinding = this._oList.getBinding("items");
+            var aSorters = [];
+
+            if (oParams.groupItem)
+            {
+              var sPath = oParams.groupItem.getKey();
+              var bDescending = oParams.groupDescending;
+              var vGroup = function (oContext)
+              {
+                var name = oContext.getProperty(sPath);
+                return {
+                  key: name,
+                  text: name
+                };
+              };
+              aSorters.push(new Sorter(sPath, bDescending, vGroup));
+            }
+
+            oBinding.sort(aSorters);
+          }.bind(this)
+        });
+      }
+
+      this._oGroupDialog.open();
+    },
+
+    onCloseDetail: function ()
+    {
+      var oViewModel = this.getView().getModel("worklistView");
+      oViewModel.setProperty("/detailVisible", false);
+      this._oList.removeSelections(true);
+    },
+
     onSelectionChange: function (oEvent)
     {
       var oList = oEvent.getSource();
@@ -146,7 +319,6 @@ sap.ui.define([
       var sMode = oViewModel.getProperty("/listMode");
       if (sMode === "MultiSelect")
       {
-
         // Don't show detail in multi-select mode
         return;
       }
@@ -180,6 +352,7 @@ sap.ui.define([
         });
       }
     },
+
     onTaskPress: function (oEvent)
     {
       var oList = this.byId("idTasksList");
@@ -194,6 +367,7 @@ sap.ui.define([
 
       return;
     },
+
     onToggleMultiSelect: function ()
     {
       var oViewModel = this.getView().getModel("worklistView");
@@ -215,8 +389,21 @@ sap.ui.define([
 
     onFilterStatus: function (oEvent)
     {
-      let oBinding = this._oList.getBinding("items"),
+      let oViewModel = this.getView().getModel("worklistView"),
+        oBinding = this._oList.getBinding("items"),
         sKey = oEvent.getParameter("selectedKey");
+
+      // Get the count for the selected key
+      let iCount = oViewModel.getProperty("/" + sKey);
+
+      if (sKey === "all")
+      {
+        oViewModel.setProperty("/worklistTableTitle", "");
+        return;
+      }
+
+      // Update the table title with the count
+      oViewModel.setProperty("/worklistTableTitle", "(" + (iCount || 0) + ")");
 
       oBinding.filter(this._mFilters[sKey]);
     },
