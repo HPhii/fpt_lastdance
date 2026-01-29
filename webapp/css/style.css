@@ -1,1 +1,9 @@
 /* Enter your custom styles here */
+.sapUiTextBold {
+    font-weight: bold;
+}
+
+.leftPanel {
+    overflow-y: scroll;
+    height: 100vh;
+}

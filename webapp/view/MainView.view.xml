@@ -1,36 +1,308 @@
-<mvc:View controllerName="z.wf.zwfmanagement.controller.MainView"
+<mvc:View
+    controllerName="z.wf.zwfmanagement.controller.MainView"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-        <content>
-            <Table id="idProductsTable"
-                inset="false"
-                items="{
-                    path: '/WfTasks',
-                    sorter: { path: 'CreationDate', descending: true }
-                }">
-                <headerToolbar>
-                    <OverflowToolbar>
-                        <Title text="Danh sách công việc" level="H2"/>
-                    </OverflowToolbar>
-                </headerToolbar>
-                <columns>
-                    <Column><Text text="Task" /></Column>
-                    <Column><Text text="Mô tả" /></Column>
-                    <Column hAlign="End"><Text text="Ngày tạo" /></Column>
-                    <Column hAlign="End"><Text text="Ưu tiên" /></Column>
-                </columns>
-                <items>
-                    <ColumnListItem type="Navigation" press=".onListItemPress">
-                        <cells>
-                            <ObjectIdentifier title="{TaskText}" text="{WorkItemID}"/>
-                            <Text text="{WorkItemText}" />
-                            <Text text="{CreationDate}" />
-                            <ObjectStatus text="{Priority}" state="{= ${Priority} === '1' ? 'Error' : 'None' }" />
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
-        </content>
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+>
+    <Page
+        id="page"
+        title="{i18n>title}"
+    >
+        <headerContent>
+            <Select
+                forceSelection="true"
+                change=".onLanguageChange"
+            >
+                <core:ListItem
+                    key="en"
+                    text="English"
+                />
+                <core:ListItem
+                    key="de"
+                    text="Deutsch"
+                />
+            </Select>
+        </headerContent>
+        <IconTabBar
+            id="iconTabBar"
+            select=".onFilterStatus"
+            expandable="false"
+        >
+            <items>
+                <IconTabFilter
+                    key="all"
+                    showAll="true"
+                    count="{/WfTasks/$count}"
+                    text="{i18n>WorklistFilterTasksAll}"
+                />
+                <IconTabSeparator />
+                <IconTabFilter
+                    key="ready"
+                    icon="sap-icon://task"
+                    iconColor="Default"
+                    count="{worklistView>/ready}"
+                    text="{i18n>WorklistFilterTasksReady}"
+                />
+                <IconTabFilter
+                    key="selected"
+                    icon="sap-icon://employee-approvals"
+                    iconColor="Neutral"
+                    count="{worklistView>/selected}"
+                    text="{i18n>WorklistFilterTasksSelected}"
+                />
+                <IconTabFilter
+                    key="started"
+                    icon="sap-icon://begin"
+                    iconColor="Critical"
+                    count="{worklistView>/started}"
+                    text="{i18n>WorklistFilterTasksStarted}"
+                />
+                <IconTabFilter
+                    key="committed"
+                    icon="sap-icon://org-chart"
+                    iconColor="Critical"
+                    count="{worklistView>/committed}"
+                    text="{i18n>WorklistFilterTasksCommitted}"
+                />
+                <IconTabFilter
+                    key="waiting"
+                    icon="sap-icon://pending"
+                    iconColor="Critical"
+                    count="{worklistView>/waiting}"
+                    text="{i18n>WorklistFilterTasksWaiting}"
+                />
+                <IconTabFilter
+                    key="checked"
+                    icon="sap-icon://inspection"
+                    iconColor="Positive"
+                    count="{worklistView>/checked}"
+                    text="{i18n>WorklistFilterTasksChecked}"
+                />
+                <IconTabFilter
+                    key="completed"
+                    icon="sap-icon://complete"
+                    iconColor="Positive"
+                    count="{worklistView>/completed}"
+                    text="{i18n>WorklistFilterTasksCompleted}"
+                />
+                <IconTabFilter
+                    key="cancelled"
+                    icon="sap-icon://decline"
+                    iconColor="Negative"
+                    count="{worklistView>/cancelled}"
+                    text="{i18n>WorklistFilterTasksCancelled}"
+                />
+                <IconTabFilter
+                    key="overdue"
+                    icon="sap-icon://error"
+                    iconColor="Negative"
+                    count="{worklistView>/error}"
+                    text="{i18n>WorklistFilterTasksError}"
+                />
+            </items>
+            <content>
+                <l:Splitter
+                    id="mainSplitter"
+                    orientation="Horizontal"
+                    height="100%"
+                >
+                    <!-- Left Side: Task List -->
+                    <l:contentAreas>
+                        <VBox
+                            width="100%"
+                            class="leftPanel"
+                        >
+                            <layoutData>
+                                <l:SplitterLayoutData
+                                    size="{= ${worklistView>/detailVisible} ? '50%' : '100%' }"
+                                />
+                            </layoutData>
+                            <List
+                                id="idTasksList"
+                                items="{ 
+                                        path: '/WfTasks'
+                                    }"
+                                mode="{worklistView>/listMode}"
+                                selectionChange=".onSelectionChange"
+                                growing="true"
+                                growingThreshold="20"
+                            >
+                                <headerToolbar>
+                                    <Toolbar>
+                                        <Title
+                                            text="{worklistView>/worklistTableTitle}"
+                                            level="H2"
+                                        />
+                                        <ToolbarSpacer />
+                                        <Button
+                                            text="{i18n>tableHeaderSelectAll}"
+                                            press=".onSelectAll"
+                                            icon="sap-icon://multiselect-all"
+                                            visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                                        />
+                                        <Button
+                                            text="{i18n>tableHeaderDeselectAll}"
+                                            press=".onDeselectAll"
+                                            icon="sap-icon://multiselect-none"
+                                            visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                                        />
+                                        <Button
+                                            icon="sap-icon://multi-select"
+                                            press=".onToggleMultiSelect"
+                                            tooltip="Toggle Multi-Select Mode"
+                                            type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
+                                        />
+                                        <SearchField
+                                            width="auto"
+                                            placeholder="{i18n>tableHeaderSearchPlaceholder}"
+                                            search=".onSearch"
+                                        />
+                                    </Toolbar>
+                                </headerToolbar>
+                                <ObjectListItem
+                                    title="{TaskText}"
+                                    number="{UserID}"
+                                    type="Active"
+                                    press=".onTaskPress"
+                                >
+                                    <firstStatus>
+                                        <ObjectStatus
+                                            text="{PriorityText}"
+                                            icon="sap-icon://{= ${Priority} === '1' ? 'alert' : 'information' }"
+                                            state="{= ${Priority} === '1' ? 'Warning' : 'Information' }"
+                                        />
+                                    </firstStatus>
+                                    <secondStatus>
+                                        <ObjectStatus
+                                            class="sapUiTextBold"
+                                            text="{TechnicalStatus}"
+                                            state="{
+                                                    path: 'TechnicalStatus',
+                                                    formatter: '.formatter.technicalStatusState'
+                                                }"
+                                        />
+                                    </secondStatus>
+                                    <ObjectAttribute
+                                        text="{WorkItemID}"
+                                        title="{i18n>columnTaskId}"
+                                    />
+                                    <ObjectAttribute
+                                        text="{CreationDate}"
+                                        title="{i18n>columnTaskCreationDate}"
+                                    />
+                                    <ObjectAttribute
+                                        text="{= ${DaysToDeadline} > '1000' ? 'Infinity' : ${DaysToDeadline} }"
+                                        title="{i18n>columnTaskDaysToDeadline}"
+                                    />
+                                </ObjectListItem>
+                            </List>
+                        </VBox>
+                    </l:contentAreas>
+                    <!-- Right Side: Task Details -->
+                    <l:contentAreas>
+                        <ScrollContainer
+                            id="detailContainer"
+                            height="100%"
+                            width="100%"
+                            vertical="true"
+                            visible="{worklistView>/detailVisible}"
+                        >
+                            <layoutData>
+                                <l:SplitterLayoutData size="50%" />
+                            </layoutData>
+                            <VBox
+                                id="detailPanel"
+                                class="sapUiSmallMargin"
+                                busyIndicatorDelay="0"
+                                busy="{worklistView>/detailBusy}"
+                            >
+                                <ObjectHeader
+                                    intro="{TaskText}"
+                                    title="{WorkItemText}"
+                                    number="{Priority}"
+                                    numberUnit="Priority"
+                                >
+                                    <attributes>
+                                        <ObjectAttribute
+                                            title="Work Item ID"
+                                            text="{WorkItemID}"
+                                        />
+                                        <ObjectAttribute
+                                            title="User ID"
+                                            text="{UserID}"
+                                        />
+                                        <ObjectAttribute
+                                            title="Task ID"
+                                            text="{TaskID}"
+                                        />
+                                        <ObjectAttribute
+                                            title="Status"
+                                            text="{TechnicalStatus}"
+                                        />
+                                        <ObjectAttribute
+                                            title="{i18n>columnTaskCreationDate}"
+                                            text="{CreationDate}"
+                                        />
+                                        <ObjectAttribute
+                                            title="{i18n>columnTaskDaysToDeadline}"
+                                            text="{= ${DaysToDeadline} > '1000' ? 'Infinity' : ${DaysToDeadline} }"
+                                        />
+                                    </attributes>
+                                    <statuses>
+                                        <ObjectStatus
+                                            text="{PriorityText}"
+                                            state="{= ${Priority} === '1' ? 'Warning' : 'Information' }"
+                                        />
+                                        <ObjectStatus
+                                            text="{TechnicalStatus}"
+                                            state="{
+                                                    path: 'TechnicalStatus',
+                                                    formatter: '.formatter.technicalStatusState'
+                                                }"
+                                        />
+                                    </statuses>
+                                </ObjectHeader>
+                                <VBox class="sapUiSmallMargin">
+                                    <Label
+                                        text="{i18n>columnTaskDescription}"
+                                        class="sapUiTinyMarginTop"
+                                    />
+                                    <Text
+                                        text="{WorkItemText}"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                                <VBox class="sapUiSmallMargin">
+                                    <Label text="Actions" />
+                                    <HBox
+                                        items="{_DecisionOptions}"
+                                        class="sapUiSmallMarginTop"
+                                    >
+                                        <Button
+                                            text="{DecisionText}"
+                                            type="Emphasized"
+                                            press=".onDecisionPress"
+                                            class="sapUiTinyMarginEnd"
+                                        >
+                                            <customData>
+                                                <core:CustomData
+                                                    key="DecisionKey"
+                                                    value="{DecisionKey}"
+                                                />
+                                                <core:CustomData
+                                                    key="WorkItemID"
+                                                    value="{WorkItemID}"
+                                                />
+                                            </customData>
+                                        </Button>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+                        </ScrollContainer>
+                    </l:contentAreas>
+                </l:Splitter>
+            </content>
+        </IconTabBar>
     </Page>
 </mvc:View>

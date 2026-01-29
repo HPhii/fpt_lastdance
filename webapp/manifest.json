@@ -73,7 +73,12 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "z.wf.zwfmanagement.i18n.i18n"
+          "bundleName": "z.wf.zwfmanagement.i18n.i18n",
+          "supportsLocales": [
+            "en",
+            "de"
+          ],
+          "fallbackLocale": "en"
         }
       },
       "": {
@@ -94,38 +99,38 @@
         }
       ]
     },
-"routing": {
-  "config": {
-    "routerClass": "sap.m.routing.Router",
-    "viewType": "XML",
-    "viewPath": "z.wf.zwfmanagement.view",
-    "controlId": "app",
-    "controlAggregation": "pages",
-    "async": true
-  },
-  "routes": [
-    {
-      "name": "RouteMainView",
-      "pattern": ":?query:",
-      "target": "TargetMainView"
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "z.wf.zwfmanagement.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "async": true
+      },
+      "routes": [
+        {
+          "name": "RouteMainView",
+          "pattern": ":?query:",
+          "target": "TargetMainView"
+        },
+        {
+          "name": "RouteDetail",
+          "pattern": "WfTasks({propertyPath})",
+          "target": "TargetDetail"
+        }
+      ],
+      "targets": {
+        "TargetMainView": {
+          "viewId": "MainView",
+          "viewName": "MainView"
+        },
+        "TargetDetail": {
+          "viewId": "Detail",
+          "viewName": "Detail"
+        }
+      }
     },
-    {
-      "name": "RouteDetail",
-      "pattern": "WfTasks({propertyPath})", 
-      "target": "TargetDetail"
-    }
-  ],
-  "targets": {
-    "TargetMainView": {
-      "viewId": "MainView",
-      "viewName": "MainView"
-    },
-    "TargetDetail": {
-      "viewId": "Detail",
-      "viewName": "Detail"
-    }
-  }
-},
     "rootView": {
       "viewName": "z.wf.zwfmanagement.view.App",
       "type": "XML",
