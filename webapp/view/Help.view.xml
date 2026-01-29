@@ -1,0 +1,5 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <Page title="{i18n>helpTitle}" showNavButton="true" navButtonPress=".onNavBackToDashboard">
+        <Text text="{i18n>helpContent}" class="sapUiMediumMargin"/>
+    </Page>
+</mvc:View>

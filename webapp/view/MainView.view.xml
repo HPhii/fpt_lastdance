@@ -1,7 +1,8 @@
 <mvc:View controllerName="z.wf.zwfmanagement.controller.MainView"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
+    <Page id="page" title="{i18n>title}" showNavButton="true" 
+      navButtonPress=".onNavBackToDashboard">
         <content>
             <Table id="idProductsTable"
                 inset="false"
@@ -11,14 +12,14 @@
                 }">
                 <headerToolbar>
                     <OverflowToolbar>
-                        <Title text="Danh sách công việc" level="H2"/>
+                        <Title text="{i18n>mainViewTaskList}" level="H2"/>
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>
-                    <Column><Text text="Task" /></Column>
-                    <Column><Text text="Mô tả" /></Column>
-                    <Column hAlign="End"><Text text="Ngày tạo" /></Column>
-                    <Column hAlign="End"><Text text="Ưu tiên" /></Column>
+                    <Column><Text text="{i18n>mainViewTask}" /></Column>
+                    <Column><Text text="{i18n>mainViewDescription}" /></Column>
+                    <Column hAlign="End"><Text text="{i18n>mainViewCreationDate}" /></Column>
+                    <Column hAlign="End"><Text text="{i18n>mainViewPriority}" /></Column>
                 </columns>
                 <items>
                     <ColumnListItem type="Navigation" press=".onListItemPress">

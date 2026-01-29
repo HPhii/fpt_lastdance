@@ -1,0 +1,6 @@
+<mvc:View controllerName="z.wf.zwfmanagement.controller.Analytics"
+    xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <Page title="{i18n>analyticsTitle}" showNavButton="true" navButtonPress=".onNavBackToDashboard">
+        <Text text="{i18n>analyticsPlaceholder}" class="sapUiMediumMargin"/>
+    </Page>
+</mvc:View>

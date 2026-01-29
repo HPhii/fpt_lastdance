@@ -73,7 +73,9 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "z.wf.zwfmanagement.i18n.i18n"
+          "bundleName": "z.wf.zwfmanagement.i18n.i18n",
+          "supportedLocales": ["en", "de"],
+          "fallbackLocale": "en"
         }
       },
       "": {
@@ -94,38 +96,65 @@
         }
       ]
     },
-"routing": {
-  "config": {
-    "routerClass": "sap.m.routing.Router",
-    "viewType": "XML",
-    "viewPath": "z.wf.zwfmanagement.view",
-    "controlId": "app",
-    "controlAggregation": "pages",
-    "async": true
-  },
-  "routes": [
-    {
-      "name": "RouteMainView",
-      "pattern": ":?query:",
-      "target": "TargetMainView"
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "z.wf.zwfmanagement.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "async": true
+      },
+      "routes": [
+        {
+          "name": "RouteDashboard",
+          "pattern": ":?query:",
+          "target": "TargetDashboard"
+        },
+        {
+          "name": "RouteMainView",
+          "pattern": "tasks",
+          "target": "TargetMainView"
+        },
+        {
+          "name": "RouteDetail",
+          "pattern": "WfTasks({propertyPath})",
+          "target": "TargetDetail"
+        },
+        {
+          "name": "RouteAnalytics",
+          "pattern": "analytics",
+          "target": "TargetAnalytics"
+        },
+        {
+          "name": "RouteHelp",
+          "pattern": "help",
+          "target": "TargetHelp"
+        }
+      ],
+      "targets": {
+        "TargetDashboard": {
+          "viewId": "Dashboard",
+          "viewName": "Dashboard"
+        },
+        "TargetMainView": {
+          "viewId": "MainView",
+          "viewName": "MainView"
+        },
+        "TargetDetail": {
+          "viewId": "Detail",
+          "viewName": "Detail"
+        },
+        "TargetAnalytics": {
+          "viewId": "Analytics",
+          "viewName": "Analytics"
+        },
+        "TargetHelp": {
+          "viewId": "Help",
+          "viewName": "Help"
+        }
+      }
     },
-    {
-      "name": "RouteDetail",
-      "pattern": "WfTasks({propertyPath})", 
-      "target": "TargetDetail"
-    }
-  ],
-  "targets": {
-    "TargetMainView": {
-      "viewId": "MainView",
-      "viewName": "MainView"
-    },
-    "TargetDetail": {
-      "viewId": "Detail",
-      "viewName": "Detail"
-    }
-  }
-},
     "rootView": {
       "viewName": "z.wf.zwfmanagement.view.App",
       "type": "XML",

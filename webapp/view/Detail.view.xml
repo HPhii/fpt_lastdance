@@ -9,16 +9,16 @@
                 intro="{TaskText}"
                 title="{WorkItemText}"
                 number="{Priority}"
-                numberUnit="Priority">
+                numberUnit="{i18n>priority}">
                 <attributes>
-                    <ObjectAttribute title="Work Item ID" text="{WorkItemID}" />
-                    <ObjectAttribute title="User ID" text="{UserID}" />
-                    <ObjectAttribute title="Status" text="{TechnicalStatus}" />
+                    <ObjectAttribute title="{i18n>detailWorkItemID}" text="{WorkItemID}" />
+                    <ObjectAttribute title="{i18n>detailUserID}" text="{UserID}" />
+                    <ObjectAttribute title="{i18n>detailStatus}" text="{TechnicalStatus}" />
                 </attributes>
             </ObjectHeader>
             
             <VBox class="sapUiSmallMargin">
-                <Text text="Alo alo" />
+                <Text text="{i18n>detailPlaceholder}" />
             </VBox>
         </content>
 
