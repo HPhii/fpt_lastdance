@@ -74,7 +74,7 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "z.wf.zwfmanagement.i18n.i18n",
-          "supportsLocales": [
+          "supportedLocales": [
             "en",
             "de"
           ],
@@ -110,17 +110,36 @@
       },
       "routes": [
         {
-          "name": "RouteMainView",
+          "name": "RouteDashboard",
           "pattern": ":?query:",
+          "target": "TargetDashboard"
+        },
+        {
+          "name": "RouteMainView",
+          "pattern": "tasks",
           "target": "TargetMainView"
         },
         {
           "name": "RouteDetail",
           "pattern": "WfTasks({propertyPath})",
           "target": "TargetDetail"
+        },
+        {
+          "name": "RouteAnalytics",
+          "pattern": "analytics",
+          "target": "TargetAnalytics"
+        },
+        {
+          "name": "RouteHelp",
+          "pattern": "help",
+          "target": "TargetHelp"
         }
       ],
       "targets": {
+        "TargetDashboard": {
+          "viewId": "Dashboard",
+          "viewName": "Dashboard"
+        },
         "TargetMainView": {
           "viewId": "MainView",
           "viewName": "MainView"
@@ -128,6 +147,14 @@
         "TargetDetail": {
           "viewId": "Detail",
           "viewName": "Detail"
+        },
+        "TargetAnalytics": {
+          "viewId": "Analytics",
+          "viewName": "Analytics"
+        },
+        "TargetHelp": {
+          "viewId": "Help",
+          "viewName": "Help"
         }
       }
     },

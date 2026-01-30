@@ -530,5 +530,10 @@ sap.ui.define([
           MessageBox.error("Error executing action: " + oError.message);
         });
     }
+
+    onNavBackToDashboard: function ()
+    {
+      this.getOwnerComponent().getRouter().navTo("RouteDashboard");
+    },
   });
 });

@@ -17,18 +17,16 @@ sap.ui.define(
       },
 
       _onObjectMatched: function (oEvent) {
-        // Get ID from URL (e.g., /WfTasks(12345))
         var sPath =
           "/" +
           window.decodeURIComponent(
-            oEvent.getParameter("arguments").propertyPath
+            oEvent.getParameter("arguments").propertyPath,
           );
 
         // Bind view to that data row
         this.getView().bindElement({
           path: sPath,
           parameters: {
-            // Important: Must expand _DecisionOptions to get data for buttons
             $expand: "_DecisionOptions",
           },
           events: {
@@ -67,7 +65,7 @@ sap.ui.define(
 
         var that = this;
 
-        MessageBox.confirm("Bạn muốn thực hiện hành động: " + sText + "?", {
+        MessageBox.confirm("Confirm " + sText + "?", {
           onClose: function (oAction) {
             if (oAction === MessageBox.Action.OK) {
               that._callODataV4Action(sWorkItemID, sDecisionKey);
@@ -83,13 +81,13 @@ sap.ui.define(
         var oContext = oView.getBindingContext();
 
         if (!oContext) {
-          sap.m.MessageBox.error("Không tìm thấy ngữ cảnh dữ liệu (Context).");
+          sap.m.MessageBox.error("Data context not found.");
           return;
         }
 
         var oOperation = oModel.bindContext(
           "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.executionDecision(...)",
-          oContext
+          oContext,
         );
         oOperation.setParameter("DecisionKey", sDecisionKey);
         oOperation.setParameter("WorkItemID", sWorkItemID);
@@ -104,12 +102,12 @@ sap.ui.define(
               oModel.refresh();
 
               var oRouter = this.getOwnerComponent().getRouter();
-            }.bind(this)
+            }.bind(this),
           )
           .catch(function (oError) {
-            sap.m.MessageBox.error("Lỗi: " + oError.message);
+            sap.m.MessageBox.error("Error: " + oError.message);
           });
       },
     });
-  }
+  },
 );

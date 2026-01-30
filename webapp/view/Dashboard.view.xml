@@ -1,0 +1,45 @@
+<mvc:View controllerName="z.wf.zwfmanagement.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
+    displayBlock="true">
+    <Page title="{i18n>dashboardTitle}">
+        <content>
+            <VBox class="sapUiMediumMargin">
+                <Title text="{i18n>dashboardMenu}" class="sapUiSmallMarginBottom"/>
+                
+                <HBox wrap="Wrap" renderType="Bare">
+                    
+                    <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop" 
+                        header="{i18n>dashboardTaskManagement}" 
+                        subheader="{i18n>dashboardTaskSubheader}" 
+                        press=".onNavToTask">
+                        <TileContent>
+                            <ImageContent src="sap-icon://list" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop" 
+                        header="{i18n>dashboardReports}" 
+                        subheader="{i18n>dashboardReportsSubheader}" 
+                        press=".onNavToAnalytics">
+                        <TileContent>
+                            <ImageContent src="sap-icon://bar-chart" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop" 
+                        header="{i18n>dashboardHelp}" 
+                        subheader="{i18n>dashboardHelpSubheader}" 
+                        press=".onNavToHelp">
+                        <TileContent>
+                            <ImageContent src="sap-icon://sys-help" />
+                        </TileContent>
+                    </GenericTile>
+
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>
