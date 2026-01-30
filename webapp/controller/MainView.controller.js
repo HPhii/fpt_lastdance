@@ -529,7 +529,7 @@ sap.ui.define([
           oViewModel.setProperty("/detailBusy", false);
           MessageBox.error("Error executing action: " + oError.message);
         });
-    }
+    },
 
     onNavBackToDashboard: function ()
     {
