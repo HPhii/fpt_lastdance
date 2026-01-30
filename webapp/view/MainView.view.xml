@@ -5,6 +5,7 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
     xmlns:l="sap.ui.layout"
+    height="100%"
 >
     <Page
         id="page"
@@ -21,9 +22,12 @@
             >
                 <core:ListItem
                     key="en"
+                    icon="assets/icons/us.svg"
                     text="English"
                 />
                 <core:ListItem
+                    icon="assets/icons/de.svg"
+                    class="flagIcon"
                     key="de"
                     text="Deutsch"
                 />
@@ -33,6 +37,8 @@
             id="iconTabBar"
             select=".onFilterStatus"
             expandable="false"
+            stretchContentHeight="true"
+            upperCase="true"
         >
             <items>
                 <IconTabFilter
@@ -61,7 +67,7 @@
                     icon="sap-icon://begin"
                     iconColor="Critical"
                     count="{worklistView>/started}"
-                    text="{i18n>WorklistFilterTasksStarted}"
+                    text="{i18n>WorklistFilterTasksReady}"
                 />
                 <IconTabFilter
                     key="committed"
@@ -116,107 +122,124 @@
                     <l:contentAreas>
                         <VBox
                             width="100%"
+                            height="100%"
                             class="leftPanel"
                         >
                             <layoutData>
                                 <l:SplitterLayoutData
                                     size="{= ${worklistView>/detailVisible} ? '50%' : '100%' }"
+                                    minSize="200"
                                 />
                             </layoutData>
-                            <List
-                                id="idTasksList"
-                                items="{ 
+                            <ScrollContainer
+                                height="100%"
+                                width="100%"
+                                vertical="true"
+                                horizontal="false"
+                            >
+                                <layoutData>
+                                    <FlexItemData
+                                        growFactor="1"
+                                        shrinkFactor="1"
+                                        baseSize="0"
+                                    />
+                                </layoutData>
+                                <List
+                                    id="idTasksList"
+                                    items="{ 
                                         path: '/WfTasks'
                                     }"
-                                mode="{worklistView>/listMode}"
-                                selectionChange=".onSelectionChange"
-                                growing="true"
-                                growingThreshold="20"
-                            >
-                                <headerToolbar>
-                                    <Toolbar>
-                                        <Title
-                                            text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
-                                            level="H2"
-                                        />
-                                        <ToolbarSpacer />
-                                        <Button
-                                            icon="sap-icon://sort"
-                                            press=".onSort"
-                                            tooltip="Sort"
-                                        />
-                                        <Button
-                                            icon="sap-icon://filter"
-                                            press=".onFilter"
-                                            tooltip="Filter"
-                                        />
-                                        <Button
-                                            icon="sap-icon://group-2"
-                                            press=".onGroup"
-                                            tooltip="Group"
-                                        />
-                                        <Button
-                                            text="{i18n>tableHeaderSelectAll}"
-                                            press=".onSelectAll"
-                                            icon="sap-icon://multiselect-all"
-                                            visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
-                                        />
-                                        <Button
-                                            text="{i18n>tableHeaderDeselectAll}"
-                                            press=".onDeselectAll"
-                                            icon="sap-icon://multiselect-none"
-                                            visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
-                                        />
-                                        <Button
-                                            icon="sap-icon://multi-select"
-                                            press=".onToggleMultiSelect"
-                                            tooltip="Toggle Multi-Select Mode"
-                                            type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
-                                        />
-                                        <SearchField
-                                            width="auto"
-                                            placeholder="{i18n>tableHeaderSearchPlaceholder}"
-                                            search=".onSearch"
-                                        />
-                                    </Toolbar>
-                                </headerToolbar>
-                                <ObjectListItem
-                                    title="{TaskText}"
-                                    number="{UserID}"
-                                    type="Active"
-                                    press=".onTaskPress"
+                                    mode="{worklistView>/listMode}"
+                                    selectionChange=".onSelectionChange"
+                                    growing="true"
+                                    growingThreshold="20"
+                                    noDataText="{i18n>tableNoDataText}"
                                 >
-                                    <firstStatus>
-                                        <ObjectStatus
-                                            text="{PriorityText}"
-                                            icon="sap-icon://{= ${Priority} === '1' ? 'alert' : 'information' }"
-                                            state="{= ${Priority} === '1' ? 'Warning' : 'Information' }"
-                                        />
-                                    </firstStatus>
-                                    <secondStatus>
-                                        <ObjectStatus
-                                            class="sapUiTextBold"
-                                            text="{TechnicalStatus}"
-                                            state="{
+                                    <headerToolbar>
+                                        <Toolbar>
+                                            <Title
+                                                text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
+                                                level="H2"
+                                            />
+                                            <ToolbarSpacer />
+                                            <Button
+                                                icon="sap-icon://sort"
+                                                press=".onSort"
+                                                tooltip="{i18n>tooltipHeaderSort}"
+                                            />
+                                            <Button
+                                                icon="sap-icon://filter"
+                                                press=".onFilter"
+                                                tooltip="{i18n>tooltipHeaderFilter}"
+                                            />
+                                            <Button
+                                                icon="sap-icon://group-2"
+                                                press=".onGroup"
+                                                tooltip="{i18n>tooltipHeaderGroup}"
+                                            />
+                                            <Button
+                                                text="{i18n>tableHeaderSelectAll}"
+                                                press=".onSelectAll"
+                                                icon="sap-icon://multiselect-all"
+                                                visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                                            />
+                                            <Button
+                                                text="{i18n>tableHeaderDeselectAll}"
+                                                press=".onDeselectAll"
+                                                icon="sap-icon://multiselect-none"
+                                                visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                                            />
+                                            <Button
+                                                icon="sap-icon://multi-select"
+                                                press=".onToggleMultiSelect"
+                                                tooltip="Toggle Multi-Select Mode"
+                                                type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
+                                            />
+                                            <SearchField
+                                                width="auto"
+                                                placeholder="{i18n>tableHeaderSearchPlaceholder}"
+                                                search=".onSearch"
+                                            />
+                                        </Toolbar>
+                                    </headerToolbar>
+                                    <ObjectListItem
+                                        title="{TaskText}"
+                                        number="{UserID}"
+                                        type="Active"
+                                        press=".onTaskPress"
+                                    >
+                                        <firstStatus>
+                                            <ObjectStatus
+                                                text="{PriorityText}"
+                                                icon="sap-icon://{= ${Priority} === '1' ? 'alert' : 'information' }"
+                                                state="{= ${Priority} === '1' ? 'Warning' : 'Information' }"
+                                            />
+                                        </firstStatus>
+                                        <secondStatus>
+                                            <ObjectStatus
+                                                class="sapUiTextBold"
+                                                text="{TechnicalStatus}"
+                                                state="{
                                                     path: 'TechnicalStatus',
                                                     formatter: '.formatter.technicalStatusState'
                                                 }"
+                                            />
+                                        </secondStatus>
+                                        <ObjectAttribute
+                                            text="{WorkItemID}"
+                                            title="{i18n>columnTaskId}"
                                         />
-                                    </secondStatus>
-                                    <ObjectAttribute
-                                        text="{WorkItemID}"
-                                        title="{i18n>columnTaskId}"
-                                    />
-                                    <ObjectAttribute
-                                        text="{CreationDate}"
-                                        title="{i18n>columnTaskCreationDate}"
-                                    />
-                                    <ObjectAttribute
-                                        text="{= ${DaysToDeadline} > '1000' ? 'Infinity' : ${DaysToDeadline} }"
-                                        title="{i18n>columnTaskDaysToDeadline}"
-                                    />
-                                </ObjectListItem>
-                            </List>
+                                        <ObjectAttribute
+                                            text="{CreationDate}"
+                                            title="{i18n>columnTaskCreationDate}"
+                                        />
+                                        <ObjectAttribute
+                                            text="{= ${DaysToDeadline} > '1000' ? 'Infinity' : ${DaysToDeadline} }"
+                                            title="{i18n>columnTaskDaysToDeadline}"
+                                        />
+                                    </ObjectListItem>
+                                </List>
+                            </ScrollContainer>
                         </VBox>
                     </l:contentAreas>
                     <!-- Right Side: Task Details -->
@@ -226,10 +249,14 @@
                             height="100%"
                             width="100%"
                             vertical="true"
+                            horizontal="false"
                             visible="{worklistView>/detailVisible}"
                         >
                             <layoutData>
-                                <l:SplitterLayoutData size="50%" />
+                                <l:SplitterLayoutData
+                                    size="50%"
+                                    minSize="300"
+                                />
                             </layoutData>
                             <VBox
                                 id="detailPanel"
@@ -287,9 +314,9 @@
                                         <ObjectStatus
                                             text="{TechnicalStatus}"
                                             state="{
-                                                    path: 'TechnicalStatus',
-                                                    formatter: '.formatter.technicalStatusState'
-                                                }"
+                                                path: 'TechnicalStatus',
+                                                formatter: '.formatter.technicalStatusState'
+                                            }"
                                         />
                                     </statuses>
                                 </ObjectHeader>
@@ -339,7 +366,7 @@
                 <ToolbarSpacer />
                 <Button
                     type="Default"
-                    text="Delegate"
+                    text="{i18n>buttonFooterDelegate}"
                 >
                     <layoutData>
                         <OverflowToolbarLayoutData priority="NeverOverflow" />
@@ -347,18 +374,18 @@
                 </Button>
                 <Button
                     type="Emphasized"
-                    text="Subtitute"
+                    text="{i18n>buttonFooterSubtitute}"
                 >
                     <layoutData>
                         <OverflowToolbarLayoutData priority="NeverOverflow" />
                     </layoutData>
                 </Button>
                 <OverflowToolbarButton
-                    tooltip="Delete"
-                    text="Delete"
-                    icon="sap-icon://delete"
+                    tooltip="Share"
+                    text="Share"
+                    icon="sap-icon://action"
                 />
-                <OverflowToolbarButton
+                <!-- <OverflowToolbarButton
                     tooltip="Edit"
                     text="Edit"
                     icon="sap-icon://edit"
@@ -383,7 +410,7 @@
                     text="Toggle"
                     icon="sap-icon://touch"
                     press="onTogglePress"
-                />
+                /> -->
             </OverflowToolbar>
         </footer>
     </Page>
