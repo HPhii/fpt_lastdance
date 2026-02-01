@@ -1,6 +1,7 @@
 sap.ui.define(
   ["sap/ui/core/UIComponent", "z/wf/zwfmanagement/model/models"],
-  (UIComponent, models) => {
+  (UIComponent, models) =>
+  {
     "use strict";
 
     return UIComponent.extend("z.wf.zwfmanagement.Component", {
@@ -9,7 +10,8 @@ sap.ui.define(
         interfaces: ["sap.ui.core.IAsyncContentCreation"],
       },
 
-      init() {
+      init()
+      {
         // call the base component's init function
         UIComponent.prototype.init.apply(this, arguments);
 

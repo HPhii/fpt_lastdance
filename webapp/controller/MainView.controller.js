@@ -1,22 +1,23 @@
 sap.ui.define([
-  "sap/ui/core/mvc/Controller",
+  "./BaseController",
   "sap/ui/model/json/JSONModel",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "sap/ui/core/BusyIndicator",
   "sap/m/MessageBox",
   "sap/m/ViewSettingsDialog",
   "sap/m/ViewSettingsItem",
   "sap/ui/model/Sorter",
   "../model/formatter"
-], function (Controller, JSONModel, Filter, FilterOperator, BusyIndicator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, formatter)
+], function (BaseController, JSONModel, Filter, FilterOperator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, formatter)
 {
   "use strict";
 
-  return Controller.extend("z.wf.zwfmanagement.controller.MainView", {
+  return BaseController.extend("z.wf.zwfmanagement.controller.MainView", {
     formatter: formatter,
     onInit: function ()
     {
+      BaseController.prototype.onInit.apply(this, arguments);
+
       let oViewModel,
         oList = this.byId("idTasksList");
 
@@ -406,14 +407,6 @@ sap.ui.define([
       oViewModel.setProperty("/worklistTableTitle", "(" + (iCount || 0) + ")");
 
       oBinding.filter(this._mFilters[sKey]);
-    },
-
-    onLanguageChange: function (oEvent)
-    {
-      var sSelectedKey = oEvent.getSource().getSelectedKey();
-
-      //Set selected language to core
-      sap.ui.getCore().getConfiguration().setLanguage(sSelectedKey);
     },
 
     onSearch: function (oEvent)

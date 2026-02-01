@@ -18,22 +18,10 @@
         navButtonPress=".onNavBackToDashboard"
     >
         <headerContent>
-            <Select
-                forceSelection="true"
-                change=".onLanguageChange"
-            >
-                <core:ListItem
-                    key="en"
-                    icon="assets/icons/us.svg"
-                    text="English"
-                />
-                <core:ListItem
-                    icon="assets/icons/de.svg"
-                    class="flagIcon"
-                    key="de"
-                    text="Deutsch"
-                />
-            </Select>
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                type="XML"
+            />
         </headerContent>
         <IconTabBar
             id="iconTabBar"
