@@ -206,7 +206,7 @@
                                     </headerToolbar>
                                     <ObjectListItem
                                         title="{TaskText}"
-                                        number="{UserID}"
+                                        number="{AssignedUser}"
                                         type="Active"
                                         press=".onTaskPress"
                                     >
@@ -289,7 +289,7 @@
                                         />
                                         <ObjectAttribute
                                             title="User ID"
-                                            text="{UserID}"
+                                            text="{AssignedUser}"
                                         />
                                         <ObjectAttribute
                                             title="Task ID"
