@@ -39,6 +39,55 @@
                         </customData>
                     </Button>
                 </HBox>
+
+                <Button 
+                    text="{i18n>buttonApprove}" 
+                    type="Success" 
+                    icon="sap-icon://accept"
+                    press=".onApproveAction"
+                    visible="{__OperationControl/approve}" 
+                    class="sapUiTinyMarginBegin"/>
+
+                <Button 
+                    text="{i18n>buttonReject}" 
+                    type="Negative" 
+                    icon="sap-icon://decline"
+                    press=".onRejectAction"
+                    visible="{__OperationControl/reject}" 
+                    class="sapUiTinyMarginBegin"/>
+
+                <Button 
+                    text="{i18n>buttonClaim}" 
+                    type="Emphasized" 
+                    icon="sap-icon://user-edit"
+                    press=".onClaimAction"
+                    visible="{__OperationControl/claim}" 
+                    class="sapUiTinyMarginBegin"/>
+
+                <Button 
+                    text="{i18n>buttonForward}" 
+                    type="Default" 
+                    icon="sap-icon://forward"
+                    press=".onForwardAction"
+                    visible="{__OperationControl/forward}" 
+                    class="sapUiTinyMarginBegin"/>
+
+                <Button 
+                    text="{i18n>buttonRelease}" 
+                    type="Transparent" 
+                    icon="sap-icon://undo"
+                    press=".onReleaseAction"
+                    visible="{__OperationControl/release}" 
+                    class="sapUiTinyMarginBegin"/>
+
+                <Button 
+                    text="{i18n>buttonSuspend}" 
+                    type="Reject" 
+                    icon="sap-icon://pause"
+                    press=".onSuspendAction"
+                    visible="{__OperationControl/suspend}" 
+                    class="sapUiTinyMarginBegin"/>
+
             </OverflowToolbar>
         </footer>
     </Page>
