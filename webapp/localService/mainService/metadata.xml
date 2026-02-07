@@ -48,10 +48,10 @@
             <EntityType Name="WfTasksType">
                 <Key>
                     <PropertyRef Name="WorkItemID"/>
-                    <PropertyRef Name="UserID"/>
+                    <!-- <PropertyRef Name="UserID"/> -->
                 </Key>
                 <Property Name="WorkItemID" Type="Edm.String" Nullable="false" MaxLength="12"/>
-                <Property Name="UserID" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="AssignedUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
                 <Property Name="TaskID" Type="Edm.String" Nullable="false" MaxLength="14"/>
                 <Property Name="TaskText" Type="Edm.String" Nullable="false" MaxLength="40"/>
                 <Property Name="WorkItemText" Type="Edm.String" Nullable="false" MaxLength="120"/>
@@ -141,7 +141,7 @@
                 <Annotation Term="SAP__common.Label" String="Work Item ID"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Work item ID"/>
             </Annotations>
-            <Annotations Target="SAP__self.WfTasksType/UserID">
+            <Annotations Target="SAP__self.WfTasksType/AssignedUser">
                 <Annotation Term="SAP__core.Computed"/>
                 <Annotation Term="SAP__common.IsUpperCase"/>
                 <Annotation Term="SAP__common.Label" String="User"/>
@@ -318,7 +318,7 @@
                                     <PropertyValue Property="Value" Path="TechnicalStatus"/>
                                 </Record>
                                 <Record Type="SAP__UI.DataField">
-                                    <PropertyValue Property="Value" Path="UserID"/>
+                                    <PropertyValue Property="Value" Path="AssignedUser"/>
                                 </Record>
                                 <Record Type="SAP__UI.DataField">
                                     <PropertyValue Property="Value" Path="EndDate"/>
@@ -364,7 +364,7 @@
                             <PropertyValue Property="Value" Path="TechnicalStatus"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Value" Path="UserID"/>
+                            <PropertyValue Property="Value" Path="AssignedUser"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
                             <PropertyValue Property="Value" Path="EndDate"/>
@@ -426,7 +426,7 @@
                             <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Medium"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">
-                            <PropertyValue Property="Value" Path="UserID"/>
+                            <PropertyValue Property="Value" Path="AssignedUser"/>
                             <Annotation Term="SAP__UI.Importance" EnumMember="SAP__UI.ImportanceType/Low"/>
                         </Record>
                         <Record Type="SAP__UI.DataField">

@@ -12,7 +12,7 @@
                 numberUnit="{i18n>priority}">
                 <attributes>
                     <ObjectAttribute title="{i18n>detailWorkItemID}" text="{WorkItemID}" />
-                    <ObjectAttribute title="{i18n>detailUserID}" text="{UserID}" />
+                    <ObjectAttribute title="{i18n>detailUserID}" text="{AssignedUser}" />
                     <ObjectAttribute title="{i18n>detailStatus}" text="{TechnicalStatus}" />
                 </attributes>
             </ObjectHeader>
