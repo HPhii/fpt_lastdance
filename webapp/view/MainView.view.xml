@@ -42,14 +42,24 @@
                     key="ready"
                     icon="sap-icon://task"
                     iconColor="Default"
-                    count="{worklistView>/ready}"
+                    count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'READY\''
+                        }
+                    }"
                     text="{i18n>WorklistFilterTasksReady}"
                 />
                 <IconTabFilter
                     key="selected"
                     icon="sap-icon://employee-approvals"
                     iconColor="Neutral"
-                    count="{worklistView>/selected}"
+                    count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'SELECTED\''
+                        }
+                    }"
                     text="{i18n>WorklistFilterTasksSelected}"
                 />
                 <IconTabFilter
@@ -57,7 +67,7 @@
                     icon="sap-icon://begin"
                     iconColor="Critical"
                     count="{worklistView>/started}"
-                    text="{i18n>WorklistFilterTasksReady}"
+                    text="{i18n>WorklistFilterTasksStarted}"
                 />
                 <IconTabFilter
                     key="committed"

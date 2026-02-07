@@ -31,8 +31,18 @@
                         subheader="{i18n>dashboardTaskSubheader}"
                         press=".onNavToTask"
                     >
-                        <TileContent>
-                            <ImageContent src="sap-icon://list" />
+                        <TileContent unit="Tasks">
+                            <NumericContent
+                                busy="{= ${/WfTasks/$count} === undefined}"
+                                value="{
+                                    path: '/WfTasks/$count',
+                                    parameters: {
+                                        $filter: 'TechnicalStatus eq \'READY\' or TechnicalStatus eq \'SELECTED\''
+                                    }
+                                }"
+                                icon="sap-icon://activities"
+                                withMargin="false"
+                            />
                         </TileContent>
                     </GenericTile>
 
