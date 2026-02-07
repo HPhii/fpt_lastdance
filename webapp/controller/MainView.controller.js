@@ -7,8 +7,9 @@ sap.ui.define([
   "sap/m/ViewSettingsDialog",
   "sap/m/ViewSettingsItem",
   "sap/ui/model/Sorter",
+  "sap/m/MessageToast",
   "../model/formatter"
-], function (BaseController, JSONModel, Filter, FilterOperator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, formatter)
+], function (BaseController, JSONModel, Filter, FilterOperator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, MessageToast, formatter)
 {
   "use strict";
 
