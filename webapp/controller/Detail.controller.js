@@ -31,7 +31,15 @@ sap.ui.define(
           },
           events: {
             dataReceived: function (oData) {
-              // Handle if needed when data is received
+              // Debug để xem dữ liệu có về không
+              var oContext = oData.getSource().getBoundContext();
+              if (oContext) {
+                console.log("Current Data:", oContext.getObject());
+                console.log(
+                  "Operation Control:",
+                  oContext.getProperty("__OperationControl"),
+                );
+              }
             },
           },
         });
@@ -51,6 +59,9 @@ sap.ui.define(
 
       onDecisionPress: function (oEvent) {
         var oButton = oEvent.getSource();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
         // get data attributes
         var sDecisionKey = oButton.data("DecisionKey");
         var sWorkItemID = oButton.data("WorkItemID");
@@ -64,8 +75,11 @@ sap.ui.define(
         console.log("Data type:", typeof sDecisionKey);
 
         var that = this;
+        var sConfirmMessage = oResourceBundle.getText("confirmDecision", [
+          sText,
+        ]);
 
-        MessageBox.confirm("Confirm " + sText + "?", {
+        MessageBox.confirm(sConfirmMessage, {
           onClose: function (oAction) {
             if (oAction === MessageBox.Action.OK) {
               that._callODataV4Action(sWorkItemID, sDecisionKey);
@@ -74,14 +88,157 @@ sap.ui.define(
         });
       },
 
+      onApproveAction: function () {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmApprove");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction) {
+            if (oAction === MessageBox.Action.OK) {
+              that._callBoundAction("approve", oContext);
+            }
+          },
+        });
+      },
+
+      onRejectAction: function () {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmReject");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction) {
+            if (oAction === MessageBox.Action.OK) {
+              that._callBoundAction("reject", oContext);
+            }
+          },
+        });
+      },
+
+      onClaimAction: function () {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmClaim");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction) {
+            if (oAction === MessageBox.Action.OK) {
+              that._callBoundAction("claim", oContext);
+            }
+          },
+        });
+      },
+
+      onForwardAction: function () {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmForward");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction) {
+            if (oAction === MessageBox.Action.OK) {
+              that._callBoundAction("forward", oContext);
+            }
+          },
+        });
+      },
+
+      onReleaseAction: function () {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmRelease");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction) {
+            if (oAction === MessageBox.Action.OK) {
+              that._callBoundAction("release", oContext);
+            }
+          },
+        });
+      },
+
+      onSuspendAction: function () {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmSuspend");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction) {
+            if (oAction === MessageBox.Action.OK) {
+              that._callBoundAction("suspend", oContext);
+            }
+          },
+        });
+      },
+
+      _callBoundAction: function (sActionName, oContext) {
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+
+        if (!oContext) {
+          MessageBox.error(oResourceBundle.getText("errorNoContext"));
+          return;
+        }
+
+        var sPath =
+          "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001." +
+          sActionName +
+          "(...)";
+        var oModel = this.getView().getModel();
+
+        var oOperation = oModel.bindContext(sPath, oContext);
+
+        this.getView().setBusy(true);
+
+        oOperation
+          .execute()
+          .then(
+            function () {
+              this.getView().setBusy(false);
+              MessageToast.show(oResourceBundle.getText("successMessage"));
+
+              oModel.refresh();
+            }.bind(this),
+          )
+          .catch(
+            function (oError) {
+              this.getView().setBusy(false);
+              MessageBox.error("Error: " + oError.message);
+            }.bind(this),
+          );
+      },
+
       _callODataV4Action: function (sWorkItemID, sDecisionKey) {
         var oModel = this.getView().getModel();
         var oView = this.getView();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
 
         var oContext = oView.getBindingContext();
 
         if (!oContext) {
-          sap.m.MessageBox.error("Data context not found.");
+          MessageBox.error(oResourceBundle.getText("errorNoContext"));
           return;
         }
 
@@ -97,7 +254,7 @@ sap.ui.define(
           .execute()
           .then(
             function () {
-              sap.m.MessageToast.show("Xử lý thành công!");
+              MessageToast.show(oResourceBundle.getText("successMessage"));
 
               oModel.refresh();
 
@@ -105,7 +262,7 @@ sap.ui.define(
             }.bind(this),
           )
           .catch(function (oError) {
-            sap.m.MessageBox.error("Error: " + oError.message);
+            MessageBox.error("Error: " + oError.message);
           });
       },
     });
