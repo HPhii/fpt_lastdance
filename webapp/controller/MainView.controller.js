@@ -8,8 +8,9 @@ sap.ui.define([
   "sap/m/ViewSettingsItem",
   "sap/ui/model/Sorter",
   "sap/m/MessageToast",
-  "../model/formatter"
-], function (BaseController, JSONModel, Filter, FilterOperator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, MessageToast, formatter)
+  "../model/formatter",
+  "sap/ui/model/odata/v2/ODataModel"
+], function (BaseController, JSONModel, Filter, FilterOperator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, MessageToast, formatter, ODataV2Model)
 {
   "use strict";
 
@@ -18,6 +19,9 @@ sap.ui.define([
     onInit: function ()
     {
       BaseController.prototype.onInit.apply(this, arguments);
+
+      // Initialize router
+      this.oRouter = this.getOwnerComponent().getRouter();
 
       let oViewModel,
         oList = this.byId("idTasksList");
@@ -31,16 +35,6 @@ sap.ui.define([
       oViewModel = new JSONModel({
         worklistTableTitle: "",
         tableBusyDelay: 0,
-        countAll: 0,
-        ready: 0,
-        selected: 0,
-        started: 0,
-        committed: 0,
-        waiting: 0,
-        checked: 0,
-        completed: 0,
-        cancelled: 0,
-        error: 0,
         detailVisible: false,
         detailBusy: false,
         listMode: "SingleSelectMaster",
@@ -75,93 +69,6 @@ sap.ui.define([
         ],
         error: [new Filter("TechnicalStatus", FilterOperator.EQ, "ERROR")],
       };
-
-      // Attach event to update counts when list data is loaded/changed
-      oList.attachEventOnce(
-        "updateFinished",
-        function ()
-        {
-          // Update counts after list is loaded
-          this._updateCounts();
-
-          // Attach to future data changes
-          var oBinding = oList.getBinding("items");
-          if (oBinding)
-          {
-            oBinding.attachDataReceived(this._updateCounts.bind(this));
-            oBinding.attachChange(this._updateCounts.bind(this));
-          }
-        }.bind(this),
-      );
-    },
-
-    /**
-     * Update the counts for each technical status
-     * @private
-     */
-    _updateCounts: function ()
-    {
-      var oModel = this.getView().getModel();
-      var oViewModel = this.getView().getModel("worklistView");
-
-      if (!oModel)
-      {
-        return;
-      }
-
-      //Use bindList to read all tasks and count by status
-      var oBinding = oModel.bindList("/WfTasks", null, null, null, {
-        $select: "TechnicalStatus",
-      });
-
-      oBinding
-        .requestContexts(0, Infinity)
-        .then(
-          function (aContexts)
-          {
-            var oCounts = {
-              countAll: aContexts.length,
-              ready: 0,
-              selected: 0,
-              started: 0,
-              committed: 0,
-              waiting: 0,
-              checked: 0,
-              completed: 0,
-              cancelled: 0,
-              error: 0,
-            };
-
-            // Count tasks by TechnicalStatus
-            aContexts.forEach(function (oContext)
-            {
-              var sStatus = oContext.getProperty("TechnicalStatus");
-              if (sStatus)
-              {
-                var sKey = sStatus.toLowerCase();
-                if (oCounts.hasOwnProperty(sKey))
-                {
-                  oCounts[sKey]++;
-                }
-              }
-            });
-
-            // Update view model with counts
-            oViewModel.setProperty("/ready", oCounts.ready);
-            oViewModel.setProperty("/selected", oCounts.selected);
-            oViewModel.setProperty("/started", oCounts.started);
-            oViewModel.setProperty("/committed", oCounts.committed);
-            oViewModel.setProperty("/waiting", oCounts.waiting);
-            oViewModel.setProperty("/checked", oCounts.checked);
-            oViewModel.setProperty("/completed", oCounts.completed);
-            oViewModel.setProperty("/cancelled", oCounts.cancelled);
-            oViewModel.setProperty("/error", oCounts.error);
-          }.bind(this),
-        )
-        .catch(function (oError)
-        {
-          console.error("Error reading tasks for count:", oError);
-        });
     },
 
     onSort: function ()
@@ -334,48 +241,161 @@ sap.ui.define([
 
     onSelectionChange: function (oEvent)
     {
-      var oList = oEvent.getSource();
       var oSelectedItem = oEvent.getParameter("listItem");
       var oContext = oSelectedItem ? oSelectedItem.getBindingContext() : null;
       var oViewModel = this.getView().getModel("worklistView");
+      console.log("Hello");
+
+      if (!oContext)
+      {
+
+        return;
+      }
+
+      console.log(oSelectedItem, oContext.getPath().split("'")[1]);
+
+      var oHelper = this.getOwnerComponent().getHelper();
+
+      if (!oHelper)
+      {
+        console.error("FlexibleColumnLayout helper not available");
+        return;
+      }
+
+      // var oItem = oEvent.getSource();
+      // // oItem.setNavigated(true);
+      // var oParent = oItem.getParent();
+      // // store index of the item clicked, which can be used later in the columnResize event
+      // this.iIndex = oParent.indexOfItem(oItem);
 
       // Check if in multi-select mode
       var sMode = oViewModel.getProperty("/listMode");
       if (sMode === "MultiSelect")
       {
         // Don't show detail in multi-select mode
+        console.log("Multi");
+
         return;
       }
 
-      if (oContext)
+      var oNextUIState = oHelper.getNextUIState(1);
+      var id = oContext.getPath().split("'")[1];
+
+      this.oRouter.navTo("RouteDetail", {
+        layout: oNextUIState.layout,
+        propertyPath: id
+      });
+
+      // if (oContext)
+      // {
+      //   let that = this;
+      //   var oDetailPanel = this.byId("detailPanel");
+
+      //   // Show loading indicator
+      //   oViewModel.setProperty("/detailBusy", true);
+      //   oViewModel.setProperty("/detailVisible", true);
+
+
+      //   // Bind the detail panel to the selected item with expanded decision options
+      //   oDetailPanel.bindElement({
+      //     path: oContext.getPath(),
+      //     parameters: {
+      //       $select: "*,__OperationControl",
+      //       $expand: "_DecisionOptions",
+      //     },
+      //     events: {
+      //       dataReceived: function ()
+      //       {
+      //         // Hide loading indicator when data is received
+      //         oViewModel.setProperty("/detailBusy", false);
+
+      //         // Get the bound context of the detail panel
+      //         var oBoundContext = oDetailPanel.getBindingContext();
+
+      //         if (oBoundContext)
+      //         {
+      //           var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
+      //           var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
+      //           var sKey = oBoundContext.getProperty("PurchaseOrderKey");
+      //           var sExpand = oBoundContext.getProperty("TargetExpandParams");
+
+      //           if (sServiceUrl && sEntitySet && sKey)
+      //           {
+      //             that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand);
+      //           }
+      //         }
+      //       },
+      //       dataRequested: function ()
+      //       {
+      //         var oCurrentModel = that.getView().getModel("businessModel");
+      //         if (oCurrentModel)
+      //         {
+      //           oCurrentModel.refresh(true);
+      //         }
+      //         // Show loading indicator when data is requested
+      //         oViewModel.setProperty("/detailBusy", true);
+      //       },
+      //     },
+      //   });
+      // }
+    },
+
+    _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)
+    {
+      var oModel = new JSONModel({
+        isLoading: true
+      });
+
+      this.getView().setModel(oModel, "purchaseOrderItem");
+
+      var oBusinessContainer = this.byId("businessObjectContainer");
+      if (!oBusinessContainer)
       {
-        var oDetailPanel = this.byId("detailPanel");
-
-        // Show loading indicator
-        oViewModel.setProperty("/detailBusy", true);
-        oViewModel.setProperty("/detailVisible", true);
-
-        // Bind the detail panel to the selected item with expanded decision options
-        oDetailPanel.bindElement({
-          path: oContext.getPath(),
-          parameters: {
-            $select: "*,__OperationControl",
-            $expand: "_DecisionOptions",
-          },
-          events: {
-            dataReceived: function ()
-            {
-              // Hide loading indicator when data is received
-              oViewModel.setProperty("/detailBusy", false);
-            },
-            dataRequested: function ()
-            {
-              // Show loading indicator when data is requested
-              oViewModel.setProperty("/detailBusy", true);
-            },
-          },
-        });
+        oBusinessContainer = this.byId("detailPanel");
       }
+
+      // Get existing model
+      var oCurrentModel = this.getView().getModel("businessModel");
+
+      if (!oCurrentModel || oCurrentModel.sServiceUrl !== sServiceUrl)
+      {
+        // Create new OData V2 Model
+        var oNewModel = new ODataV2Model(sServiceUrl, {
+          json: true,
+          useBatch: false, // Turn off batch
+          defaultBindingMode: "OneWay",
+        });
+
+        this.getView().setModel(oNewModel, "businessModel");
+      }
+
+      // Create binding path
+      var sPath = "/" + sEntitySet + "('" + sKey + "')";
+
+      // 4. Bind Element
+      oBusinessContainer.bindElement({
+        path: sPath,
+        model: "businessModel",
+        parameters: {
+          expand: sExpand
+        },
+        events: {
+          dataReceived: function ()
+          {
+            console.log("Business Object Loaded: " + sPath);
+            oModel.setProperty("/isLoading", false);
+          },
+          change: function ()
+          {
+            // Todo: Handle data change if needed
+
+          },
+          dataRequested: function ()
+          {
+            console.log("Requesting Business Object Data: " + sPath);
+          }
+        }
+      });
     },
 
     onTaskPress: function (oEvent)
@@ -479,31 +499,6 @@ sap.ui.define([
       oList.removeSelections(true);
     },
 
-    onDecisionPress: function (oEvent)
-    {
-      var oButton = oEvent.getSource();
-      var sDecisionKey = oButton.data("DecisionKey");
-      var sWorkItemID = oButton.data("WorkItemID");
-      var sText = oButton.getText();
-
-      if (sDecisionKey)
-      {
-        sDecisionKey = sDecisionKey.toString().padStart(4, "0");
-      }
-
-      var that = this;
-
-      MessageBox.confirm("Do you want to perform action: " + sText + "?", {
-        onClose: function (oAction)
-        {
-          if (oAction === MessageBox.Action.OK)
-          {
-            that._callODataV4Action(sWorkItemID, sDecisionKey);
-          }
-        },
-      });
-    },
-
     _callODataV4Action: function (sWorkItemID, sDecisionKey)
     {
       var oModel = this.getView().getModel();
@@ -558,179 +553,6 @@ sap.ui.define([
       this.getOwnerComponent().getRouter().navTo("RouteDashboard");
     },
 
-    onApproveAction: function ()
-    {
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oResourceBundle = this.getView()
-        .getModel("i18n")
-        .getResourceBundle();
-      var sConfirmMessage = oResourceBundle.getText("confirmApprove");
-
-      var that = this;
-      MessageBox.confirm(sConfirmMessage, {
-        onClose: function (oAction)
-        {
-          if (oAction === MessageBox.Action.OK)
-          {
-            that._callBoundAction("approve", oContext);
-          }
-        },
-      });
-    },
-
-    onRejectAction: function ()
-    {
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oResourceBundle = this.getView()
-        .getModel("i18n")
-        .getResourceBundle();
-      var sConfirmMessage = oResourceBundle.getText("confirmReject");
-
-      var that = this;
-      MessageBox.confirm(sConfirmMessage, {
-        onClose: function (oAction)
-        {
-          if (oAction === MessageBox.Action.OK)
-          {
-            that._callBoundAction("reject", oContext);
-          }
-        },
-      });
-    },
-
-    onClaimAction: function ()
-    {
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oResourceBundle = this.getView()
-        .getModel("i18n")
-        .getResourceBundle();
-      var sConfirmMessage = oResourceBundle.getText("confirmClaim");
-
-      var that = this;
-      MessageBox.confirm(sConfirmMessage, {
-        onClose: function (oAction)
-        {
-          if (oAction === MessageBox.Action.OK)
-          {
-            that._callBoundAction("claim", oContext);
-          }
-        },
-      });
-    },
-
-    onForwardAction: function ()
-    {
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oResourceBundle = this.getView()
-        .getModel("i18n")
-        .getResourceBundle();
-      var sConfirmMessage = oResourceBundle.getText("confirmForward");
-
-      var that = this;
-      MessageBox.confirm(sConfirmMessage, {
-        onClose: function (oAction)
-        {
-          if (oAction === MessageBox.Action.OK)
-          {
-            that._callBoundAction("forward", oContext);
-          }
-        },
-      });
-    },
-
-    onReleaseAction: function ()
-    {
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oResourceBundle = this.getView()
-        .getModel("i18n")
-        .getResourceBundle();
-      var sConfirmMessage = oResourceBundle.getText("confirmRelease");
-
-      var that = this;
-      MessageBox.confirm(sConfirmMessage, {
-        onClose: function (oAction)
-        {
-          if (oAction === MessageBox.Action.OK)
-          {
-            that._callBoundAction("release", oContext);
-          }
-        },
-      });
-    },
-
-    onSuspendAction: function ()
-    {
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oResourceBundle = this.getView()
-        .getModel("i18n")
-        .getResourceBundle();
-      var sConfirmMessage = oResourceBundle.getText("confirmSuspend");
-
-      var that = this;
-      MessageBox.confirm(sConfirmMessage, {
-        onClose: function (oAction)
-        {
-          if (oAction === MessageBox.Action.OK)
-          {
-            that._callBoundAction("suspend", oContext);
-          }
-        },
-      });
-    },
-
-    _callBoundAction: function (sActionName, oContext)
-    {
-      var oResourceBundle = this.getView()
-        .getModel("i18n")
-        .getResourceBundle();
-      var oViewModel = this.getView().getModel("worklistView");
-
-      if (!oContext)
-      {
-        MessageBox.error(oResourceBundle.getText("errorNoContext"));
-        return;
-      }
-
-      var sPath =
-        "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001." +
-        sActionName +
-        "(...)";
-      var oModel = this.getView().getModel();
-
-      var oOperation = oModel.bindContext(sPath, oContext);
-
-      oViewModel.setProperty("/detailBusy", true);
-
-      oOperation
-        .execute()
-        .then(
-          function ()
-          {
-            oViewModel.setProperty("/detailBusy", false);
-            MessageToast.show(oResourceBundle.getText("successMessage"));
-
-            // Refresh the list and counts
-            this._oList.getBinding("items").refresh();
-            this._updateCounts();
-
-            // Close detail panel
-            this.onCloseDetail();
-          }.bind(this),
-        )
-        .catch(
-          function (oError)
-          {
-            oViewModel.setProperty("/detailBusy", false);
-            MessageBox.error("Error: " + oError.message);
-          }.bind(this),
-        );
-    },
   });
 },
 );

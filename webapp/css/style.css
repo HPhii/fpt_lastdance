@@ -8,6 +8,14 @@
     height: 100vh;
 }
 
+.rightPanelFooterActions {
+    position: sticky !important;
+    bottom: 0;
+    right: 0;
+    border: 0.5px solid #ccc;
+}
+
+
 img.sapMSelectListItemIcon {
     width: 20px;
     height: 100%;

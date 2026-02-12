@@ -3,40 +3,133 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:microchart="sap.suite.ui.microchart"
+    xmlns:layout="sap.ui.layout"
+    xmlns:card="sap.ui.integration.widgets"
 >
-    <Page
-        title="{i18n>analyticsTitle}"
-        showNavButton="true"
-        navButtonPress=".onNavBackToDashboard"
-    >
-        <headerContent>
-            <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
-                type="XML"
-            />
-        </headerContent>
-        <!-- <Label
-            text="Interactive ObjectNumber with style sapMObjectNumberLarge applied"
-            class="sapUiSmallMarginTop"
-            design="Bold"
-        />
-        <ObjectNumber
-            class="sapMObjectNumberLarge"
-            active="true"
-            binding="{/ProductCollection/5}"
-            press="onPress"
-            number="{
-					parts:[{path:'Price'},{path:'CurrencyCode'}],
-					type: 'sap.ui.model.type.Currency',
-					formatOptions: {showMeasure: false}
-				}"
-            unit="{CurrencyCode}"
-            emphasized="false"
-            state="None"
-        /> -->
-        <Text
-            text="{i18n>analyticsPlaceholder}"
-            class="sapUiMediumMargin"
-        />
-    </Page>
+    <Shell>
+        <Page
+            title="{i18n>analyticsTitle}"
+            showNavButton="true"
+            navButtonPress=".onNavBackToDashboard"
+        >
+            <headerContent>
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                    type="XML"
+                />
+            </headerContent>
+            <HBox
+                justifyContent="Center"
+                width="100%"
+            >
+                <HeaderContainer
+                    id="container2"
+                    scroll="false"
+                    width="auto"
+                >
+                    <TileContent footer="Total Open Tasks">
+                        <content>
+                            <NumericContent
+                                valueColor="Neutral"
+                                value="{
+                                    path: '/WfTasks/$count',
+                                    parameters: {
+                                        $filter: 'TechnicalStatus eq \'READY\' or TechnicalStatus eq \'RESERVED\''
+                                    }
+                                }"
+                                scale="Open"
+                                busy="{= ${/WfTasks/$count} === undefined}"
+                                icon="sap-icon://activity-2"
+                            />
+                        </content>
+                    </TileContent>
+                    <TileContent footer="Overdue/Critical Tasks">
+                        <content>
+                            <NumericContent
+                                valueColor="Error"
+                                value="{
+                                    path: '/WfTasks/$count',
+                                    parameters: {
+                                        $filter: 'DaysToDeadline lt 0'
+                                    }
+                                }"
+                                scale="Critical"
+                                busy="{= ${/WfTasks/$count} === undefined}"
+                                icon="sap-icon://alert"
+                            />
+                        </content>
+                    </TileContent>
+                    <TileContent footer="High Priority Tasks">
+                        <content>
+                            <NumericContent
+                                valueColor="Critical"
+                                value="{
+                                    path: '/WfTasks/$count',
+                                    parameters: {
+                                        $filter: 'Priority eq \'1\''
+                                    }
+                                }"
+                                scale="High"
+                                busy="{= ${/WfTasks/$count} === undefined}"
+                                icon="sap-icon://high-priority"
+                            />
+                        </content>
+                    </TileContent>
+                </HeaderContainer>
+            </HBox>
+            <Panel>
+                <!-- <FlexBox
+                    width="20rem"
+                    height="10rem"
+                    alignItems="Start"
+                    justifyContent="SpaceBetween"
+                >
+                    <items>
+                        <microchart:InteractiveDonutChart
+                            selectionChanged="onSelectionChanged"
+                        >
+                            <microchart:segments>
+                                <microchart:InteractiveDonutChartSegment
+                                    label="Implementation Phase"
+                                    value="{
+                                        path: '/WfTasks/$count',
+                                        parameters: {
+                                            $filter: 'Priority eq \'5\''
+                                        }
+                                    }"
+                                    displayedValue="{
+                                        path: '/WfTasks/$count',
+                                        parameters: {
+                                            $filter: 'Priority eq \'5\''
+                                        }
+                                    }%"
+                                    color="Error"
+                                />
+                                <microchart:InteractiveDonutChartSegment
+                                    label="Design Phase"
+                                    value="21.5"
+                                    displayedValue="21.5%"
+                                    color="Critical"
+                                />
+                                <microchart:InteractiveDonutChartSegment
+                                    label="Test Phase"
+                                    value="38.5"
+                                    displayedValue="38.5%"
+                                    color="Good"
+                                />
+                            </microchart:segments>
+                        </microchart:InteractiveDonutChart>
+                    </items>
+                </FlexBox> -->
+            </Panel>
+            <Panel>
+                <card:Card
+                    manifest="./cards/calendarCard/manifest.json"
+                    width="400px"
+                    height="auto"
+                />
+            </Panel>
+        </Page>
+    </Shell>
 </mvc:View>

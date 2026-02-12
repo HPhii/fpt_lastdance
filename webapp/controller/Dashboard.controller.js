@@ -11,8 +11,15 @@ sap.ui.define([
     },
     onNavToTask: function ()
     {
-      // Navigate vào cái Route cũ (MainView danh sách)
-      this.getOwnerComponent().getRouter().navTo("RouteMainView");
+      var oHelper = this.getOwnerComponent().getHelper();
+      if (oHelper)
+      {
+        var oNextUIState = oHelper.getNextUIState(0);
+        this.getOwnerComponent().getRouter().navTo("RouteMainView", { layout: oNextUIState.layout });
+      } else
+      {
+        this.getOwnerComponent().getRouter().navTo("RouteMainView");
+      }
     },
 
     onNavToAnalytics: function ()

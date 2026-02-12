@@ -12,8 +12,6 @@ sap.ui.define([
             let sCurrentLanguage = sap.ui.getCore().getConfiguration().getLanguage();
             let sLanguageKey = sCurrentLanguage.split("-")[0];
 
-            console.log(">>>> ", sLanguageKey);
-
             let oViewModel = new JSONModel({
                 selectedLanguage: sLanguageKey
             });

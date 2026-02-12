@@ -62,7 +62,9 @@
       "minUI5Version": "1.143.2",
       "libs": {
         "sap.m": {},
-        "sap.ui.core": {}
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.ui.integration": {}
       }
     },
     "contentDensities": {
@@ -101,67 +103,75 @@
     },
     "routing": {
       "config": {
-        "routerClass": "sap.m.routing.Router",
+        "routerClass": "sap.f.routing.Router",
         "viewType": "XML",
         "viewPath": "z.wf.zwfmanagement.view",
-        "controlId": "app",
-        "controlAggregation": "pages",
+        "controlId": "fcl",
+        "transition": "slide",
         "async": true
       },
       "routes": [
         {
-          "name": "RouteDashboard",
           "pattern": ":?query:",
+          "name": "RouteDashboard",
           "target": "TargetDashboard"
         },
         {
+          "pattern": "tasks/:layout:",
           "name": "RouteMainView",
-          "pattern": "tasks",
           "target": "TargetMainView"
         },
         {
+          "pattern": "tasks/{propertyPath}/{layout}",
           "name": "RouteDetail",
-          "pattern": "WfTasks({propertyPath})",
-          "target": "TargetDetail"
+          "target": [
+            "TargetMainView",
+            "TargetDetail"
+          ]
         },
         {
-          "name": "RouteAnalytics",
           "pattern": "analytics",
+          "name": "RouteAnalytics",
           "target": "TargetAnalytics"
         },
         {
-          "name": "RouteHelp",
           "pattern": "help",
+          "name": "RouteHelp",
           "target": "TargetHelp"
         }
       ],
       "targets": {
         "TargetDashboard": {
           "viewId": "Dashboard",
-          "viewName": "Dashboard"
+          "viewName": "Dashboard",
+          "controlAggregation": "beginColumnPages"
         },
         "TargetMainView": {
           "viewId": "MainView",
-          "viewName": "MainView"
+          "viewName": "MainView",
+          "controlAggregation": "beginColumnPages"
         },
         "TargetDetail": {
           "viewId": "Detail",
-          "viewName": "Detail"
+          "viewName": "Detail",
+          "controlAggregation": "midColumnPages"
         },
         "TargetAnalytics": {
           "viewId": "Analytics",
-          "viewName": "Analytics"
+          "viewName": "Analytics",
+          "controlAggregation": "beginColumnPages"
         },
         "TargetHelp": {
           "viewId": "Help",
-          "viewName": "Help"
+          "viewName": "Help",
+          "controlAggregation": "beginColumnPages"
         }
       }
     },
     "rootView": {
-      "viewName": "z.wf.zwfmanagement.view.App",
+      "viewName": "z.wf.zwfmanagement.view.FlexibleColumnLayout",
       "type": "XML",
-      "id": "App",
+      "id": "fcl",
       "async": true
     }
   }
