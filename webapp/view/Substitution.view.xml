@@ -1,0 +1,263 @@
+<mvc:View
+    controllerName="z.wf.zwfmanagement.controller.Substitution"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Page
+        title="{i18n>substTitle}"
+        showNavButton="true"
+        navButtonPress=".onNavBackToDashboard"
+    >
+        <headerContent>
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                type="XML"
+            />
+        </headerContent>
+        <content>
+            <IconTabBar
+                id="substitutionTabBar"
+                select=".onTabSelect"
+                class="sapUiResponsiveContentPadding"
+            >
+                <!-- Tab 1: My Substitutes (Outgoing - I delegate to others) -->
+                <items>
+                    <IconTabFilter
+                        id="tabOutgoing"
+                        text="{i18n>substTabOutgoing}"
+                        icon="sap-icon://outgoing-call"
+                        key="outgoing"
+                    >
+                        <VBox class="sapUiSmallMargin">
+                            <!-- Mode Switcher -->
+                            <SegmentedButton
+                                id="modeSelector"
+                                selectedKey="{view>/substMode}"
+                                selectionChange=".onModeSelect"
+                                class="sapUiSmallMarginBottom"
+                            >
+                                <items>
+                                    <SegmentedButtonItem
+                                        key="P"
+                                        text="{i18n>substModePlanned}"
+                                        icon="sap-icon://calendar"
+                                    />
+                                    <SegmentedButtonItem
+                                        key="U"
+                                        text="{i18n>substModeUnplanned}"
+                                        icon="sap-icon://alert"
+                                    />
+                                </items>
+                            </SegmentedButton>
+
+                            <!-- Table for Planned Substitutions -->
+                            <Table
+                                id="tablePlanned"
+                                items="{
+                                    path: '/Substitutions',
+                                    parameters: {
+                                        $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
+                                    }
+                                }"
+                                visible="{= ${view>/substMode} === 'P'}"
+                                sticky="ColumnHeaders"
+                                growing="true"
+                                growingThreshold="20"
+                                noDataText="{i18n>substNoData}"
+                            >
+                                <columns>
+                                    <Column width="12em">
+                                        <Text text="{i18n>colSubstituteName}" />
+                                    </Column>
+                                    <Column width="12em">
+                                        <Text text="{i18n>colTaskGroup}" />
+                                    </Column>
+                                    <Column width="10em">
+                                        <Text text="{i18n>colStartDate}" />
+                                    </Column>
+                                    <Column width="10em">
+                                        <Text text="{i18n>colEndDate}" />
+                                    </Column>
+                                    <Column width="8em" hAlign="Center">
+                                        <Text text="{i18n>colStatus}" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{SubstituteFullName}" />
+                                            <Text text="{SubstitutionProfile}" />
+                                            <Text 
+                                                text="{
+                                                    path: 'BeginDate',
+                                                    type: 'sap.ui.model.type.Date',
+                                                    formatOptions: {
+                                                        source: { pattern: 'yyyy-MM-dd' },
+                                                        pattern: 'dd/MM/yyyy'
+                                                    }
+                                                }"
+                                            />
+                                            <Text 
+                                                text="{
+                                                    path: 'EndDate',
+                                                    type: 'sap.ui.model.type.Date',
+                                                    formatOptions: {
+                                                        source: { pattern: 'yyyy-MM-dd' },
+                                                        pattern: 'dd/MM/yyyy'
+                                                    }
+                                                }"
+                                            />
+                                            <ObjectStatus
+                                                text="{RuleStatus}"
+                                                state="{
+                                                    path: 'RuleStatus',
+                                                    formatter: '.formatStatusState'
+                                                }"
+                                                icon="{
+                                                    path: 'RuleStatus',
+                                                    formatter: '.formatStatusIcon'
+                                                }"
+                                            />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+
+                            <!-- Table for Unplanned Substitutions -->
+                            <Table
+                                id="tableUnplanned"
+                                items="{
+                                    path: '/Substitutions',
+                                    parameters: {
+                                        $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
+                                    }
+                                }"
+                                visible="{= ${view>/substMode} === 'U'}"
+                                sticky="ColumnHeaders"
+                                growing="true"
+                                growingThreshold="20"
+                                noDataText="{i18n>substNoData}"
+                            >
+                                <columns>
+                                    <Column width="12em">
+                                        <Text text="{i18n>colSubstituteName}" />
+                                    </Column>
+                                    <Column width="12em">
+                                        <Text text="{i18n>colTaskGroup}" />
+                                    </Column>
+                                    <Column width="8em" hAlign="Center">
+                                        <Text text="{i18n>colStatus}" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{SubstituteFullName}" />
+                                            <Text text="{SubstitutionProfile}" />
+                                            <ObjectStatus
+                                                text="{
+                                                    path: 'Active',
+                                                    formatter: '.formatActiveText'
+                                                }"
+                                                state="{
+                                                    path: 'Active',
+                                                    formatter: '.formatActiveState'
+                                                }"
+                                                icon="{
+                                                    path: 'Active',
+                                                    formatter: '.formatActiveIcon'
+                                                }"
+                                            />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </IconTabFilter>
+
+                    <!-- Tab 2: Incoming - Others delegate to me -->
+                    <IconTabFilter
+                        id="tabIncoming"
+                        text="{i18n>substTabIncoming}"
+                        icon="sap-icon://incoming-call"
+                        key="incoming"
+                    >
+                        <Table
+                            id="tableIncoming"
+                            items="{
+                                path: '/Substitutions',
+                                parameters: {
+                                    $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
+                                }
+                            }"
+                            sticky="ColumnHeaders"
+                            growing="true"
+                            growingThreshold="20"
+                            noDataText="{i18n>substNoData}"
+                            class="sapUiSmallMargin"
+                        >
+                            <columns>
+                                <Column width="12em">
+                                    <Text text="{i18n>colOwnerName}" />
+                                </Column>
+                                <Column width="12em">
+                                    <Text text="{i18n>colTaskGroup}" />
+                                </Column>
+                                <Column width="10em">
+                                    <Text text="{i18n>colStartDate}" />
+                                </Column>
+                                <Column width="10em">
+                                    <Text text="{i18n>colEndDate}" />
+                                </Column>
+                                <Column width="8em">
+                                    <Text text="{i18n>substModePlanned}" />
+                                </Column>
+                                <Column width="8em" hAlign="Center">
+                                    <Text text="{i18n>colStatus}" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{OwnerFullName}" />
+                                        <Text text="{SubstitutionProfile}" />
+                                        <Text 
+                                            text="{
+                                                parts: ['SubstitutionType', 'BeginDate'],
+                                                formatter: '.formatDateOrNA'
+                                            }"
+                                        />
+                                        <Text 
+                                            text="{
+                                                parts: ['SubstitutionType', 'EndDate'],
+                                                formatter: '.formatDateOrNA'
+                                            }"
+                                        />
+                                        <Text 
+                                            text="{
+                                                path: 'SubstitutionType',
+                                                formatter: '.formatSubstType'
+                                            }"
+                                        />
+                                        <ObjectStatus
+                                            text="{RuleStatus}"
+                                            state="{
+                                                path: 'RuleStatus',
+                                                formatter: '.formatStatusState'
+                                            }"
+                                            icon="{
+                                                path: 'RuleStatus',
+                                                formatter: '.formatStatusIcon'
+                                            }"
+                                        />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </content>
+    </Page>
+</mvc:View>
