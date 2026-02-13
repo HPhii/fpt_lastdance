@@ -4,8 +4,21 @@ sap.ui.define(
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
+    "sap/ui/core/Fragment",
+    "sap/m/MessageBox",
+    "sap/m/MessageToast",
+    "sap/ui/core/format/DateFormat",
   ],
-  function (BaseController, JSONModel, Filter, FilterOperator) {
+  function (
+    BaseController,
+    JSONModel,
+    Filter,
+    FilterOperator,
+    Fragment,
+    MessageBox,
+    MessageToast,
+    DateFormat,
+  ) {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Substitution", {
@@ -207,6 +220,114 @@ sap.ui.define(
        */
       onNavBackToDashboard: function () {
         this.getOwnerComponent().getRouter().navTo("RouteDashboard");
+      },
+
+      /**
+       * Open Add Substitution Dialog
+       */
+      onOpenAddDialog: function () {
+        const oView = this.getView();
+
+        // Khởi tạo model lưu trữ dữ liệu tạm cho Dialog
+        const oNewRuleModel = new JSONModel({
+          type: "P",
+          substituteId: "",
+          profileId: "ALL", // Default fallback
+          beginDate: new Date(),
+          endDate: new Date(new Date().setDate(new Date().getDate() + 1)), // Ngày mai
+        });
+        oView.setModel(oNewRuleModel, "newRule");
+
+        if (!this.byId("addRuleDialog")) {
+          Fragment.load({
+            id: oView.getId(),
+            name: "z.wf.zwfmanagement.view.fragments.AddSubstitutionDialog",
+            controller: this,
+          }).then(function (oDialog) {
+            oView.addDependent(oDialog);
+            oDialog.open();
+          });
+        } else {
+          this.byId("addRuleDialog").open();
+        }
+      },
+
+      /**
+       * Close Add Substitution Dialog
+       */
+      onCloseAddDialog: function () {
+        this.byId("addRuleDialog").close();
+      },
+
+      /**
+       * Save new Substitution Rule via OData V4 Create
+       */
+      onSaveRule: function () {
+        const oModel = this.getView().getModel();
+        const oNewRuleData = this.getView().getModel("newRule").getData();
+        const oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        const sCurrentUser = "DEV-138";
+
+        // Validate Input
+        if (
+          !oNewRuleData.substituteId ||
+          oNewRuleData.substituteId.trim() === ""
+        ) {
+          MessageBox.error(oResourceBundle.getText("msgSelectUser"));
+          return;
+        }
+
+        // Format Dates to yyyy-MM-dd
+        const oDateFormat = DateFormat.getDateInstance({
+          pattern: "yyyy-MM-dd",
+        });
+        let sBeginDate = null;
+        let sEndDate = null;
+
+        if (oNewRuleData.type === "P") {
+          if (!oNewRuleData.beginDate || !oNewRuleData.endDate) {
+            MessageBox.error(oResourceBundle.getText("msgSelectDates"));
+            return;
+          }
+          sBeginDate = oDateFormat.format(oNewRuleData.beginDate);
+          sEndDate = oDateFormat.format(oNewRuleData.endDate);
+        }
+
+        // Build Payload
+        const oPayload = {
+          UserSubstitutedFor: sCurrentUser,
+          UserSubstitutedBy: oNewRuleData.substituteId.trim(),
+          SubstitutionType: oNewRuleData.type,
+          SubstitutionProfile: oNewRuleData.profileId,
+        };
+
+        if (oNewRuleData.type === "P") {
+          oPayload.BeginDate = sBeginDate;
+          oPayload.EndDate = sEndDate;
+        }
+
+        // OData V4 Create via ListBinding
+        const oListBinding = oModel.bindList("/Substitutions");
+        const oContext = oListBinding.create(oPayload);
+
+        this.getView().setBusy(true);
+
+        oContext
+          .created()
+          .then(() => {
+            this.getView().setBusy(false);
+            MessageToast.show(oResourceBundle.getText("msgCreateSuccess"));
+            this.onCloseAddDialog();
+
+            // Refresh lại dữ liệu của bảng
+            this._applyFilters();
+          })
+          .catch((oError) => {
+            this.getView().setBusy(false);
+            MessageBox.error(oError.message);
+          });
       },
     });
   },

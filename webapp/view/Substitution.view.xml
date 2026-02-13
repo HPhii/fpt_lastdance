@@ -30,26 +30,34 @@
                         key="outgoing"
                     >
                         <VBox class="sapUiSmallMargin">
-                            <!-- Mode Switcher -->
-                            <SegmentedButton
-                                id="modeSelector"
-                                selectedKey="{view>/substMode}"
-                                selectionChange=".onModeSelect"
-                                class="sapUiSmallMarginBottom"
-                            >
-                                <items>
-                                    <SegmentedButtonItem
-                                        key="P"
-                                        text="{i18n>substModePlanned}"
-                                        icon="sap-icon://calendar"
-                                    />
-                                    <SegmentedButtonItem
-                                        key="U"
-                                        text="{i18n>substModeUnplanned}"
-                                        icon="sap-icon://alert"
-                                    />
-                                </items>
-                            </SegmentedButton>
+                            <!-- Mode Switcher with Add Button -->
+                            <Toolbar class="sapUiTransparent" style="Clear">
+                                <SegmentedButton
+                                    id="modeSelector"
+                                    selectedKey="{view>/substMode}"
+                                    selectionChange=".onModeSelect"
+                                >
+                                    <items>
+                                        <SegmentedButtonItem
+                                            key="P"
+                                            text="{i18n>substModePlanned}"
+                                            icon="sap-icon://calendar"
+                                        />
+                                        <SegmentedButtonItem
+                                            key="U"
+                                            text="{i18n>substModeUnplanned}"
+                                            icon="sap-icon://alert"
+                                        />
+                                    </items>
+                                </SegmentedButton>
+                                <ToolbarSpacer />
+                                <Button 
+                                    text="Add Rule" 
+                                    icon="sap-icon://add" 
+                                    type="Emphasized" 
+                                    press=".onOpenAddDialog" 
+                                />
+                            </Toolbar>
 
                             <!-- Table for Planned Substitutions -->
                             <Table
