@@ -1,8 +1,16 @@
-sap.ui.define(["sap/ui/core/mvc/Controller"], function (Controller) {
+sap.ui.define([
+  "./BaseController"
+], function (BaseController)
+{
   "use strict";
 
-  return Controller.extend("z.wf.zwfmanagement.controller.Analytics", {
-    onNavBackToDashboard: function () {
+  return BaseController.extend("z.wf.zwfmanagement.controller.Analytics", {
+    onInit: function ()
+    {
+      BaseController.prototype.onInit.apply(this, arguments);
+    },
+    onNavBackToDashboard: function ()
+    {
       this.getOwnerComponent().getRouter().navTo("RouteDashboard");
     },
   });

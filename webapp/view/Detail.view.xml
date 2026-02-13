@@ -1,94 +1,322 @@
-<mvc:View controllerName="z.wf.zwfmanagement.controller.Detail"
+<mvc:View
+    displayBlock="true"
+    controllerName="z.wf.zwfmanagement.controller.Detail"
+    height="100%"
+    xmlns="sap.uxap"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m"
-    xmlns:core="sap.ui.core">
-    
-    <Page id="detailPage" title="{WorkItemText}" showNavButton="true" navButtonPress=".onNavBack">
-        <content>
-            <ObjectHeader 
-                intro="{TaskText}"
-                title="{WorkItemText}"
-                number="{Priority}"
-                numberUnit="{i18n>priority}">
-                <attributes>
-                    <ObjectAttribute title="{i18n>detailWorkItemID}" text="{WorkItemID}" />
-                    <ObjectAttribute title="{i18n>detailUserID}" text="{AssignedUser}" />
-                    <ObjectAttribute title="{i18n>detailStatus}" text="{TechnicalStatus}" />
-                </attributes>
-            </ObjectHeader>
-            
-            <VBox class="sapUiSmallMargin">
-                <Text text="{i18n>detailPlaceholder}" />
-            </VBox>
-        </content>
+    xmlns:m="sap.m"
+    xmlns:form="sap.ui.layout.form"
+>
+    <ObjectPageLayout
+        id="DetailObjectPageLayout"
+        showTitleInHeaderContent="true"
+        alwaysShowContentHeader="false"
+        preserveHeaderStateOnScroll="false"
+        headerContentPinnable="true"
+        isChildPage="true"
+        upperCaseAnchorBar="false"
+    >
+        <headerTitle>
+            <ObjectPageDynamicHeaderTitle busy="{detailView>/headerBusy}">
+                <expandedHeading>
+                    <m:VBox>
+                        <m:Title
+                            text="{WorkItemText}"
+                            wrapping="true"
+                            class="sapUiSmallMarginEnd"
+                        />
+                        <m:Text text="{businessModel>PurchaseOrderType_Text}" />
+                    </m:VBox>
+                </expandedHeading>
 
-        <footer>
-            <OverflowToolbar>
-                <ToolbarSpacer />
-                
-                <HBox items="{_DecisionOptions}">
-                    <Button 
-                        text="{DecisionText}" 
-                        type="Emphasized" 
-                        press=".onDecisionPress"
-                        class="sapUiTinyMarginBegin">
-                        
-                        <customData>
-                            <core:CustomData key="DecisionKey" value="{DecisionKey}" />
-                            <core:CustomData key="WorkItemID" value="{WorkItemID}" />
-                        </customData>
-                    </Button>
-                </HBox>
+                <snappedHeading>
+                    <m:VBox>
+                        <m:Title
+                            text="{businessModel>PurchaseOrder}"
+                            wrapping="true"
+                        />
+                        <m:Text text="{businessModel>PurchaseOrderType_Text}" />
+                    </m:VBox>
+                </snappedHeading>
 
-                <Button 
-                    text="{i18n>buttonApprove}" 
-                    type="Success" 
-                    icon="sap-icon://accept"
-                    press=".onApproveAction"
-                    visible="{__OperationControl/approve}" 
-                    class="sapUiTinyMarginBegin"/>
+                <navigationActions>
+                    <m:OverflowToolbarButton
+                        type="Transparent"
+                        icon="sap-icon://full-screen"
+                        press="handleFullScreen"
+                        tooltip="Enter Full Screen Mode"
+                    />
+                    <m:OverflowToolbarButton
+                        type="Transparent"
+                        icon="sap-icon://exit-full-screen"
+                        press="handleExitFullScreen"
+                        tooltip="Exit Full Screen Mode"
+                    />
+                    <m:OverflowToolbarButton
+                        type="Transparent"
+                        icon="sap-icon://decline"
+                        press="handleClose"
+                        tooltip="Close column"
+                    />
+                </navigationActions>
+            </ObjectPageDynamicHeaderTitle>
+        </headerTitle>
 
-                <Button 
-                    text="{i18n>buttonReject}" 
-                    type="Negative" 
-                    icon="sap-icon://decline"
-                    press=".onRejectAction"
-                    visible="{__OperationControl/reject}" 
-                    class="sapUiTinyMarginBegin"/>
+        <headerContent>
+            <m:FlexBox
+                wrap="Wrap"
+                fitContainer="true"
+                alignItems="Stretch"
+            >
+                <m:Avatar
+                    displaySize="L"
+                    displayShape="Square"
+                    class="sapUiSmallMarginEnd"
+                />
+                <m:VBox
+                    justifyContent="Center"
+                    class="sapUiSmallMarginEnd"
+                >
+                    <m:Label text="Status" />
+                    <m:Text
+                        text="{businessModel>PurchasingDocumentStatusName}"
+                    />
+                </m:VBox>
+                <m:VBox
+                    justifyContent="Center"
+                    class="sapUiSmallMarginEnd"
+                >
+                    <m:Label text="Purchase Order Date" />
+                    <m:Text
+                        text="{path: 'businessModel>PurchaseOrderDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                    />
+                </m:VBox>
+                <m:VBox
+                    justifyContent="Center"
+                    class="sapUiSmallMarginEnd"
+                >
+                    <m:Label text="Net Value" />
+                    <m:ObjectNumber
+                        number="{businessModel>PurchaseOrderNetAmount}"
+                        unit="{businessModel>DocumentCurrency}"
+                        emphasized="false"
+                    />
+                </m:VBox>
+            </m:FlexBox>
+        </headerContent>
 
-                <Button 
-                    text="{i18n>buttonClaim}" 
-                    type="Emphasized" 
-                    icon="sap-icon://user-edit"
-                    press=".onClaimAction"
-                    visible="{__OperationControl/claim}" 
-                    class="sapUiTinyMarginBegin"/>
+        <sections>
+            <ObjectPageSection title="General Information">
+                <subSections>
+                    <ObjectPageSubSection title="General Information">
+                        <blocks>
+                            <m:VBox alignItems="Start">
+                                <m:Title text="Basic Data" />
+                                <form:SimpleForm
+                                    editable="false"
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanXL="4"
+                                    labelSpanL="4"
+                                    labelSpanM="4"
+                                    labelSpanS="12"
+                                    emptySpanXL="0"
+                                    emptySpanL="0"
+                                    emptySpanM="0"
+                                    emptySpanS="0"
+                                    columnsXL="3"
+                                    columnsL="3"
+                                    columnsM="2"
+                                >
+                                    <form:content>
+                                        <m:Label text="Purchasing Doc. Type" />
+                                        <m:Text
+                                            text="{businessModel>PurchaseOrderType_Text}"
+                                        />
 
-                <Button 
-                    text="{i18n>buttonForward}" 
-                    type="Default" 
-                    icon="sap-icon://forward"
-                    press=".onForwardAction"
-                    visible="{__OperationControl/forward}" 
-                    class="sapUiTinyMarginBegin"/>
+                                        <m:Label text="Currency" />
+                                        <m:Text
+                                            text="{businessModel>DocumentCurrency}"
+                                        />
 
-                <Button 
-                    text="{i18n>buttonRelease}" 
-                    type="Transparent" 
-                    icon="sap-icon://undo"
-                    press=".onReleaseAction"
-                    visible="{__OperationControl/release}" 
-                    class="sapUiTinyMarginBegin"/>
+                                        <m:Label text="Supplier" />
+                                        <m:Link
+                                            text="{businessModel>SupplierName} ({businessModel>Supplier})"
+                                        />
 
-                <Button 
-                    text="{i18n>buttonSuspend}" 
-                    type="Reject" 
-                    icon="sap-icon://pause"
-                    press=".onSuspendAction"
-                    visible="{__OperationControl/suspend}" 
-                    class="sapUiTinyMarginBegin"/>
+                                        <m:Label text="Language Key" />
+                                        <m:Text
+                                            text="{businessModel>Language}"
+                                        />
+                                    </form:content>
+                                </form:SimpleForm>
+                            </m:VBox>
+                            <m:VBox alignItems="Start">
+                                <m:Title text="Organization" />
+                                <form:SimpleForm
+                                    editable="false"
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanXL="4"
+                                    labelSpanL="4"
+                                    labelSpanM="4"
+                                    labelSpanS="12"
+                                    emptySpanXL="0"
+                                    emptySpanL="0"
+                                    emptySpanM="0"
+                                    emptySpanS="0"
+                                    columnsXL="3"
+                                    columnsL="3"
+                                    columnsM="2"
+                                >
+                                    <form:content>
+                                        <m:Label text="Purchasing Group" />
+                                        <m:Text
+                                            text="{businessModel>PurchasingGroupName}"
+                                        />
 
-            </OverflowToolbar>
-        </footer>
-    </Page>
+                                        <m:Label text="Company Code" />
+                                        <m:Text
+                                            text="{businessModel>CompanyCodeName} ({businessModel>CompanyCode})"
+                                        />
+
+                                        <m:Label
+                                            text="Purchasing Organization"
+                                        />
+                                        <m:Text
+                                            text="{businessModel>PurchasingOrganizationName}"
+                                        />
+                                    </form:content>
+                                </form:SimpleForm>
+                            </m:VBox>
+                            <m:VBox alignItems="Start">
+                                <m:Title text="Further Information" />
+                                <form:SimpleForm
+                                    editable="false"
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanXL="4"
+                                    labelSpanL="4"
+                                    labelSpanM="4"
+                                    labelSpanS="12"
+                                    emptySpanXL="0"
+                                    emptySpanL="0"
+                                    emptySpanM="0"
+                                    emptySpanS="0"
+                                    columnsXL="3"
+                                    columnsL="3"
+                                    columnsM="2"
+                                >
+                                    <form:content>
+                                        <m:Label text="Created By" />
+                                        <m:Text
+                                            text="{businessModel>CreatedByUser}"
+                                        />
+
+                                        <m:Label text="Approval Status" />
+                                        <m:Text
+                                            text="{businessModel>PurchasingDocumentStatusName}"
+                                        />
+
+                                        <m:Label text="Purchase Order Date" />
+                                        <m:Text
+                                            text="{path: 'businessModel>PurchaseOrderDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                        />
+
+                                        <m:Label text="Approver Name" />
+                                        <m:Text
+                                            text="{businessModel>UserFullName}"
+                                        />
+                                    </form:content>
+                                </form:SimpleForm>
+                            </m:VBox>
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+
+            <ObjectPageSection
+                title="Items"
+                busy="{detailView>bodyBusy}"
+            >
+                <subSections>
+                    <ObjectPageSubSection title="Purchase Order Items (1)">
+                        <blocks>
+                            <m:Table
+                                items="{businessModel>to_PurchaseOrderItem}"
+                                class="sapUiResponsiveMargin"
+                                width="auto"
+                            >
+                                <m:columns>
+                                    <m:Column>
+                                        <m:Text text="Item" />
+                                    </m:Column>
+                                    <m:Column>
+                                        <m:Text text="Item Category" />
+                                    </m:Column>
+                                    <m:Column>
+                                        <m:Text text="Material" />
+                                    </m:Column>
+                                    <m:Column>
+                                        <m:Text text="Short Text" />
+                                    </m:Column>
+                                    <m:Column>
+                                        <m:Text text="Material Group" />
+                                    </m:Column>
+                                    <m:Column>
+                                        <m:Text text="Plant" />
+                                    </m:Column>
+                                    <m:Column hAlign="End">
+                                        <m:Text text="Order Quantity" />
+                                    </m:Column>
+                                    <m:Column hAlign="End">
+                                        <m:Text text="Net Order Price" />
+                                    </m:Column>
+                                </m:columns>
+                                <m:items>
+                                    <m:ColumnListItem type="Active">
+                                        <m:cells>
+                                            <m:Text
+                                                text="{businessModel>PurchaseOrderItem}"
+                                            />
+                                            <m:Text
+                                                text="{businessModel>PurchaseOrderItemCategory_Text}"
+                                            />
+                                            <m:Text
+                                                text="{businessModel>Material}"
+                                            />
+                                            <m:Text
+                                                text="{businessModel>PurchaseOrderItemText}"
+                                            />
+                                            <m:Text
+                                                text="{businessModel>MaterialGroup_Text}"
+                                            />
+                                            <m:Text
+                                                text="{businessModel>Plant_Text}"
+                                            />
+                                            <m:ObjectNumber
+                                                number="{businessModel>OrderQuantity}"
+                                                unit="{businessModel>PurchaseOrderQuantityUnit}"
+                                            />
+                                            <m:ObjectNumber
+                                                number="{businessModel>NetAmount}"
+                                                unit="{businessModel>DocumentCurrency}"
+                                            />
+                                        </m:cells>
+                                    </m:ColumnListItem>
+                                </m:items>
+                            </m:Table>
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+
+            <ObjectPageSection title="Limit Items">
+                <subSections>
+                    <ObjectPageSubSection>
+                        <blocks>
+                            <m:Text text="No limit items available" />
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+        </sections>
+    </ObjectPageLayout>
 </mvc:View>

@@ -1,5 +1,23 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
-    <Page title="{i18n>helpTitle}" showNavButton="true" navButtonPress=".onNavBackToDashboard">
-        <Text text="{i18n>helpContent}" class="sapUiMediumMargin"/>
+<mvc:View
+    controllerName="z.wf.zwfmanagement.controller.Help"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Page
+        title="{i18n>helpTitle}"
+        showNavButton="true"
+        navButtonPress=".onNavBackToDashboard"
+    >
+        <headerContent>
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                type="XML"
+            />
+        </headerContent>
+        <Text
+            text="{i18n>helpContent}"
+            class="sapUiMediumMargin"
+        />
     </Page>
 </mvc:View>

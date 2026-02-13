@@ -1,0 +1,88 @@
+{
+    "_version": "1.82.0",
+    "sap.app": {
+        "id": "card.myinbox.calendar",
+        "type": "card",
+        "title": "My Inbox Calendar",
+        "subTitle": "Workflow Tasks Overview",
+        "applicationVersion": {
+            "version": "1.0.0"
+        }
+    },
+    "sap.card": {
+        "type": "Calendar",
+        "data": {
+            "request": {
+                "url": "/sap/opu/odata4/iwbep/all/srvd/sap/zsd_gsp26sap02_wf_task/0001/WfTasks",
+                "parameters": {
+                    "$select": "WorkItemID,WorkItemText,CreationDate,EndDate,Priority,TechnicalStatus",
+                    "$orderby": "CreationDate desc",
+                    "$count": true
+                }
+            },
+            "path": "/value"
+        },
+        "header": {
+            "title": "Workflow Calendar",
+            "subtitle": "Task Schedule",
+            "status": {
+                "text": {
+                    "format": {
+                        "translationKey": "{0} Tasks",
+                        "parts": [
+                            "parameters>/visibleItems"
+                        ]
+                    }
+                }
+            }
+        },
+        "content": {
+            "maxItems": 10,
+            "calendarWeekNumbering": "ISO_8601",
+            "item": {
+                "template": {
+                    "startDate": "{path: 'CreationDate', targetType: 'any'}",
+                    "endDate": "{CreationDate}",
+                    "title": "{WorkItemText}",
+                    "text": "{TechnicalStatus}",
+                    "icon": "sap-icon://task",
+                    "type": "{= ${Priority} === '1' ? 'Type02' : (${Priority} === '3' ? 'Type01' : 'Type06') }",
+                    "actions": [
+                        {
+                            "type": "Navigation",
+                            "parameters": {
+                                "url": "#Action-View?WorkItemID={WorkItemID}"
+                            }
+                        }
+                    ]
+                }
+            },
+            "specialDate": {
+                "template": {
+                    "startDate": "{path: 'CreationDate', targetType: 'any'}",
+                    "type": "{= ${Priority} === '1' ? 'Type02' : (${Priority} === '3' ? 'Type01' : 'Type06') }"
+                },
+                "path": "/value"
+            },
+            "legendItem": {
+                "value": [
+                    {
+                        "category": "appointment",
+                        "text": "High Priority",
+                        "type": "Type02"
+                    },
+                    {
+                        "category": "appointment",
+                        "text": "Medium Priority",
+                        "type": "Type01"
+                    },
+                    {
+                        "category": "appointment",
+                        "text": "Other Priority",
+                        "type": "Type06"
+                    }
+                ]
+            }
+        }
+    }
+}

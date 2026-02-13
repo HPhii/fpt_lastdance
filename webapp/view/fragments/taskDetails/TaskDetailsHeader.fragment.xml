@@ -1,0 +1,71 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <OverflowToolbar
+        style="Clear"
+        design="Transparent"
+    >
+        <Button
+            type="Neutral"
+            icon="sap-icon://nav-back"
+            press=".onCloseDetail"
+        />
+    </OverflowToolbar>
+    <ObjectHeader
+        intro="{TaskText}"
+        title="{WorkItemText}"
+        number="{Priority}"
+        numberUnit="Priority"
+    >
+        <attributes>
+            <ObjectAttribute
+                title="Work Item ID"
+                text="{WorkItemID}"
+            />
+            <ObjectAttribute
+                title="User ID"
+                text="{AssignedUser}"
+            />
+            <ObjectAttribute
+                title="Task ID"
+                text="{TaskID}"
+            />
+            <ObjectAttribute
+                title="Status"
+                text="{TechnicalStatus}"
+            />
+            <ObjectAttribute
+                title="{i18n>columnTaskCreationDate}"
+                text="{CreationDate}"
+            />
+            <ObjectAttribute
+                title="{i18n>columnTaskDaysToDeadline}"
+                text="{= ${DaysToDeadline} > '1000' ? 'Infinity' : ${DaysToDeadline} }"
+            />
+        </attributes>
+        <statuses>
+            <ObjectStatus
+                text="{PriorityText}"
+                state="{= ${Priority} === '1' ? 'Warning' : 'Information' }"
+            />
+            <ObjectStatus
+                text="{TechnicalStatus}"
+                state="{
+                    path: 'TechnicalStatus',
+                    formatter: '.formatter.technicalStatusState'
+                }"
+            />
+        </statuses>
+    </ObjectHeader>
+    <VBox class="sapUiSmallMargin">
+        <Label
+            text="{i18n>columnTaskDescription}"
+            class="sapUiTinyMarginTop"
+        />
+        <Text
+            text="{TaskText}"
+            class="sapUiSmallMarginTop"
+        />
+    </VBox>
+</core:FragmentDefinition>

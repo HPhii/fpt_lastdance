@@ -1,7 +1,8 @@
-sap.ui.define(["sap/ui/core/mvc/Controller"], (BaseController) => {
+sap.ui.define(["sap/ui/core/mvc/Controller"], (BaseController) =>
+{
   "use strict";
 
   return BaseController.extend("z.wf.zwfmanagement.controller.App", {
-    onInit() {},
+    onInit() { },
   });
 });
