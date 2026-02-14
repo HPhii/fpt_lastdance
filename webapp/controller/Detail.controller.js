@@ -1,64 +1,186 @@
 sap.ui.define(
   [
-    "sap/ui/core/mvc/Controller",
+    "./BaseController",
     "sap/ui/core/routing/History",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/odata/v2/ODataModel"
   ],
-  function (Controller, History, MessageToast, MessageBox) {
+  function (BaseController, History, MessageToast, MessageBox, JSONModel, ODataV2Model)
+  {
     "use strict";
 
-    return Controller.extend("z.wf.zwfmanagement.controller.Detail", {
-      onInit: function () {
-        var oRouter = this.getOwnerComponent().getRouter();
-        oRouter
+    return BaseController.extend("z.wf.zwfmanagement.controller.Detail", {
+      onInit: function ()
+      {
+        this.oRouter = this.getOwnerComponent().getRouter();
+
+        var oViewModel = new JSONModel({
+          headerBusy: false,
+          bodyBusy: false,
+        });
+
+        this.getView().setModel(oViewModel, "detailView");
+        this.oModel = this.getOwnerComponent().getModel();
+
+        this.oRouter
           .getRoute("RouteDetail")
           .attachPatternMatched(this._onObjectMatched, this);
       },
 
-      _onObjectMatched: function (oEvent) {
-        // Get ID from URL (e.g., /WfTasks(12345))
-        var sPath =
-          "/" +
-          window.decodeURIComponent(
-            oEvent.getParameter("arguments").propertyPath
-          );
+      _onObjectMatched: function (oEvent)
+      {
+        var oViewModel = this.getView().getModel("detailView");
+        var oDetailPanel = this.byId("DetailObjectPageLayout");
+        var that = this;
 
-        // Bind view to that data row
+        // Get the propertyPath parameter from the route
+        var sPropertyPath = oEvent.getParameter("arguments").propertyPath;
+        this._propertyPath = sPropertyPath; // Store for navigation
+        var sPath = "/WfTasks('" + window.decodeURIComponent(sPropertyPath) + "')";
+
+        console.log("Detail view matched, binding to:", sPath);
+
         this.getView().bindElement({
           path: sPath,
           parameters: {
-            // Important: Must expand _DecisionOptions to get data for buttons
+            $select: "*,__OperationControl",
             $expand: "_DecisionOptions",
           },
           events: {
-            dataReceived: function (oData) {
-              // Handle if needed when data is received
+            dataReceived: function ()
+            {
+              // Hide loading indicator when data is received
+              oViewModel.setProperty("/headerBusy", false);
+
+              // Get the bound context of the detail panel
+              var oBoundContext = oDetailPanel.getBindingContext();
+
+              if (oBoundContext)
+              {
+                var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
+                var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
+                var sKey = oBoundContext.getProperty("ObjectID");
+                var sExpand = oBoundContext.getProperty("TargetExpandParams");
+
+                console.log(sServiceUrl);
+                console.log(sEntitySet);
+                console.log(sKey);
+                console.log(sExpand);
+
+
+                if (sServiceUrl && sEntitySet && sKey)
+                {
+                  that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand);
+                }
+              }
+            },
+            dataRequested: function ()
+            {
+              // var oCurrentModel = that.getView().getModel("businessModel");
+              // if (oCurrentModel)
+              // {
+              //   oCurrentModel.refresh(true);
+              // }
+
+              oViewModel.setProperty("/headerBusy", true);
             },
           },
         });
       },
 
-      onNavBack: function () {
+      _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)
+      {
+        var oViewModel = this.getView().getModel("detailView");
+        oViewModel.setProperty("/bodyBusy", true);
+
+        var oBusinessContainer = this.byId("DetailObjectPageLayout");
+        if (!oBusinessContainer)
+        {
+          oBusinessContainer = this.byId("detailPanel");
+        }
+
+        // Get existing model
+        var oCurrentModel = this.getView().getModel("businessModel");
+
+        if (!oCurrentModel || oCurrentModel.sServiceUrl !== sServiceUrl)
+        {
+          // Create new OData V2 Model
+          var oNewModel = new ODataV2Model(sServiceUrl, {
+            json: true,
+            useBatch: false, // Turn off batch
+            defaultBindingMode: "OneWay",
+          });
+
+          this.getView().setModel(oNewModel, "businessModel");
+        }
+
+        // Create binding path
+        var sPath = "/" + sEntitySet + "('" + sKey + "')";
+
+        // 4. Bind Element
+        oBusinessContainer.bindElement({
+          path: sPath,
+          model: "businessModel",
+          parameters: {
+            expand: sExpand
+          },
+          events: {
+            dataReceived: function ()
+            {
+              console.log("Business Object Loaded: " + sPath);
+              oViewModel.setProperty("/bodyBusy", false);
+            },
+            change: function ()
+            {
+              // Todo: Handle data change if needed
+
+            },
+            dataRequested: function ()
+            {
+              console.log("Requesting Business Object Data: " + sPath);
+            }
+          }
+        });
+      },
+
+      onNavBack: function ()
+      {
         var oHistory = History.getInstance();
         var sPreviousHash = oHistory.getPreviousHash();
+        var oRouter = this.getOwnerComponent().getRouter();
 
-        if (sPreviousHash !== undefined) {
+        if (sPreviousHash !== undefined)
+        {
           window.history.go(-1);
-        } else {
-          var oRouter = this.getOwnerComponent().getRouter();
-          oRouter.navTo("RouteMainView", {}, true);
+        } else
+        {
+          var oHelper = this.getOwnerComponent().getHelper();
+          if (oHelper)
+          {
+            var oNextUIState = oHelper.getNextUIState(0);
+            oRouter.navTo("RouteMainView", { layout: oNextUIState.layout }, true);
+          } else
+          {
+            oRouter.navTo("RouteMainView", {}, true);
+          }
         }
       },
 
-      onDecisionPress: function (oEvent) {
+      onDecisionPress: function (oEvent)
+      {
         var oButton = oEvent.getSource();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
         // get data attributes
         var sDecisionKey = oButton.data("DecisionKey");
         var sWorkItemID = oButton.data("WorkItemID");
         var sText = oButton.getText();
 
-        if (sDecisionKey) {
+        if (sDecisionKey)
+        {
           sDecisionKey = sDecisionKey.toString().padStart(4, "0");
         }
 
@@ -66,30 +188,202 @@ sap.ui.define(
         console.log("Data type:", typeof sDecisionKey);
 
         var that = this;
+        var sConfirmMessage = oResourceBundle.getText("confirmDecision", [
+          sText,
+        ]);
 
-        MessageBox.confirm("Bạn muốn thực hiện hành động: " + sText + "?", {
-          onClose: function (oAction) {
-            if (oAction === MessageBox.Action.OK) {
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
               that._callODataV4Action(sWorkItemID, sDecisionKey);
             }
           },
         });
       },
 
-      _callODataV4Action: function (sWorkItemID, sDecisionKey) {
+      onApproveAction: function ()
+      {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmApprove");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
+              that._callBoundAction("approve", oContext);
+            }
+          },
+        });
+      },
+
+      onRejectAction: function ()
+      {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmReject");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
+              that._callBoundAction("reject", oContext);
+            }
+          },
+        });
+      },
+
+      onClaimAction: function ()
+      {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmClaim");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
+              that._callBoundAction("claim", oContext);
+            }
+          },
+        });
+      },
+
+      onForwardAction: function ()
+      {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmForward");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
+              that._callBoundAction("forward", oContext);
+            }
+          },
+        });
+      },
+
+      onReleaseAction: function ()
+      {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmRelease");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
+              that._callBoundAction("release", oContext);
+            }
+          },
+        });
+      },
+
+      onSuspendAction: function ()
+      {
+        var oContext = this.getView().getBindingContext();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        var sConfirmMessage = oResourceBundle.getText("confirmSuspend");
+
+        var that = this;
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
+              that._callBoundAction("suspend", oContext);
+            }
+          },
+        });
+      },
+
+      _callBoundAction: function (sActionName, oContext)
+      {
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+
+        if (!oContext)
+        {
+          MessageBox.error(oResourceBundle.getText("errorNoContext"));
+          return;
+        }
+
+        var sPath =
+          "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001." +
+          sActionName +
+          "(...)";
+        var oModel = this.getView().getModel();
+
+        var oOperation = oModel.bindContext(sPath, oContext);
+
+        this.getView().setBusy(true);
+
+        oOperation
+          .execute()
+          .then(
+            function ()
+            {
+              this.getView().setBusy(false);
+              MessageToast.show(oResourceBundle.getText("successMessage"));
+
+              oModel.refresh();
+            }.bind(this),
+          )
+          .catch(
+            function (oError)
+            {
+              this.getView().setBusy(false);
+              MessageBox.error("Error: " + oError.message);
+            }.bind(this),
+          );
+      },
+
+      _callODataV4Action: function (sWorkItemID, sDecisionKey)
+      {
         var oModel = this.getView().getModel();
         var oView = this.getView();
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
 
         var oContext = oView.getBindingContext();
 
-        if (!oContext) {
-          sap.m.MessageBox.error("Không tìm thấy ngữ cảnh dữ liệu (Context).");
+        if (!oContext)
+        {
+          MessageBox.error(oResourceBundle.getText("errorNoContext"));
           return;
         }
 
         var oOperation = oModel.bindContext(
           "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.executionDecision(...)",
-          oContext
+          oContext,
         );
         oOperation.setParameter("DecisionKey", sDecisionKey);
         oOperation.setParameter("WorkItemID", sWorkItemID);
@@ -98,18 +392,41 @@ sap.ui.define(
         oOperation
           .execute()
           .then(
-            function () {
-              sap.m.MessageToast.show("Xử lý thành công!");
+            function ()
+            {
+              MessageToast.show(oResourceBundle.getText("successMessage"));
 
               oModel.refresh();
 
               var oRouter = this.getOwnerComponent().getRouter();
-            }.bind(this)
+            }.bind(this),
           )
-          .catch(function (oError) {
-            sap.m.MessageBox.error("Lỗi: " + oError.message);
+          .catch(function (oError)
+          {
+            MessageBox.error("Error: " + oError.message);
           });
       },
+
+      handleFullScreen: function ()
+      {
+        this.oRouter.navTo("RouteDetail", {
+          layout: "MidColumnFullScreen",
+          propertyPath: this._propertyPath
+        });
+      },
+      handleExitFullScreen: function ()
+      {
+        this.oRouter.navTo("RouteDetail", {
+          layout: "TwoColumnsMidExpanded",
+          propertyPath: this._propertyPath
+        });
+      },
+      handleClose: function ()
+      {
+        this.oRouter.navTo("RouteMainView", {
+          layout: "OneColumn"
+        });
+      },
     });
-  }
+  },
 );

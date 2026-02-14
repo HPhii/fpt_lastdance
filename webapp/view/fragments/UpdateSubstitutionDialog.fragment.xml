@@ -1,0 +1,24 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Dialog
+        id="updateRuleDialog"
+        title="{i18n>ttlUpdateDialog}"
+        contentWidth="300px">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label text="{i18n>lblNewEndDate}" labelFor="inpUpdateEndDate"/>
+                <DatePicker
+                    id="inpUpdateEndDate"
+                    displayFormat="dd/MM/yyyy"
+                    valueFormat="yyyy-MM-dd"
+                    required="true"
+                />
+            </VBox>
+        </content>
+        <buttons>
+            <Button text="{i18n>btnSave}" type="Emphasized" press=".onConfirmUpdateRule"/>
+            <Button text="{i18n>btnCancel}" press=".onCloseUpdateDialog"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

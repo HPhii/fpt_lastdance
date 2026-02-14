@@ -59,10 +59,12 @@
   "sap.ui5": {
     "flexEnabled": false,
     "dependencies": {
-      "minUI5Version": "1.143.2",
+      "minUI5Version": "1.108.0",
       "libs": {
         "sap.m": {},
-        "sap.ui.core": {}
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.ui.integration": {}
       }
     },
     "contentDensities": {
@@ -73,7 +75,9 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "z.wf.zwfmanagement.i18n.i18n"
+          "bundleName": "z.wf.zwfmanagement.i18n.i18n",
+          "supportedLocales": ["en", "de"],
+          "fallbackLocale": "en"
         }
       },
       "": {
@@ -94,42 +98,84 @@
         }
       ]
     },
-"routing": {
-  "config": {
-    "routerClass": "sap.m.routing.Router",
-    "viewType": "XML",
-    "viewPath": "z.wf.zwfmanagement.view",
-    "controlId": "app",
-    "controlAggregation": "pages",
-    "async": true
-  },
-  "routes": [
-    {
-      "name": "RouteMainView",
-      "pattern": ":?query:",
-      "target": "TargetMainView"
+    "routing": {
+      "config": {
+        "routerClass": "sap.f.routing.Router",
+        "viewType": "XML",
+        "viewPath": "z.wf.zwfmanagement.view",
+        "controlId": "fcl",
+        "transition": "slide",
+        "async": true
+      },
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "RouteDashboard",
+          "target": "TargetDashboard"
+        },
+        {
+          "pattern": "tasks/:layout:",
+          "name": "RouteMainView",
+          "target": "TargetMainView"
+        },
+        {
+          "pattern": "tasks/{propertyPath}/{layout}",
+          "name": "RouteDetail",
+          "target": ["TargetMainView", "TargetDetail"]
+        },
+        {
+          "pattern": "analytics",
+          "name": "RouteAnalytics",
+          "target": "TargetAnalytics"
+        },
+        {
+          "pattern": "help",
+          "name": "RouteHelp",
+          "target": "TargetHelp"
+        },
+        {
+          "pattern": "substitution",
+          "name": "RouteSubstitution",
+          "target": "TargetSubstitution"
+        }
+      ],
+      "targets": {
+        "TargetDashboard": {
+          "viewId": "Dashboard",
+          "viewName": "Dashboard",
+          "controlAggregation": "beginColumnPages"
+        },
+        "TargetMainView": {
+          "viewId": "MainView",
+          "viewName": "MainView",
+          "controlAggregation": "beginColumnPages"
+        },
+        "TargetDetail": {
+          "viewId": "Detail",
+          "viewName": "Detail",
+          "controlAggregation": "midColumnPages"
+        },
+        "TargetAnalytics": {
+          "viewId": "Analytics",
+          "viewName": "Analytics",
+          "controlAggregation": "beginColumnPages"
+        },
+        "TargetHelp": {
+          "viewId": "Help",
+          "viewName": "Help",
+          "controlAggregation": "beginColumnPages"
+        },
+        "TargetSubstitution": {
+          "viewId": "Substitution",
+          "viewName": "Substitution",
+          "controlAggregation": "beginColumnPages"
+        }
+      }
     },
-    {
-      "name": "RouteDetail",
-      "pattern": "WfTasks({propertyPath})", 
-      "target": "TargetDetail"
-    }
-  ],
-  "targets": {
-    "TargetMainView": {
-      "viewId": "MainView",
-      "viewName": "MainView"
-    },
-    "TargetDetail": {
-      "viewId": "Detail",
-      "viewName": "Detail"
-    }
-  }
-},
     "rootView": {
-      "viewName": "z.wf.zwfmanagement.view.App",
+      "viewName": "z.wf.zwfmanagement.view.FlexibleColumnLayout",
       "type": "XML",
-      "id": "App",
+      "id": "fcl",
       "async": true
     }
   }

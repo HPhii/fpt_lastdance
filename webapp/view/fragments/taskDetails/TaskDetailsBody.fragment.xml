@@ -1,0 +1,62 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <VBox
+        id="businessObjectContainers"
+        class="sapUiSmallMarginTop"
+        busy="{purchaseOrderItem>/isLoading}"
+    >
+        <items>
+            <ObjectHeader
+                title="{businessModel>PurchaseOrder}"
+                intro="{businessModel>Supplier}"
+                number="{businessModel>TotalAmount}"
+                numberUnit="{businessModel>Currency}"
+            >
+                <attributes>
+                    <ObjectAttribute
+                        title="Company"
+                        text="{businessModel>CompanyCode}"
+                    />
+                </attributes>
+            </ObjectHeader>
+
+            <Panel>
+                <Text
+                    text="{= 'Items (' + ${businessModel>to_PurchaseOrderItem}.length + ')'}"
+                />
+                <Table items="{businessModel>to_PurchaseOrderItem}">
+                    <columns>
+                        <Column>
+                            <Text text="No." />
+                        </Column>
+                        <Column>
+                            <Text text="Material" />
+                        </Column>
+                        <Column>
+                            <Text text="Description" />
+                        </Column>
+                        <Column>
+                            <Text text="Quantity" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text
+                                    text="{businessModel>PurchaseOrderItem}"
+                                />
+                                <Text text="{businessModel>Material}" />
+                                <Text
+                                    text="{businessModel>PurchaseOrderItemText}"
+                                />
+                                <Text text="{businessModel>OrderQuantity}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </Panel>
+        </items>
+    </VBox>
+</core:FragmentDefinition>

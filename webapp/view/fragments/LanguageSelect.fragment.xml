@@ -1,0 +1,33 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Select
+        forceSelection="true"
+        change=".onLanguageChange"
+        type="Default"
+        selectedKey="{viewModel>/selectedLanguage}"
+    >
+        <!-- <core:ListItem
+            key="en"
+            icon="assets/icons/us.svg"
+            text="English"
+        />
+        <core:ListItem
+            icon="assets/icons/de.svg"
+            class="flagIcon"
+            key="de"
+            text="Deutsch"
+        /> -->
+        <core:ListItem
+            key="en"
+            text="English"
+            additionalText="EN"
+        />
+        <core:ListItem
+            key="de"
+            text="Deutsch"
+            additionalText="DE"
+        />
+    </Select>
+</core:FragmentDefinition>

@@ -1,36 +1,321 @@
-<mvc:View controllerName="z.wf.zwfmanagement.controller.MainView"
+<mvc:View
+    xmlns:simple="sap.gantt.simple"
+    controllerName="z.wf.zwfmanagement.controller.MainView"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-        <content>
-            <Table id="idProductsTable"
-                inset="false"
-                items="{
-                    path: '/WfTasks',
-                    sorter: { path: 'CreationDate', descending: true }
-                }">
-                <headerToolbar>
-                    <OverflowToolbar>
-                        <Title text="Danh sách công việc" level="H2"/>
-                    </OverflowToolbar>
-                </headerToolbar>
-                <columns>
-                    <Column><Text text="Task" /></Column>
-                    <Column><Text text="Mô tả" /></Column>
-                    <Column hAlign="End"><Text text="Ngày tạo" /></Column>
-                    <Column hAlign="End"><Text text="Ưu tiên" /></Column>
-                </columns>
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.f"
+    height="100%"
+>
+    <f:DynamicPage
+        id="dynamicPage"
+        headerExpanded="true"
+        showFooter="{= !${worklistView>/detailVisible} }"
+        toggleHeaderOnTitleClick="false"
+    >
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{i18n>title}" />
+                </f:heading>
+                <f:navigationActions>
+                    <Button
+                        type="Back"
+                        press=".onNavBackToDashboard"
+                    />
+                </f:navigationActions>
+                <f:actions>
+                    <core:Fragment
+                        fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                        type="XML"
+                    />
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:content>
+            <IconTabBar
+                id="iconTabBar"
+                select=".onFilterStatus"
+                expandable="false"
+                stretchContentHeight="true"
+                upperCase="true"
+            >
                 <items>
-                    <ColumnListItem type="Navigation" press=".onListItemPress">
-                        <cells>
-                            <ObjectIdentifier title="{TaskText}" text="{WorkItemID}"/>
-                            <Text text="{WorkItemText}" />
-                            <Text text="{CreationDate}" />
-                            <ObjectStatus text="{Priority}" state="{= ${Priority} === '1' ? 'Error' : 'None' }" />
-                        </cells>
-                    </ColumnListItem>
+                    <IconTabFilter
+                        key="all"
+                        showAll="true"
+                        count="{/WfTasks/$count}"
+                        text="{i18n>WorklistFilterTasksAll}"
+                    />
+                    <IconTabSeparator />
+                    <IconTabFilter
+                        key="ready"
+                        icon="sap-icon://task"
+                        iconColor="Default"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'READY\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksReady}"
+                    />
+                    <IconTabFilter
+                        key="selected"
+                        icon="sap-icon://employee-approvals"
+                        iconColor="Neutral"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'SELECTED\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksSelected}"
+                    />
+                    <IconTabFilter
+                        key="started"
+                        icon="sap-icon://begin"
+                        iconColor="Critical"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'STARTED\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksStarted}"
+                    />
+                    <IconTabFilter
+                        key="committed"
+                        icon="sap-icon://org-chart"
+                        iconColor="Critical"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'COMMITTED\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksCommitted}"
+                    />
+                    <IconTabFilter
+                        key="waiting"
+                        icon="sap-icon://pending"
+                        iconColor="Critical"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'WAITING\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksWaiting}"
+                    />
+                    <IconTabFilter
+                        key="checked"
+                        icon="sap-icon://inspection"
+                        iconColor="Positive"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'CHECKED\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksChecked}"
+                    />
+                    <IconTabFilter
+                        key="completed"
+                        icon="sap-icon://complete"
+                        iconColor="Positive"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'COMPLETED\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksCompleted}"
+                    />
+                    <IconTabFilter
+                        key="cancelled"
+                        icon="sap-icon://decline"
+                        iconColor="Negative"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'CANCELLED\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksCancelled}"
+                    />
+                    <IconTabFilter
+                        key="overdue"
+                        icon="sap-icon://error"
+                        iconColor="Negative"
+                        count="{
+                        path: '/WfTasks/$count',
+                        parameters: {
+                            $filter: 'TechnicalStatus eq \'ERROR\''
+                        }
+                    }"
+                        text="{i18n>WorklistFilterTasksError}"
+                    />
                 </items>
-            </Table>
-        </content>
-    </Page>
+                <content>
+                    <ScrollContainer
+                        height="100%"
+                        width="100%"
+                        vertical="true"
+                        horizontal="false"
+                    >
+                        <Table
+                            id="idTasksList"
+                            sticky="ColumnHeaders,HeaderToolbar"
+                            inset="false"
+                            growing="true"
+                            items="{ 
+                            path: '/WfTasks'
+                        }"
+                            selectionChange=".onSelectionChange"
+                            class="sapFDynamicPageAlignContent"
+                            width="auto"
+                            mode="{worklistView>/listMode}"
+                        >
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Toolbar>
+                                        <Title
+                                            text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
+                                            level="H2"
+                                        />
+                                        <ToolbarSpacer />
+                                        <Button
+                                            icon="sap-icon://sort"
+                                            press=".onSort"
+                                            tooltip="{i18n>tooltipHeaderSort}"
+                                        />
+                                        <Button
+                                            icon="sap-icon://filter"
+                                            press=".onFilter"
+                                            tooltip="{i18n>tooltipHeaderFilter}"
+                                        />
+                                        <Button
+                                            icon="sap-icon://group-2"
+                                            press=".onGroup"
+                                            tooltip="{i18n>tooltipHeaderGroup}"
+                                        />
+                                        <Button
+                                            text="{i18n>tableHeaderSelectAll}"
+                                            press=".onSelectAll"
+                                            icon="sap-icon://multiselect-all"
+                                            visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                                        />
+                                        <Button
+                                            text="{i18n>tableHeaderDeselectAll}"
+                                            press=".onDeselectAll"
+                                            icon="sap-icon://multiselect-none"
+                                            visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                                        />
+                                        <Button
+                                            icon="sap-icon://multi-select"
+                                            press=".onToggleMultiSelect"
+                                            tooltip="Toggle Multi-Select Mode"
+                                            type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
+                                        />
+                                        <SearchField
+                                            width="auto"
+                                            placeholder="{i18n>tableHeaderSearchPlaceholder}"
+                                            search=".onSearch"
+                                        />
+                                    </Toolbar>
+                                </OverflowToolbar>
+                            </headerToolbar>
+                            <columns>
+                                <Column>
+                                    <Text text="Task" />
+                                </Column>
+                                <Column
+                                    minScreenWidth="Tablet"
+                                    demandPopin="true"
+                                >
+                                    <Text text="Creation Date" />
+                                </Column>
+
+                                <Column minScreenWidth="Desktop">
+                                    <Text text="Days To Deadline" />
+                                </Column>
+
+                                <Column
+                                    minScreenWidth="Desktop"
+                                    demandPopin="true"
+                                    hAlign="End"
+                                >
+                                    <Text text="Status" />
+                                </Column>
+                                <Column hAlign="End">
+                                    <Text text="Priority" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem
+                                    type="Navigation"
+                                    press=".onTaskPress"
+                                    vAlign="Middle"
+                                >
+                                    <cells>
+                                        <ObjectIdentifier
+                                            title="{WorkItemText}"
+                                            text="{AssignedUser}"
+                                        />
+                                        <ObjectIdentifier
+                                            text="{CreationDate}"
+                                        />
+                                        <ObjectAttribute
+                                            text="{= ${DaysToDeadline} > '1000' ? 'Infinity' : ${DaysToDeadline} }"
+                                        />
+                                        <ObjectStatus
+                                            class="sapUiTextBold"
+                                            text="{TechnicalStatus}"
+                                            state="{
+                                        path: 'TechnicalStatus',
+                                        formatter: '.formatter.technicalStatusState'
+                                    }"
+                                        />
+                                        <ObjectStatus
+                                            text="{PriorityText}"
+                                            icon="sap-icon://{= ${Priority} === '1' ? 'alert' : 'information' }"
+                                            state="{= ${Priority} === '1' ? 'Warning' : 'Information' }"
+                                        />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </ScrollContainer>
+                </content>
+            </IconTabBar>
+        </f:content>
+        <f:footer>
+            <OverflowToolbar id="otbFooter">
+                <ToolbarSpacer />
+                <Button
+                    type="Default"
+                    text="{i18n>buttonFooterDelegate}"
+                >
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow" />
+                    </layoutData>
+                </Button>
+                <Button
+                    type="Emphasized"
+                    text="{i18n>buttonFooterSubtitute}"
+                >
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow" />
+                    </layoutData>
+                </Button>
+                <OverflowToolbarButton
+                    tooltip="Share"
+                    text="Share"
+                    icon="sap-icon://action"
+                />
+            </OverflowToolbar>
+        </f:footer>
+    </f:DynamicPage>
 </mvc:View>

@@ -1,0 +1,85 @@
+<mvc:View
+    controllerName="z.wf.zwfmanagement.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
+    displayBlock="true"
+    xmlns:core="sap.ui.core"
+>
+    <Page title="{i18n>dashboardTitle}">
+        <headerContent>
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                type="XML"
+            />
+        </headerContent>
+        <content>
+            <VBox class="sapUiMediumMargin">
+                <Title
+                    text="{i18n>dashboardMenu}"
+                    class="sapUiSmallMarginBottom"
+                />
+
+                <HBox
+                    wrap="Wrap"
+                    renderType="Bare"
+                >
+                    <GenericTile
+                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        header="{i18n>dashboardTaskManagement}"
+                        subheader="{i18n>dashboardTaskSubheader}"
+                        press=".onNavToTask"
+                    >
+                        <TileContent unit="Tasks">
+                            <NumericContent
+                                busy="{= ${path: '/WfTasks/$count', targetType: 'any'} === undefined}"
+                                value="{
+                                    path: '/WfTasks/$count',
+                                    parameters: {
+                                        $filter: 'TechnicalStatus eq \'READY\' or TechnicalStatus eq \'SELECTED\''
+                                    }
+                                }"
+                                icon="sap-icon://activities"
+                                withMargin="false"
+                            />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        header="{i18n>dashboardReports}"
+                        subheader="{i18n>dashboardReportsSubheader}"
+                        press=".onNavToAnalytics"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://bar-chart" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        header="{i18n>dashboardHelp}"
+                        subheader="{i18n>dashboardHelpSubheader}"
+                        press=".onNavToHelp"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://sys-help" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        header="{i18n>dashboardSubstitution}"
+                        subheader="{i18n>dashboardSubstitutionSubheader}"
+                        press=".onNavToSubstitution"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://collaborate" />
+                        </TileContent>
+                    </GenericTile>
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

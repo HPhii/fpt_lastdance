@@ -1,1 +1,53 @@
 /* Enter your custom styles here */
+.sapUiTextBold {
+  font-weight: bold;
+}
+
+.leftPanel {
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+.rightPanelFooterActions {
+  position: sticky !important;
+  bottom: 0;
+  right: 0;
+  border: 0.5px solid #ccc;
+}
+
+img.sapMSelectListItemIcon {
+  width: 20px;
+  height: 100%;
+}
+
+/* Custom class for subdued italic text in Substitution table */
+.substDimmedText {
+  font-style: italic;
+  color: #89919a; /* Màu xám chuẩn của SAP Fiori cho subdued text */
+  font-size: 0.875rem;
+}
+
+/* Custom styling for Group Headers in Substitution list */
+.sapMGHLI {
+  background-color: #f7f7f7 !important;
+  font-weight: 600 !important;
+  border-top: 1px solid #e5e5e5 !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+}
+
+.sapMGHLI .sapMGHLITitle {
+  font-size: 0.875rem !important;
+  color: #32363a !important;
+  padding: 0.5rem 0 !important;
+}
+
+/* Center align status icons in ObjectStatus */
+.sapMObjStatus {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.sapMObjStatusIcon {
+  margin: 0 !important;
+}
