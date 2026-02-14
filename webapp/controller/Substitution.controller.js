@@ -112,6 +112,16 @@ sap.ui.define(
       },
 
       /**
+       * Factory function to create Group Header with custom styling
+       */
+      createGroupHeader: function (oGroup) {
+        return new sap.m.GroupHeaderListItem({
+          title: "👤 " + oGroup.key,
+          upperCase: false,
+        });
+      },
+
+      /**
        * Formatter for status text
        * Input: sStatus (String)
        */
@@ -155,15 +165,22 @@ sap.ui.define(
       },
 
       /**
-       * Formatter for Active field text (Boolean/String -> String)
-       * Used for Unplanned substitutions
+       * Helper to parse active value safely
        */
-      formatActiveText: function (vActive) {
-        const bIsActive =
+      _isActive: function (vActive) {
+        return (
           vActive === true ||
           vActive === "true" ||
           vActive === "X" ||
-          vActive === 1;
+          vActive === 1
+        );
+      },
+
+      /**
+       * Formatter for Active field text
+       */
+      formatActiveText: function (vActive) {
+        const bIsActive = this._isActive(vActive);
         const oResourceBundle = this.getView()
           .getModel("i18n")
           .getResourceBundle();
@@ -174,29 +191,17 @@ sap.ui.define(
       },
 
       /**
-       * Formatter for Active field state (ObjectStatus color)
-       * Used for Unplanned substitutions
+       * Formatter for Active field state
        */
       formatActiveState: function (vActive) {
-        const bIsActive =
-          vActive === true ||
-          vActive === "true" ||
-          vActive === "X" ||
-          vActive === 1;
-        return bIsActive ? "Success" : "Error";
+        return this._isActive(vActive) ? "Success" : "Error";
       },
 
       /**
        * Formatter for Active field icon
-       * Used for Unplanned substitutions
        */
       formatActiveIcon: function (vActive) {
-        const bIsActive =
-          vActive === true ||
-          vActive === "true" ||
-          vActive === "X" ||
-          vActive === 1;
-        return bIsActive
+        return this._isActive(vActive)
           ? "sap-icon://status-positive"
           : "sap-icon://status-inactive";
       },
@@ -226,7 +231,7 @@ sap.ui.define(
       },
 
       formatDateOrNA: function (sType, sDate) {
-        if (sType === "U" || !sDate) {
+        if (!sDate) {
           return "N/A";
         }
 
@@ -382,6 +387,130 @@ sap.ui.define(
             }
           }.bind(this),
         );
+      },
+
+      // --- DELETE FUNCTION ---
+      onDeleteRule: function (oEvent) {
+        const oContext = oEvent.getSource().getBindingContext();
+        const oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+
+        MessageBox.confirm(oResourceBundle.getText("msgConfirmDelete"), {
+          onClose: function (sAction) {
+            if (sAction === MessageBox.Action.OK) {
+              oContext
+                .delete()
+                .then(function () {
+                  MessageToast.show(
+                    oResourceBundle.getText("msgDeleteSuccess"),
+                  );
+                })
+                .catch(function (oError) {
+                  MessageBox.error(oError.message);
+                });
+            }
+          },
+        });
+      },
+
+      // --- UPDATE END DATE FUNCTION ---
+      onOpenUpdateDialog: function (oEvent) {
+        const oView = this.getView();
+        const oContext = oEvent.getSource().getBindingContext();
+
+        // save context of current selected rule to use in confirm handler
+        this._oSelectedContext = oContext;
+
+        if (!this.byId("updateRuleDialog")) {
+          Fragment.load({
+            id: oView.getId(),
+            name: "z.wf.zwfmanagement.view.fragments.UpdateSubstitutionDialog",
+            controller: this,
+          }).then(function (oDialog) {
+            oView.addDependent(oDialog);
+            // set current EndDate to input field in dialog
+            const sCurrentDate = oContext.getProperty("EndDate");
+            oView.byId("inpUpdateEndDate").setValue(sCurrentDate);
+            oDialog.open();
+          });
+        } else {
+          const sCurrentDate = oContext.getProperty("EndDate");
+          this.byId("inpUpdateEndDate").setValue(sCurrentDate);
+          this.byId("updateRuleDialog").open();
+        }
+      },
+
+      onCloseUpdateDialog: function () {
+        this.byId("updateRuleDialog").close();
+        this._oSelectedContext = null;
+      },
+
+      onConfirmUpdateRule: function () {
+        const oDatePicker = this.byId("inpUpdateEndDate");
+        const sNewDate = oDatePicker.getValue(); // Format yyyy-MM-dd
+        const oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+
+        if (!sNewDate) {
+          MessageBox.error(oResourceBundle.getText("msgSelectDates"));
+          return;
+        }
+
+        if (this._oSelectedContext) {
+          // update by context
+          this._oSelectedContext
+            .setProperty("EndDate", sNewDate)
+            .then(() => {
+              // refresh context -> sync data
+              this._oSelectedContext.refresh();
+
+              MessageToast.show(oResourceBundle.getText("msgUpdateSuccess"));
+              this.onCloseUpdateDialog();
+            })
+            .catch((oError) => {
+              MessageBox.error(oError.message);
+            });
+        }
+      },
+
+      // --- TOGGLE ACTIVE FUNCTION (Bound Action) ---
+      onToggleActive: function (oEvent) {
+        const oSwitch = oEvent.getSource();
+        const bNewState = oSwitch.getState(); // true/false
+        const oContext = oSwitch.getBindingContext();
+        const oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+        const oModel = this.getView().getModel();
+
+        // keep UI busy during action execution
+        const oTable = oSwitch.getParent().getParent().getParent();
+        oTable.setBusy(true);
+
+        // bind context for bound action -> pass parameter in binding context
+        const oActionOContext = oModel.bindContext(
+          "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.toggleActive(...)",
+          oContext,
+        );
+
+        // Set Parameter
+        oActionOContext.setParameter("IsEnabled", bNewState);
+
+        // Execute
+        oActionOContext
+          .execute()
+          .then(() => {
+            oTable.setBusy(false);
+            MessageToast.show(oResourceBundle.getText("msgActionSuccess"));
+            oContext.refresh();
+          })
+          .catch((oError) => {
+            oTable.setBusy(false);
+            oSwitch.setState(!bNewState);
+            MessageBox.error(oError.message);
+          });
       },
     });
   },

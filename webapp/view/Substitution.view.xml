@@ -19,6 +19,7 @@
             <IconTabBar
                 id="substitutionTabBar"
                 select=".onTabSelect"
+                headerMode="Inline"
                 class="sapUiResponsiveContentPadding"
             >
                 <!-- Tab 1: My Substitutes (Outgoing - I delegate to others) -->
@@ -52,7 +53,7 @@
                                 </SegmentedButton>
                                 <ToolbarSpacer />
                                 <Button 
-                                    text="Add Rule" 
+                                    text="{i18n>substAdd}" 
                                     icon="sap-icon://add" 
                                     type="Emphasized" 
                                     press=".onOpenAddDialog" 
@@ -89,6 +90,9 @@
                                     </Column>
                                     <Column width="8em" hAlign="Center">
                                         <Text text="{i18n>colStatus}" />
+                                    </Column>
+                                    <Column width="6em" hAlign="End">
+                                        <Text text="" />
                                     </Column>
                                 </columns>
                                 <items>
@@ -130,7 +134,6 @@
                                                 }"
                                             />
                                             <ObjectStatus
-                                                text="{RuleStatus}"
                                                 state="{
                                                     path: 'RuleStatus',
                                                     formatter: '.formatStatusState'
@@ -140,6 +143,21 @@
                                                     formatter: '.formatStatusIcon'
                                                 }"
                                             />
+                                            <HBox justifyContent="End">
+                                                <Button
+                                                    icon="sap-icon://edit"
+                                                    type="Transparent"
+                                                    tooltip="{i18n>btnEdit}"
+                                                    press=".onOpenUpdateDialog"
+                                                    class="sapUiTinyMarginEnd"
+                                                />
+                                                <Button
+                                                    icon="sap-icon://delete"
+                                                    type="Transparent"
+                                                    tooltip="{i18n>btnDelete}"
+                                                    press=".onDeleteRule"
+                                                />
+                                            </HBox>
                                         </cells>
                                     </ColumnListItem>
                                 </items>
@@ -152,18 +170,22 @@
                                     path: '/Substitutions',
                                     parameters: {
                                         $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
-                                    }
+                                    },
+                                    sorter: {
+                                        path: 'SubstituteFullName',
+                                        descending: false,
+                                        group: true
+                                    },
+                                    groupHeaderFactory: '.createGroupHeader'
                                 }"
                                 visible="{= ${view>/substMode} === 'U'}"
                                 sticky="ColumnHeaders"
                                 growing="true"
                                 growingThreshold="20"
                                 noDataText="{i18n>substNoData}"
+                                class="sapUiSmallMarginTop"
                             >
                                 <columns>
-                                    <Column width="12em">
-                                        <Text text="{i18n>colSubstituteName}" />
-                                    </Column>
                                     <Column width="12em">
                                         <Text text="{i18n>colTaskGroup}" />
                                     </Column>
@@ -173,36 +195,33 @@
                                     <Column width="8em" hAlign="Center">
                                         <Text text="{i18n>colStatus}" />
                                     </Column>
+                                    <Column width="6em" hAlign="End">
+                                        <Text text="" />
+                                    </Column>
                                 </columns>
                                 <items>
-                                    <ColumnListItem>
+                                    <ColumnListItem vAlign="Middle">
                                         <cells>
-                                            <Text text="{SubstituteFullName}" />
                                             <Text text="{SubstitutionProfile}" />
                                             <Text 
                                                 text="{
-                                                    path: 'BeginDate',
-                                                    type: 'sap.ui.model.type.Date',
-                                                    formatOptions: {
-                                                        source: { pattern: 'yyyy-MM-dd' },
-                                                        pattern: 'dd/MM/yyyy'
-                                                    }
+                                                    parts: ['SubstitutionType', 'BeginDate'],
+                                                    formatter: '.formatDateOrNA'
                                                 }"
                                             />
                                             <ObjectStatus
-                                                text="{
-                                                    path: 'Active',
-                                                    formatter: '.formatActiveText'
-                                                }"
-                                                state="{
-                                                    path: 'Active',
-                                                    formatter: '.formatActiveState'
-                                                }"
-                                                icon="{
-                                                    path: 'Active',
-                                                    formatter: '.formatActiveIcon'
-                                                }"
+                                                state="{= %{Active} === true ? 'Success' : 'Error' }"
+                                                icon="{= %{Active} === true ? 'sap-icon://status-positive' : 'sap-icon://status-inactive' }"
                                             />
+                                            <HBox justifyContent="End" alignItems="Center">
+                                                <Button
+                                                    icon="sap-icon://delete"
+                                                    type="Transparent"
+                                                    tooltip="{i18n>btnDelete}"
+                                                    press=".onDeleteRule"
+                                                    visible="{= ${Direction} === 'OUTGOING' }" 
+                                                />
+                                            </HBox>
                                         </cells>
                                     </ColumnListItem>
                                 </items>
@@ -250,6 +269,9 @@
                                 <Column width="8em" hAlign="Center">
                                     <Text text="{i18n>colStatus}" />
                                 </Column>
+                                <Column width="6em" hAlign="End">
+                                    <Text text="" />
+                                </Column>
                             </columns>
                             <items>
                                 <ColumnListItem>
@@ -275,16 +297,20 @@
                                             }"
                                         />
                                         <ObjectStatus
-                                            text="{RuleStatus}"
-                                            state="{
-                                                path: 'RuleStatus',
-                                                formatter: '.formatStatusState'
-                                            }"
-                                            icon="{
-                                                path: 'RuleStatus',
-                                                formatter: '.formatStatusIcon'
-                                            }"
+                                            state="{= %{Active} === true ? 'Success' : 'Error' }"
+                                            icon="{= %{Active} === true ? 'sap-icon://status-positive' : 'sap-icon://status-inactive' }"
                                         />
+                                        <HBox justifyContent="End" alignItems="Center">
+                                            <Switch
+                                                state="{
+                                                    path: 'Active',
+                                                    type: 'sap.ui.model.odata.type.Boolean'
+                                                }"
+                                                customTextOn=" "
+                                                customTextOff=" "
+                                                change=".onToggleActive"
+                                            />
+                                        </HBox>
                                     </cells>
                                 </ColumnListItem>
                             </items>
