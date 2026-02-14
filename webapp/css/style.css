@@ -1,22 +1,28 @@
 /* Enter your custom styles here */
 .sapUiTextBold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .leftPanel {
-    overflow-y: scroll;
-    height: 100vh;
+  overflow-y: scroll;
+  height: 100vh;
 }
 
 .rightPanelFooterActions {
-    position: sticky !important;
-    bottom: 0;
-    right: 0;
-    border: 0.5px solid #ccc;
+  position: sticky !important;
+  bottom: 0;
+  right: 0;
+  border: 0.5px solid #ccc;
 }
 
-
 img.sapMSelectListItemIcon {
-    width: 20px;
-    height: 100%;
+  width: 20px;
+  height: 100%;
+}
+
+/* Custom class for subdued italic text in Substitution table */
+.substDimmedText {
+  font-style: italic;
+  color: #89919a; /* Màu xám chuẩn của SAP Fiori cho subdued text */
+  font-size: 0.875rem;
 }

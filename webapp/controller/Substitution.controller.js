@@ -155,32 +155,48 @@ sap.ui.define(
       },
 
       /**
-       * Formatter for Active field text (Boolean -> String)
+       * Formatter for Active field text (Boolean/String -> String)
        * Used for Unplanned substitutions
        */
-      formatActiveText: function (bActive) {
+      formatActiveText: function (vActive) {
+        const bIsActive =
+          vActive === true ||
+          vActive === "true" ||
+          vActive === "X" ||
+          vActive === 1;
         const oResourceBundle = this.getView()
           .getModel("i18n")
           .getResourceBundle();
-        return bActive
+
+        return bIsActive
           ? oResourceBundle.getText("statusActive")
           : oResourceBundle.getText("statusInactive");
       },
 
       /**
-       * Formatter for Active field state (Boolean)
+       * Formatter for Active field state (ObjectStatus color)
        * Used for Unplanned substitutions
        */
-      formatActiveState: function (bActive) {
-        return bActive ? "Success" : "Error";
+      formatActiveState: function (vActive) {
+        const bIsActive =
+          vActive === true ||
+          vActive === "true" ||
+          vActive === "X" ||
+          vActive === 1;
+        return bIsActive ? "Success" : "Error";
       },
 
       /**
-       * Formatter for Active field icon (Boolean)
+       * Formatter for Active field icon
        * Used for Unplanned substitutions
        */
-      formatActiveIcon: function (bActive) {
-        return bActive
+      formatActiveIcon: function (vActive) {
+        const bIsActive =
+          vActive === true ||
+          vActive === "true" ||
+          vActive === "X" ||
+          vActive === 1;
+        return bIsActive
           ? "sap-icon://status-positive"
           : "sap-icon://status-inactive";
       },
@@ -192,6 +208,21 @@ sap.ui.define(
         return sType === "P"
           ? oResourceBundle.getText("substModePlanned")
           : oResourceBundle.getText("substModeUnplanned");
+      },
+
+      formatDaysToStartText: function (sRuleStatus, iDays) {
+        if (
+          sRuleStatus === "Inactive" &&
+          iDays !== null &&
+          iDays !== undefined
+        ) {
+          const oResourceBundle = this.getView()
+            .getModel("i18n")
+            .getResourceBundle();
+          // Hàm getText có hỗ trợ truyền mảng tham số để thế vào {0}, {1}...
+          return oResourceBundle.getText("txtStartsInDays", [iDays]);
+        }
+        return "";
       },
 
       formatDateOrNA: function (sType, sDate) {
@@ -228,13 +259,13 @@ sap.ui.define(
       onOpenAddDialog: function () {
         const oView = this.getView();
 
-        // Khởi tạo model lưu trữ dữ liệu tạm cho Dialog
+        // Initialize model to store temporary data for Dialog
         const oNewRuleModel = new JSONModel({
           type: "P",
           substituteId: "",
           profileId: "ALL", // Default fallback
           beginDate: new Date(),
-          endDate: new Date(new Date().setDate(new Date().getDate() + 1)), // Ngày mai
+          endDate: new Date(new Date().setDate(new Date().getDate() + 1)), // next day
         });
         oView.setModel(oNewRuleModel, "newRule");
 
@@ -314,20 +345,43 @@ sap.ui.define(
 
         this.getView().setBusy(true);
 
-        oContext
-          .created()
-          .then(() => {
+        // Attach to Create Completed event
+        oListBinding.attachEventOnce(
+          "createCompleted",
+          function (oEvent) {
             this.getView().setBusy(false);
-            MessageToast.show(oResourceBundle.getText("msgCreateSuccess"));
-            this.onCloseAddDialog();
 
-            // Refresh lại dữ liệu của bảng
-            this._applyFilters();
-          })
-          .catch((oError) => {
-            this.getView().setBusy(false);
-            MessageBox.error(oError.message);
-          });
+            const bSuccess = oEvent.getParameter("success");
+
+            if (bSuccess) {
+              // success case
+              MessageToast.show(oResourceBundle.getText("msgCreateSuccess"));
+              this.onCloseAddDialog();
+              this._applyFilters();
+            } else {
+              // error case
+              let sErrorMsg = "An error occurred during creation.";
+
+              const aMessages = sap.ui
+                .getCore()
+                .getMessageManager()
+                .getMessageModel()
+                .getData();
+
+              const aErrors = aMessages.filter(function (oMsg) {
+                return oMsg.type === "Error";
+              });
+
+              if (aErrors.length > 0) {
+                sErrorMsg = aErrors[aErrors.length - 1].message;
+              }
+
+              MessageBox.error(sErrorMsg);
+
+              oContext.delete();
+            }
+          }.bind(this),
+        );
       },
     });
   },
