@@ -33,7 +33,7 @@
                     >
                         <TileContent unit="Tasks">
                             <NumericContent
-                                busy="{= ${/WfTasks/$count} === undefined}"
+                                busy="{= ${path: '/WfTasks/$count', targetType: 'any'} === undefined}"
                                 value="{
                                     path: '/WfTasks/$count',
                                     parameters: {
@@ -65,6 +65,17 @@
                     >
                         <TileContent>
                             <ImageContent src="sap-icon://sys-help" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        header="{i18n>dashboardSubstitution}"
+                        subheader="{i18n>dashboardSubstitutionSubheader}"
+                        press=".onNavToSubstitution"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://collaborate" />
                         </TileContent>
                     </GenericTile>
                 </HBox>
