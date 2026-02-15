@@ -31,6 +31,10 @@ sap.ui.define([
       //keeps the search state
       this._aTableSearchState = [];
 
+      this.oRouter.navTo("RouteMainView", {
+        layout: "OneColumn"
+      });
+
       // Model used to manipulate control states
       oViewModel = new JSONModel({
         worklistTableTitle: "",
@@ -248,7 +252,6 @@ sap.ui.define([
 
       if (!oContext)
       {
-
         return;
       }
 
@@ -261,12 +264,6 @@ sap.ui.define([
         console.error("FlexibleColumnLayout helper not available");
         return;
       }
-
-      // var oItem = oEvent.getSource();
-      // // oItem.setNavigated(true);
-      // var oParent = oItem.getParent();
-      // // store index of the item clicked, which can be used later in the columnResize event
-      // this.iIndex = oParent.indexOfItem(oItem);
 
       // Check if in multi-select mode
       var sMode = oViewModel.getProperty("/listMode");
@@ -285,59 +282,6 @@ sap.ui.define([
         layout: oNextUIState.layout,
         propertyPath: id
       });
-
-      // if (oContext)
-      // {
-      //   let that = this;
-      //   var oDetailPanel = this.byId("detailPanel");
-
-      //   // Show loading indicator
-      //   oViewModel.setProperty("/detailBusy", true);
-      //   oViewModel.setProperty("/detailVisible", true);
-
-
-      //   // Bind the detail panel to the selected item with expanded decision options
-      //   oDetailPanel.bindElement({
-      //     path: oContext.getPath(),
-      //     parameters: {
-      //       $select: "*,__OperationControl",
-      //       $expand: "_DecisionOptions",
-      //     },
-      //     events: {
-      //       dataReceived: function ()
-      //       {
-      //         // Hide loading indicator when data is received
-      //         oViewModel.setProperty("/detailBusy", false);
-
-      //         // Get the bound context of the detail panel
-      //         var oBoundContext = oDetailPanel.getBindingContext();
-
-      //         if (oBoundContext)
-      //         {
-      //           var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
-      //           var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
-      //           var sKey = oBoundContext.getProperty("PurchaseOrderKey");
-      //           var sExpand = oBoundContext.getProperty("TargetExpandParams");
-
-      //           if (sServiceUrl && sEntitySet && sKey)
-      //           {
-      //             that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand);
-      //           }
-      //         }
-      //       },
-      //       dataRequested: function ()
-      //       {
-      //         var oCurrentModel = that.getView().getModel("businessModel");
-      //         if (oCurrentModel)
-      //         {
-      //           oCurrentModel.refresh(true);
-      //         }
-      //         // Show loading indicator when data is requested
-      //         oViewModel.setProperty("/detailBusy", true);
-      //       },
-      //     },
-      //   });
-      // }
     },
 
     _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)

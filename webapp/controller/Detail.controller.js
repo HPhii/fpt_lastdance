@@ -93,7 +93,6 @@ sap.ui.define(
       _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)
       {
         var oViewModel = this.getView().getModel("detailView");
-        oViewModel.setProperty("/bodyBusy", true);
 
         var oBusinessContainer = this.byId("DetailObjectPageLayout");
         if (!oBusinessContainer)
@@ -139,33 +138,12 @@ sap.ui.define(
             },
             dataRequested: function ()
             {
+              oViewModel.setProperty("/bodyBusy", true);
+
               console.log("Requesting Business Object Data: " + sPath);
             }
           }
         });
-      },
-
-      onNavBack: function ()
-      {
-        var oHistory = History.getInstance();
-        var sPreviousHash = oHistory.getPreviousHash();
-        var oRouter = this.getOwnerComponent().getRouter();
-
-        if (sPreviousHash !== undefined)
-        {
-          window.history.go(-1);
-        } else
-        {
-          var oHelper = this.getOwnerComponent().getHelper();
-          if (oHelper)
-          {
-            var oNextUIState = oHelper.getNextUIState(0);
-            oRouter.navTo("RouteMainView", { layout: oNextUIState.layout }, true);
-          } else
-          {
-            oRouter.navTo("RouteMainView", {}, true);
-          }
-        }
       },
 
       onDecisionPress: function (oEvent)
@@ -218,6 +196,8 @@ sap.ui.define(
             if (oAction === MessageBox.Action.OK)
             {
               that._callBoundAction("approve", oContext);
+
+              that.getOwnerComponent().getRouter().navTo("RouteMainView", {}, true);
             }
           },
         });
@@ -290,6 +270,7 @@ sap.ui.define(
           .getModel("i18n")
           .getResourceBundle();
         var sConfirmMessage = oResourceBundle.getText("confirmRelease");
+        var that = this;
 
         var that = this;
         MessageBox.confirm(sConfirmMessage, {
@@ -323,7 +304,7 @@ sap.ui.define(
         });
       },
 
-      _callBoundAction: function (sActionName, oContext)
+      _callBoundAction: function (sActionName, oContext, oParameters)
       {
         var oResourceBundle = this.getView()
           .getModel("i18n")
@@ -335,13 +316,22 @@ sap.ui.define(
           return;
         }
 
-        var sPath =
-          "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001." +
-          sActionName +
-          "(...)";
+        var sNamespace = "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.";
+        var sPath = sNamespace + sActionName + "(...)";
+
         var oModel = this.getView().getModel();
 
         var oOperation = oModel.bindContext(sPath, oContext);
+
+        if (oParameters)
+        {
+          Object.keys(oParameters).forEach(function (sKey)
+          {
+            oOperation.setParameter(sKey, oParameters[sKey]);
+            console.log(">>>>", sKey, oParameters[sKey]);
+
+          });
+        }
 
         this.getView().setBusy(true);
 
@@ -414,6 +404,7 @@ sap.ui.define(
           propertyPath: this._propertyPath
         });
       },
+
       handleExitFullScreen: function ()
       {
         this.oRouter.navTo("RouteDetail", {
@@ -421,8 +412,24 @@ sap.ui.define(
           propertyPath: this._propertyPath
         });
       },
+
       handleClose: function ()
       {
+        // Clear the selection in the main view list
+        var oFCL = this.getOwnerComponent().getRootControl().byId("fcl");
+        if (oFCL)
+        {
+          var oBeginColumn = oFCL.getBeginColumnPages()[0];
+          if (oBeginColumn)
+          {
+            var oList = oBeginColumn.byId("idTasksList");
+            if (oList)
+            {
+              oList.removeSelections(true);
+            }
+          }
+        }
+
         this.oRouter.navTo("RouteMainView", {
           layout: "OneColumn"
         });

@@ -15,9 +15,10 @@
         headerContentPinnable="true"
         isChildPage="true"
         upperCaseAnchorBar="false"
+        showFooter="true"
     >
         <headerTitle>
-            <ObjectPageDynamicHeaderTitle busy="{detailView>/headerBusy}">
+            <ObjectPageDynamicHeaderTitle>
                 <expandedHeading>
                     <m:VBox>
                         <m:Title
@@ -43,19 +44,19 @@
                     <m:OverflowToolbarButton
                         type="Transparent"
                         icon="sap-icon://full-screen"
-                        press="handleFullScreen"
+                        press=".handleFullScreen"
                         tooltip="Enter Full Screen Mode"
                     />
                     <m:OverflowToolbarButton
                         type="Transparent"
                         icon="sap-icon://exit-full-screen"
-                        press="handleExitFullScreen"
+                        press=".handleExitFullScreen"
                         tooltip="Exit Full Screen Mode"
                     />
                     <m:OverflowToolbarButton
                         type="Transparent"
                         icon="sap-icon://decline"
-                        press="handleClose"
+                        press=".handleClose"
                         tooltip="Close column"
                     />
                 </navigationActions>
@@ -64,6 +65,7 @@
 
         <headerContent>
             <m:FlexBox
+                busy="{detailView>/headerBusy}"
                 wrap="Wrap"
                 fitContainer="true"
                 alignItems="Stretch"
@@ -77,7 +79,7 @@
                     justifyContent="Center"
                     class="sapUiSmallMarginEnd"
                 >
-                    <m:Label text="Status" />
+                    <m:Label text="{i18n>detailHeaderStatusLabel}" />
                     <m:Text
                         text="{businessModel>PurchasingDocumentStatusName}"
                     />
@@ -86,16 +88,22 @@
                     justifyContent="Center"
                     class="sapUiSmallMarginEnd"
                 >
-                    <m:Label text="Purchase Order Date" />
+                    <m:Label text="{i18n>detailHeaderPurOrderDateLabel}" />
                     <m:Text
-                        text="{path: 'businessModel>PurchaseOrderDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                        text="{
+                            path: 'businessModel>PurchaseOrderDate',
+                            type: 'sap.ui.model.type.Date', 
+                            formatOptions: {
+                                pattern: 'dd.MM.yyyy'
+                            }
+                        }"
                     />
                 </m:VBox>
                 <m:VBox
                     justifyContent="Center"
                     class="sapUiSmallMarginEnd"
                 >
-                    <m:Label text="Net Value" />
+                    <m:Label text="{i18n>detailHeaderNetValueLabel}" />
                     <m:ObjectNumber
                         number="{businessModel>PurchaseOrderNetAmount}"
                         unit="{businessModel>DocumentCurrency}"
@@ -106,12 +114,17 @@
         </headerContent>
 
         <sections>
-            <ObjectPageSection title="General Information">
+            <ObjectPageSection
+                title="{i18n>detailInfoTitle}"
+                busy="{detailView>/bodyBusy}"
+            >
                 <subSections>
-                    <ObjectPageSubSection title="General Information">
+                    <ObjectPageSubSection title="{i18n>detailInfoTitle}">
                         <blocks>
                             <m:VBox alignItems="Start">
-                                <m:Title text="Basic Data" />
+                                <m:Title
+                                    text="{i18n>detailInfoBasicDataTitle}"
+                                />
                                 <form:SimpleForm
                                     editable="false"
                                     layout="ResponsiveGridLayout"
@@ -128,22 +141,30 @@
                                     columnsM="2"
                                 >
                                     <form:content>
-                                        <m:Label text="Purchasing Doc. Type" />
+                                        <m:Label
+                                            text="{i18n>detailInfoDocTypeLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>PurchaseOrderType_Text}"
                                         />
 
-                                        <m:Label text="Currency" />
+                                        <m:Label
+                                            text="{i18n>detailInfoCurrencyLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>DocumentCurrency}"
                                         />
 
-                                        <m:Label text="Supplier" />
+                                        <m:Label
+                                            text="{i18n>detailInfoSupplierLabel}"
+                                        />
                                         <m:Link
                                             text="{businessModel>SupplierName} ({businessModel>Supplier})"
                                         />
 
-                                        <m:Label text="Language Key" />
+                                        <m:Label
+                                            text="{i18n>detailInfoLanguageKeyLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>Language}"
                                         />
@@ -151,7 +172,9 @@
                                 </form:SimpleForm>
                             </m:VBox>
                             <m:VBox alignItems="Start">
-                                <m:Title text="Organization" />
+                                <m:Title
+                                    text="{i18n>detailInfoOrganizationTitle}"
+                                />
                                 <form:SimpleForm
                                     editable="false"
                                     layout="ResponsiveGridLayout"
@@ -168,18 +191,22 @@
                                     columnsM="2"
                                 >
                                     <form:content>
-                                        <m:Label text="Purchasing Group" />
+                                        <m:Label
+                                            text="{i18n>detailInfoPurGroupLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>PurchasingGroupName}"
                                         />
 
-                                        <m:Label text="Company Code" />
+                                        <m:Label
+                                            text="{i18n>detailInfoCompanyCodeLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>CompanyCodeName} ({businessModel>CompanyCode})"
                                         />
 
                                         <m:Label
-                                            text="Purchasing Organization"
+                                            text="{i18n>detailInfoPurOrgLabel}"
                                         />
                                         <m:Text
                                             text="{businessModel>PurchasingOrganizationName}"
@@ -188,7 +215,7 @@
                                 </form:SimpleForm>
                             </m:VBox>
                             <m:VBox alignItems="Start">
-                                <m:Title text="Further Information" />
+                                <m:Title text="{i18n>detailInfoFurtherTitle}" />
                                 <form:SimpleForm
                                     editable="false"
                                     layout="ResponsiveGridLayout"
@@ -205,22 +232,30 @@
                                     columnsM="2"
                                 >
                                     <form:content>
-                                        <m:Label text="Created By" />
+                                        <m:Label
+                                            text="{i18n>detailInfoCreatedByLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>CreatedByUser}"
                                         />
 
-                                        <m:Label text="Approval Status" />
+                                        <m:Label
+                                            text="{i18n>detailInfoApprovalStatusLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>PurchasingDocumentStatusName}"
                                         />
 
-                                        <m:Label text="Purchase Order Date" />
+                                        <m:Label
+                                            text="{i18n>detailInfoPurOrderDateLabel}"
+                                        />
                                         <m:Text
                                             text="{path: 'businessModel>PurchaseOrderDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
                                         />
 
-                                        <m:Label text="Approver Name" />
+                                        <m:Label
+                                            text="{i18n>detailInfoApproverNameLabel}"
+                                        />
                                         <m:Text
                                             text="{businessModel>UserFullName}"
                                         />
@@ -233,11 +268,11 @@
             </ObjectPageSection>
 
             <ObjectPageSection
-                title="Items"
-                busy="{detailView>bodyBusy}"
+                title="{i18n>detailItemTitle}"
+                busy="{detailView>/bodyBusy}"
             >
                 <subSections>
-                    <ObjectPageSubSection title="Purchase Order Items (1)">
+                    <ObjectPageSubSection title="{i18n>detailItemTitle} (1)">
                         <blocks>
                             <m:Table
                                 items="{businessModel>to_PurchaseOrderItem}"
@@ -246,28 +281,42 @@
                             >
                                 <m:columns>
                                     <m:Column>
-                                        <m:Text text="Item" />
+                                        <m:Text
+                                            text="{i18n>detailItemNumber}"
+                                        />
                                     </m:Column>
                                     <m:Column>
-                                        <m:Text text="Item Category" />
+                                        <m:Text
+                                            text="{i18n>detailItemCategory}"
+                                        />
                                     </m:Column>
                                     <m:Column>
-                                        <m:Text text="Material" />
+                                        <m:Text
+                                            text="{i18n>detailItemMaterial}"
+                                        />
                                     </m:Column>
                                     <m:Column>
-                                        <m:Text text="Short Text" />
+                                        <m:Text
+                                            text="{i18n>detailItemShortText}"
+                                        />
                                     </m:Column>
                                     <m:Column>
-                                        <m:Text text="Material Group" />
+                                        <m:Text
+                                            text="{i18n>detailItemMaterialGroup}"
+                                        />
                                     </m:Column>
                                     <m:Column>
-                                        <m:Text text="Plant" />
+                                        <m:Text text="{i18n>detailItemPlant}" />
                                     </m:Column>
                                     <m:Column hAlign="End">
-                                        <m:Text text="Order Quantity" />
+                                        <m:Text
+                                            text="{i18n>detailItemOrderQuantity}"
+                                        />
                                     </m:Column>
                                     <m:Column hAlign="End">
-                                        <m:Text text="Net Order Price" />
+                                        <m:Text
+                                            text="{i18n>detailItemNetOrderPrice}"
+                                        />
                                     </m:Column>
                                 </m:columns>
                                 <m:items>
@@ -308,9 +357,9 @@
                 </subSections>
             </ObjectPageSection>
 
-            <ObjectPageSection title="Limit Items">
+            <ObjectPageSection title="{i18n>detailItemLimitTitle}">
                 <subSections>
-                    <ObjectPageSubSection>
+                    <ObjectPageSubSection title="{i18n>detailItemLimitTitle}">
                         <blocks>
                             <m:Text text="No limit items available" />
                         </blocks>
@@ -318,5 +367,47 @@
                 </subSections>
             </ObjectPageSection>
         </sections>
+
+        <footer>
+            <m:OverflowToolbar>
+                <m:ToolbarSpacer />
+                <m:Button
+                    text="{i18n>buttonApprove}"
+                    type="Accept"
+                    press=".onApproveAction"
+                    visible="{__OperationControl/approve}"
+                />
+                <m:Button
+                    text="{i18n>buttonReject}"
+                    type="Reject"
+                    press=".onRejectAction"
+                    visible="{__OperationControl/reject}"
+                />
+                <m:Button
+                    text="{i18n>buttonClaim}"
+                    type="Emphasized"
+                    press=".onClaimAction"
+                    visible="{__OperationControl/claim}"
+                />
+                <m:Button
+                    text="{i18n>buttonForward}"
+                    type="Default"
+                    press=".onForwardAction"
+                    visible="{__OperationControl/forward}"
+                />
+                <m:Button
+                    text="{i18n>buttonRelease}"
+                    type="Default"
+                    press=".onReleaseAction"
+                    visible="{__OperationControl/release}"
+                />
+                <m:Button
+                    text="{i18n>buttonSuspend}"
+                    type="Default"
+                    press=".onSuspendAction"
+                    visible="{__OperationControl/suspend}"
+                />
+            </m:OverflowToolbar>
+        </footer>
     </ObjectPageLayout>
 </mvc:View>
