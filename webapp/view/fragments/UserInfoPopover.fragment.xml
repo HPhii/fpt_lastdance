@@ -1,0 +1,108 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Popover
+        id="userInfoPopover"
+        placement="Right"
+        showHeader="false"
+        contentWidth="350px"
+        class="userInfoPopover"
+    >
+        <VBox class="sapUiSmallMargin">
+            <!-- Header Section -->
+            <HBox
+                alignItems="Center"
+                class="sapUiSmallMarginBottom"
+            >
+                <Avatar
+                    src="sap-icon://person-placeholder"
+                    displaySize="XS"
+                    backgroundColor="Accent6"
+                    class="sapUiTinyMarginEnd"
+                />
+                <VBox>
+                    <Title
+                        text="{userInfo>/DisplayName}"
+                        level="H5"
+                        class="sapUiTinyMarginBottom"
+                    />
+                    <Text
+                        text="{userInfo>/Department}"
+                        class="sapUiTinyText"
+                    />
+                </VBox>
+            </HBox>
+
+            <!-- Contact Details Section -->
+            <VBox class="sapUiSmallMarginTop">
+                <Title
+                    text="Contact Details"
+                    level="H6"
+                    class="sapUiTinyMarginBottom"
+                />
+                <VBox class="contactDetailsBox sapUiSmallMarginTop">
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label
+                            text="Mobile:"
+                            width="80px"
+                            class="contactLabel"
+                        />
+                        <Text text="{= ${userInfo>/MobilePhone} || '—' }" />
+                    </HBox>
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label
+                            text="Phone:"
+                            width="80px"
+                            class="contactLabel"
+                        />
+                        <Text text="{= ${userInfo>/WorkPhone} || '—' }" />
+                    </HBox>
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label
+                            text="Email:"
+                            width="80px"
+                            class="contactLabel"
+                        />
+                        <Text text="{= ${userInfo>/Email} || '—' }" />
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Company Section -->
+            <VBox class="sapUiSmallMarginTop">
+                <Title
+                    text="Company"
+                    level="H6"
+                    class="sapUiTinyMarginBottom"
+                />
+                <VBox class="companyBox sapUiSmallMarginTop">
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label
+                            text="Name:"
+                            width="80px"
+                            class="contactLabel"
+                        />
+                        <Text text="{userInfo>/Company}" />
+                    </HBox>
+                    <HBox>
+                        <Label
+                            text="Address:"
+                            width="80px"
+                            class="contactLabel"
+                        />
+                        <VBox>
+                            <Text
+                                text="{userInfo>/Address/Street} {userInfo>/Address/StreetNumber}"
+                            />
+                            <Text
+                                text="{userInfo>/Address/PostalCode} {userInfo>/Address/City}"
+                            />
+                            <Text text="{userInfo>/Address/Country}" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </VBox>
+    </Popover>
+</core:FragmentDefinition>

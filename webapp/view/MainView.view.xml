@@ -249,10 +249,11 @@
                                 <Column
                                     minScreenWidth="Desktop"
                                     demandPopin="true"
-                                    hAlign="End"
+                                    hAlign="Center"
                                 >
                                     <Text text="{i18n>columnTaskStatus}" />
                                 </Column>
+
                                 <Column hAlign="End">
                                     <Text text="{i18n>columnTaskPriority}" />
                                 </Column>
@@ -278,9 +279,9 @@
                                             class="sapUiTextBold"
                                             text="{TechnicalStatus}"
                                             state="{
-                                        path: 'TechnicalStatus',
-                                        formatter: '.formatter.technicalStatusState'
-                                    }"
+                                                path: 'TechnicalStatus',
+                                                formatter: '.formatter.technicalStatusState'
+                                            }"
                                         />
                                         <ObjectStatus
                                             text="{PriorityText}"
