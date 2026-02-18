@@ -4,7 +4,7 @@
 >
     <Popover
         id="userInfoPopover"
-        placement="Right"
+        placement="Auto"
         showHeader="false"
         contentWidth="350px"
         class="userInfoPopover"

@@ -76,6 +76,33 @@ sap.ui.define(
       },
 
       /**
+       * Show owner information popover when clicking on owner name
+       */
+      onShowOwnerInfo: function (oEvent)
+      {
+        const oSource = oEvent.getSource();
+        const oContext = oSource.getBindingContext();
+
+        if (!oContext)
+        {
+          return;
+        }
+
+        // Get the owner user ID from the context
+        const oData = oContext.getObject();
+        const sUserId = oData.UserSubstitutedFor;
+
+        if (!sUserId)
+        {
+          MessageToast.show("User ID not found");
+          return;
+        }
+
+        // Fetch user info and open popover
+        this._fetchAndShowUserInfo(sUserId, oSource);
+      },
+
+      /**
        * Fetch user information from TASKPROCESSING service
        */
       _fetchAndShowUserInfo: function (sUserId, oSource)
@@ -237,9 +264,40 @@ sap.ui.define(
        */
       createGroupHeader: function (oGroup)
       {
+        const that = this;
+        let sUserId = "";
+
+        const oTable = this.byId("tableUnplanned");
+        if (oTable)
+        {
+          const oBinding = oTable.getBinding("items");
+          if (oBinding)
+          {
+            const aContexts = oBinding.getCurrentContexts();
+            for (let i = 0; i < aContexts.length; i++)
+            {
+              const oData = aContexts[i].getObject();
+
+              if (oData.SubstituteFullName === oGroup.key)
+              {
+                sUserId = oData.UserSubstitutedBy;
+                break;
+              }
+            }
+          }
+        }
+
         return new sap.m.GroupHeaderListItem({
           title: "👤 " + oGroup.key,
           upperCase: false,
+          type: sap.m.ListType.Active,
+          press: function (oEvent)
+          {
+            if (sUserId)
+            {
+              that._fetchAndShowUserInfo(sUserId, oEvent.getSource());
+            }
+          }
         });
       },
 
@@ -444,7 +502,7 @@ sap.ui.define(
       /**
        * Save new Substitution Rule via OData V4 Create
        */
-      onSaveRule: async function ()
+      onSaveRule: function ()
       {
         const oModel = this.getView().getModel();
         const oNewRuleData = this.getView().getModel("newRule").getData();
@@ -452,20 +510,23 @@ sap.ui.define(
           .getModel("i18n")
           .getResourceBundle();
 
-        let sCurrentUser = "DEV-137 ";
+        // Get current user from Fiori Launchpad
+        let sCurrentUser = "DEV-137"; // Fallback default
         try
         {
+          // Check if running in Fiori Launchpad
           if (sap.ushell && Container)
           {
-            const oUserInfoService = await Container.getServiceAsync("UserInfo");
+            const oUserInfoService = Container.getService("UserInfo");
             if (oUserInfoService)
             {
               sCurrentUser = oUserInfoService.getId();
+              console.log("Current User ID from FLP:", sCurrentUser);
             }
           }
         } catch (error)
         {
-          console.warn("Could not get UserInfo service. Using default user.", error);
+          console.warn("Could not get UserInfo service. Using default user:", error);
         }
         console.log("Creating substitution for User:", sCurrentUser);
 
