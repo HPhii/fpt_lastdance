@@ -16,15 +16,15 @@
     >
         <f:title>
             <f:DynamicPageTitle>
-                <f:heading>
-                    <Title text="{i18n>title}" />
-                </f:heading>
                 <f:navigationActions>
                     <Button
                         type="Back"
                         press=".onNavBackToDashboard"
                     />
                 </f:navigationActions>
+                <f:heading>
+                    <Title text="{i18n>title}" />
+                </f:heading>
                 <f:actions>
                     <core:Fragment
                         fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
@@ -171,7 +171,8 @@
                             inset="false"
                             growing="true"
                             items="{ 
-                                path: '/WfTasks'
+                                path: '/WfTasks',
+                                sorter: { path: 'Priority', descending: false }
                             }"
                             selectionChange=".onSelectionChange"
                             class="sapFDynamicPageAlignContent"
@@ -202,6 +203,11 @@
                                             tooltip="{i18n>tooltipHeaderGroup}"
                                         />
                                         <Button
+                                            icon="sap-icon://action-settings"
+                                            press=".onCustomColumn"
+                                            tooltip="Settings"
+                                        />
+                                        <Button
                                             text="{i18n>tableHeaderSelectAll}"
                                             press=".onSelectAll"
                                             icon="sap-icon://multiselect-all"
@@ -228,33 +234,90 @@
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
-                                <Column>
+                                <Column
+                                    id="colTaskName"
+                                    visible="{worklistView>/columns/taskName}"
+                                >
                                     <Text text="{i18n>columnTaskName}" />
                                 </Column>
                                 <Column
+                                    id="colTaskID"
                                     minScreenWidth="Tablet"
                                     demandPopin="true"
+                                    visible="{worklistView>/columns/taskID}"
+                                >
+                                    <Text text="{i18n>columnTaskId}" />
+                                </Column>
+                                <Column
+                                    id="colWorkItemID"
+                                    minScreenWidth="Tablet"
+                                    demandPopin="true"
+                                    visible="{worklistView>/columns/workItemID}"
+                                >
+                                    <Text text="{i18n>columnTaskWorkItemId}" />
+                                </Column>
+                                <Column
+                                    id="colCreationDate"
+                                    minScreenWidth="Tablet"
+                                    demandPopin="true"
+                                    visible="{worklistView>/columns/creationDate}"
                                 >
                                     <Text
                                         text="{i18n>columnTaskCreationDate}"
                                     />
                                 </Column>
-
-                                <Column minScreenWidth="Desktop">
+                                <Column
+                                    id="colEndDate"
+                                    minScreenWidth="Tablet"
+                                    demandPopin="true"
+                                    visible="{worklistView>/columns/endDate}"
+                                >
+                                    <Text text="{i18n>columnTaskEndDate}" />
+                                </Column>
+                                <Column
+                                    id="colDaysToDeadline"
+                                    minScreenWidth="Desktop"
+                                    visible="{worklistView>/columns/daysToDeadline}"
+                                >
                                     <Text
                                         text="{i18n>columnTaskDaysToDeadline}"
                                     />
                                 </Column>
-
                                 <Column
+                                    id="colStatus"
                                     minScreenWidth="Desktop"
                                     demandPopin="true"
                                     hAlign="Center"
+                                    visible="{worklistView>/columns/status}"
                                 >
                                     <Text text="{i18n>columnTaskStatus}" />
                                 </Column>
 
-                                <Column hAlign="End">
+                                <Column
+                                    id="colAssignedUser"
+                                    minScreenWidth="Desktop"
+                                    demandPopin="true"
+                                    visible="{worklistView>/columns/assignedUser}"
+                                >
+                                    <Text
+                                        text="{i18n>columnTaskAssignedUser}"
+                                    />
+                                </Column>
+                                <Column
+                                    id="colAssignedUserName"
+                                    minScreenWidth="Desktop"
+                                    demandPopin="true"
+                                    visible="{worklistView>/columns/assignedUserName}"
+                                >
+                                    <Text
+                                        text="{i18n>columnTaskAssignedUserName}"
+                                    />
+                                </Column>
+                                <Column
+                                    id="colPriority"
+                                    hAlign="Center"
+                                    visible="{worklistView>/columns/priority}"
+                                >
                                     <Text text="{i18n>columnTaskPriority}" />
                                 </Column>
                             </columns>
@@ -267,11 +330,14 @@
                                     <cells>
                                         <ObjectIdentifier
                                             title="{WorkItemText}"
-                                            text="{AssignedUser}"
+                                            text="{TaskText}"
                                         />
+                                        <Text text="{TaskID}" />
+                                        <Text text="{WorkItemID}" />
                                         <ObjectIdentifier
                                             text="{CreationDate}"
                                         />
+                                        <Text text="{= ${EndDate} || 'N/A' }" />
                                         <ObjectAttribute
                                             text="{= ${DaysToDeadline} > '1000' ? 'Infinity' : ${DaysToDeadline} }"
                                         />
@@ -283,6 +349,8 @@
                                                 formatter: '.formatter.technicalStatusState'
                                             }"
                                         />
+                                        <Text text="{AssignedUser}" />
+                                        <Text text="{AssignedUserName}" />
                                         <ObjectStatus
                                             text="{PriorityText}"
                                             icon="sap-icon://{= ${Priority} === '1' ? 'alert' : 'information' }"

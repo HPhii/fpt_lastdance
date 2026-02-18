@@ -42,6 +42,18 @@ sap.ui.define([
         detailVisible: false,
         detailBusy: false,
         listMode: "SingleSelectMaster",
+        columns: {
+          taskName: true,
+          taskID: false,
+          workItemID: false,
+          creationDate: true,
+          endDate: false,
+          daysToDeadline: true,
+          status: true,
+          priority: true,
+          assignedUser: false,
+          assignedUserName: false
+        }
       });
 
       this.getView().setModel(oViewModel, "worklistView");
@@ -495,6 +507,51 @@ sap.ui.define([
     onNavBackToDashboard: function ()
     {
       this.getOwnerComponent().getRouter().navTo("RouteDashboard");
+    },
+
+    onCustomColumn: function ()
+    {
+      var oView = this.getView();
+
+      if (!this._oColumnSettingsDialog)
+      {
+        sap.ui.core.Fragment.load({
+          id: oView.getId(),
+          name: "z.wf.zwfmanagement.view.fragments.ColumnSettingsDialog",
+          controller: this
+        }).then(function (oDialog)
+        {
+          this._oColumnSettingsDialog = oDialog;
+          oView.addDependent(oDialog);
+          oDialog.open();
+        }.bind(this));
+      } else
+      {
+        this._oColumnSettingsDialog.open();
+      }
+    },
+
+    onCloseColumnSettings: function ()
+    {
+      this._oColumnSettingsDialog.close();
+    },
+
+    onResetColumns: function ()
+    {
+      var oViewModel = this.getView().getModel("worklistView");
+      oViewModel.setProperty("/columns", {
+        taskName: true,
+        taskID: false,
+        workItemID: false,
+        creationDate: true,
+        endDate: false,
+        daysToDeadline: true,
+        status: true,
+        priority: true,
+        assignedUser: false,
+        assignedUserName: false
+      });
+      MessageToast.show("Columns reset to default");
     },
 
   });
