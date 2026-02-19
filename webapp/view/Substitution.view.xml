@@ -21,6 +21,8 @@
                 select=".onTabSelect"
                 headerMode="Inline"
                 class="sapUiResponsiveContentPadding"
+                expanded="true"
+                expandable="false"
             >
                 <!-- Tab 1: My Substitutes (Outgoing - I delegate to others) -->
                 <items>

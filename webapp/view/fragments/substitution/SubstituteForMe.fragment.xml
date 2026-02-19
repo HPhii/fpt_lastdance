@@ -9,97 +9,182 @@
         icon="sap-icon://incoming-call"
         key="incoming"
     >
-        <Table
-            id="tableIncoming"
-            items="{
-                path: '/Substitutions',
-                parameters: {
-                    $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
-                }
-            }"
-            sticky="ColumnHeaders"
-            growing="true"
-            growingThreshold="20"
-            noDataText="{i18n>substNoData}"
-            class="sapUiSmallMargin"
-        >
-            <columns>
-                <Column width="12em">
-                    <Text text="{i18n>colOwnerName}" />
-                </Column>
-                <Column width="12em">
-                    <Text text="{i18n>colTaskGroup}" />
-                </Column>
-                <Column width="10em">
-                    <Text text="{i18n>colStartDate}" />
-                </Column>
-                <Column width="10em">
-                    <Text text="{i18n>colEndDate}" />
-                </Column>
-                <Column width="8em">
-                    <Text text="{i18n>substModePlanned}" />
-                </Column>
-                <Column
-                    width="8em"
-                    hAlign="Center"
+        <VBox class="sapUiSmallMargin">
+            <!-- Mode Switcher -->
+            <Toolbar
+                class="sapUiTransparent"
+                style="Clear"
+            >
+                <SegmentedButton
+                    selectedKey="{view>/substMode}"
+                    selectionChange=".onModeSelect"
                 >
-                    <Text text="{i18n>colStatus}" />
-                </Column>
-                <Column
-                    width="6em"
-                    hAlign="End"
-                >
-                    <Text text="" />
-                </Column>
-            </columns>
-            <items>
-                <ColumnListItem>
-                    <cells>
-                        <Link
-                            text="{OwnerFullName}"
-                            press=".onShowOwnerInfo"
-                            class="sapUiTinyMarginEnd sapUiTextBold"
+                    <items>
+                        <SegmentedButtonItem
+                            key="U"
+                            text="{i18n>substModeUnplanned}"
+                            icon="sap-icon://alert"
                         />
-                        <Text text="{SubstitutionProfile}" />
-                        <Text
-                            text="{
-                                parts: ['SubstitutionType', 'BeginDate'],
-                                formatter: '.formatDateOrNA'
-                            }"
+                        <SegmentedButtonItem
+                            key="P"
+                            text="{i18n>substModePlanned}"
+                            icon="sap-icon://calendar"
                         />
-                        <Text
-                            text="{
-                                parts: ['SubstitutionType', 'EndDate'],
-                                formatter: '.formatDateOrNA'
-                            }"
-                        />
-                        <Text
-                            text="{
-                                path: 'SubstitutionType',
-                                formatter: '.formatSubstType'
-                            }"
-                        />
-                        <ObjectStatus
-                            state="{= ${Active} === true ? 'Success' : 'Error' }"
-                            icon="{= ${Active} === true ? 'sap-icon://status-positive' : 'sap-icon://status-inactive' }"
-                        />
-                        <HBox
-                            justifyContent="End"
-                            alignItems="Center"
-                        >
-                            <Switch
-                                state="{
-                                    path: 'Active',
-                                    type: 'sap.ui.model.odata.type.Boolean'
-                                }"
-                                customTextOn=" "
-                                customTextOff=" "
-                                change=".onToggleActive"
+                    </items>
+                </SegmentedButton>
+            </Toolbar>
+
+            <!-- Table for Planned Incoming Substitutions -->
+            <Table
+                id="tableIncomingPlanned"
+                items="{
+                    path: '/Substitutions',
+                    parameters: {
+                        $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
+                    }
+                }"
+                visible="{= ${view>/substMode} === 'P'}"
+                sticky="ColumnHeaders"
+                growing="true"
+                growingThreshold="20"
+                noDataText="{i18n>substNoData}"
+            >
+                <columns>
+                    <Column width="12em">
+                        <Text text="{i18n>colOwnerName}" />
+                    </Column>
+                    <Column width="12em">
+                        <Text text="{i18n>colTaskGroup}" />
+                    </Column>
+                    <Column width="10em">
+                        <Text text="{i18n>colStartDate}" />
+                    </Column>
+                    <Column width="10em">
+                        <Text text="{i18n>colEndDate}" />
+                    </Column>
+                    <Column
+                        width="8em"
+                        hAlign="Center"
+                    >
+                        <Text text="{i18n>colStatus}" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Link
+                                text="{OwnerFullName}"
+                                press=".onShowOwnerInfo"
+                                class="sapUiTinyMarginEnd sapUiTextBold"
                             />
-                        </HBox>
-                    </cells>
-                </ColumnListItem>
-            </items>
-        </Table>
+                            <Text text="{SubstitutionProfile}" />
+                            <Text
+                                text="{
+                                    parts: ['SubstitutionType', 'BeginDate'],
+                                    formatter: '.formatDateOrNA'
+                                }"
+                            />
+                            <Text
+                                text="{
+                                    parts: ['SubstitutionType', 'EndDate'],
+                                    formatter: '.formatDateOrNA'
+                                }"
+                            />
+                            <ObjectStatus
+                                text="{
+                                    path: 'RuleStatus',
+                                    formatter: '.formatStatusText'
+                                }"
+                                state="{
+                                    path: 'RuleStatus',
+                                    formatter: '.formatStatusState'
+                                }"
+                                icon="{
+                                    path: 'RuleStatus',
+                                    formatter: '.formatStatusIcon'
+                                }"
+                            />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+
+            <!-- Table for Unplanned Incoming Substitutions -->
+            <Table
+                id="tableIncomingUnplanned"
+                items="{
+                    path: '/Substitutions',
+                    parameters: {
+                        $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
+                    }
+                }"
+                visible="{= ${view>/substMode} === 'U'}"
+                sticky="ColumnHeaders"
+                growing="true"
+                growingThreshold="20"
+                noDataText="{i18n>substNoData}"
+                class="sapUiSmallMarginTop"
+            >
+                <columns>
+                    <Column width="12em">
+                        <Text text="{i18n>colOwnerName}" />
+                    </Column>
+                    <Column width="12em">
+                        <Text text="{i18n>colTaskGroup}" />
+                    </Column>
+                    <Column width="10em">
+                        <Text text="{i18n>colStartDate}" />
+                    </Column>
+                    <Column
+                        width="8em"
+                        hAlign="Center"
+                    >
+                        <Text text="{i18n>colStatus}" />
+                    </Column>
+                    <Column
+                        width="6em"
+                        hAlign="End"
+                    >
+                        <Text text="" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Link
+                                text="{OwnerFullName}"
+                                press=".onShowOwnerInfo"
+                                class="sapUiTinyMarginEnd sapUiTextBold"
+                            />
+                            <Text text="{SubstitutionProfile}" />
+                            <Text
+                                text="{
+                                    parts: ['SubstitutionType', 'BeginDate'],
+                                    formatter: '.formatDateOrNA'
+                                }"
+                            />
+                            <ObjectStatus
+                                state="{= %{Active} === true ? 'Success' : 'Error' }"
+                                icon="{= %{Active} === true ? 'sap-icon://status-positive' : 'sap-icon://status-inactive' }"
+                            />
+                            <HBox
+                                justifyContent="End"
+                                alignItems="Center"
+                            >
+                                <Switch
+                                    state="{
+                                        path: 'Active',
+                                        type: 'sap.ui.model.odata.type.Boolean'
+                                    }"
+                                    customTextOn=" "
+                                    customTextOff=" "
+                                    change=".onToggleActive"
+                                />
+                            </HBox>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </VBox>
     </IconTabFilter>
 </core:FragmentDefinition>

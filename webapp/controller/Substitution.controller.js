@@ -9,7 +9,7 @@ sap.ui.define(
     "sap/m/MessageToast",
     "sap/ui/core/format/DateFormat",
     "sap/ushell/Container",
-    "sap/ui/model/odata/v2/ODataModel"
+    "sap/ui/model/odata/v2/ODataModel",
   ],
   function (
     BaseController,
@@ -21,7 +21,7 @@ sap.ui.define(
     MessageToast,
     DateFormat,
     Container,
-    ODataModel
+    ODataModel,
   )
   {
     "use strict";
@@ -61,9 +61,9 @@ sap.ui.define(
           return;
         }
 
-        // Get the user ID from the context
+        // Get the substitute user ID from the context
         const oData = oContext.getObject();
-        const sUserId = oData.UserSubstitutedBy || oData.UserSubstitutedFor;
+        const sUserId = oData.UserSubstitutedBy;
 
         if (!sUserId)
         {
@@ -123,11 +123,16 @@ sap.ui.define(
         const sServiceUrl = "/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/";
         const oODataModel = new ODataModel(sServiceUrl, {
           json: true,
-          useBatch: false
+          useBatch: false,
         });
 
+        console.log(sUserId);
+
         // Build the entity path
-        const sEntityPath = "/UserInfoCollection(SAP__Origin='LOCAL_TGW',UniqueName='" + sUserId + "')";
+        const sEntityPath =
+          "/UserInfoCollection(SAP__Origin='LOCAL_TGW',UniqueName='" +
+          sUserId +
+          "')";
 
         // Read user info
         oODataModel.read(sEntityPath, {
@@ -144,9 +149,11 @@ sap.ui.define(
           error: function (oError)
           {
             oView.setBusy(false);
-            MessageBox.error("Failed to load user information: " +
-              (oError.responseText || oError.message || "Unknown error"));
-          }
+            MessageBox.error(
+              "Failed to load user information: " +
+              (oError.responseText || oError.message || "Unknown error"),
+            );
+          },
         });
       },
 
@@ -162,13 +169,15 @@ sap.ui.define(
           Fragment.load({
             id: oView.getId(),
             name: "z.wf.zwfmanagement.view.fragments.UserInfoPopover",
-            controller: this
-          }).then(function (oPopover)
-          {
-            this._oUserInfoPopover = oPopover;
-            oView.addDependent(oPopover);
-            oPopover.openBy(oSource);
-          }.bind(this));
+            controller: this,
+          }).then(
+            function (oPopover)
+            {
+              this._oUserInfoPopover = oPopover;
+              oView.addDependent(oPopover);
+              oPopover.openBy(oSource);
+            }.bind(this),
+          );
         } else
         {
           this._oUserInfoPopover.openBy(oSource);
@@ -178,9 +187,13 @@ sap.ui.define(
       onTabSelect: function (oEvent)
       {
         const sKey = oEvent.getParameter("key");
+        // Set default mode based on selected tab
         if (sKey === "outgoing")
         {
           this.getView().getModel("view").setProperty("/substMode", "P");
+        } else if (sKey === "incoming")
+        {
+          this.getView().getModel("view").setProperty("/substMode", "U");
         }
 
         this._applyFilters();
@@ -206,8 +219,8 @@ sap.ui.define(
           this._filterOutgoingTables(sMode);
         } else if (sSelectedTab === "incoming")
         {
-          // Incoming tab: Filter by Direction = INCOMING
-          this._filterIncomingTable();
+          // Incoming tab: Filter by Direction = INCOMING AND SubstitutionType = P or U
+          this._filterIncomingTable(sMode);
         }
       },
 
@@ -241,19 +254,32 @@ sap.ui.define(
       },
 
       /**
-       * Filter table in Incoming tab
+       * Filter tables in Incoming tab based on Mode (Planned/Unplanned)
        */
-      _filterIncomingTable: function ()
+      _filterIncomingTable: function (sMode)
       {
-        const oTable = this.byId("tableIncoming");
-        if (oTable)
+        const aFilters = [
+          new Filter("Direction", FilterOperator.EQ, "INCOMING"),
+          new Filter("SubstitutionType", FilterOperator.EQ, sMode),
+        ];
+
+        const oTablePlanned = this.byId("tableIncomingPlanned");
+        const oTableUnplanned = this.byId("tableIncomingUnplanned");
+
+        if (oTablePlanned)
         {
-          const oBinding = oTable.getBinding("items");
+          const oBinding = oTablePlanned.getBinding("items");
           if (oBinding)
           {
-            const aFilters = [
-              new Filter("Direction", FilterOperator.EQ, "INCOMING"),
-            ];
+            oBinding.filter(aFilters);
+          }
+        }
+
+        if (oTableUnplanned)
+        {
+          const oBinding = oTableUnplanned.getBinding("items");
+          if (oBinding)
+          {
             oBinding.filter(aFilters);
           }
         }
