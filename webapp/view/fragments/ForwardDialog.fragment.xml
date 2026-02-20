@@ -1,0 +1,54 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog
+        title="{i18n>forwardDialogTitle}"
+        id="forwardDialog"
+        contentWidth="400px"
+        contentHeight="auto"
+        busy="{userInfoList>/busy}"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label
+                    text="{i18n>forwardUserLabel}"
+                    labelFor="forwardUserInput"
+                    required="true"
+                />
+                <Input
+                    id="forwardUserInput"
+                    placeholder="{i18n>forwardUserPlaceholder}"
+                    showValueHelp="true"
+                    required="true"
+                    valueHelpRequest=".onValueHelpUserID"
+                />
+                <List
+                    visible="{userInfoList>/visible}"
+                    items="{path: 'userInfoList>/users'}"
+                >
+                    <items>
+                        <StandardListItem
+                            title="{userInfoList>DisplayName}"
+                            description="{userInfoList>Company}"
+                            info="{userInfoList>UniqueName}"
+                            type="Active"
+                            press=".onSelectForwardUser"
+                        />
+                    </items>
+                </List>
+            </VBox>
+        </content>
+        <buttons>
+            <Button
+                type="Emphasized"
+                text="{i18n>buttonForward}"
+                press=".onConfirmForward"
+            />
+            <Button
+                text="{i18n>btnCancel}"
+                press=".onCancelForward"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

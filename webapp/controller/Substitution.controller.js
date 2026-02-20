@@ -8,7 +8,6 @@ sap.ui.define(
     "sap/m/MessageBox",
     "sap/m/MessageToast",
     "sap/ui/core/format/DateFormat",
-    "sap/ushell/Container",
     "sap/ui/model/odata/v2/ODataModel",
   ],
   function (
@@ -20,7 +19,6 @@ sap.ui.define(
     MessageBox,
     MessageToast,
     DateFormat,
-    Container,
     ODataModel,
   )
   {
@@ -536,26 +534,6 @@ sap.ui.define(
           .getModel("i18n")
           .getResourceBundle();
 
-        // Get current user from Fiori Launchpad
-        let sCurrentUser = "DEV-137"; // Fallback default
-        try
-        {
-          // Check if running in Fiori Launchpad
-          if (sap.ushell && Container)
-          {
-            const oUserInfoService = Container.getService("UserInfo");
-            if (oUserInfoService)
-            {
-              sCurrentUser = oUserInfoService.getId();
-              console.log("Current User ID from FLP:", sCurrentUser);
-            }
-          }
-        } catch (error)
-        {
-          console.warn("Could not get UserInfo service. Using default user:", error);
-        }
-        console.log("Creating substitution for User:", sCurrentUser);
-
         // Validate Input
         if (
           !oNewRuleData.substituteId ||
@@ -586,7 +564,6 @@ sap.ui.define(
 
         // Build Payload
         const oPayload = {
-          UserSubstitutedFor: sCurrentUser,
           UserSubstitutedBy: oNewRuleData.substituteId.trim(),
           SubstitutionType: oNewRuleData.type,
           SubstitutionProfile: oNewRuleData.profileId,
