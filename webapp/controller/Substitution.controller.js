@@ -7,8 +7,9 @@ sap.ui.define(
     "sap/ui/core/Fragment",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
-    "sap/ui/core/format/DateFormat",
     "sap/ui/model/odata/v2/ODataModel",
+    "../utils/UpdateSubstitutionDialog",
+    "../utils/AddSubstitutionDialog"
   ],
   function (
     BaseController,
@@ -18,8 +19,9 @@ sap.ui.define(
     Fragment,
     MessageBox,
     MessageToast,
-    DateFormat,
     ODataModel,
+    UpdateSubstitutionDialogHelper,
+    AddSubstitutionDialogHelper
   )
   {
     "use strict";
@@ -486,162 +488,9 @@ sap.ui.define(
        */
       onOpenAddDialog: function ()
       {
-        const oView = this.getView();
+        var oView = this.getView();
 
-        // Initialize model to store temporary data for Dialog
-        const oNewRuleModel = new JSONModel({
-          type: "P",
-          substituteId: "",
-          profileId: "ALL", // Default fallback
-          beginDate: new Date(),
-          endDate: new Date(new Date().setDate(new Date().getDate() + 1)), // next day
-        });
-        oView.setModel(oNewRuleModel, "newRule");
-
-        if (!this.byId("addRuleDialog"))
-        {
-          Fragment.load({
-            id: oView.getId(),
-            name: "z.wf.zwfmanagement.view.fragments.dialog.AddSubstitutionDialog",
-            controller: this,
-          }).then(function (oDialog)
-          {
-            oView.addDependent(oDialog);
-            oDialog.open();
-          });
-        } else
-        {
-          this.byId("addRuleDialog").open();
-        }
-      },
-
-      /**
-       * Close Add Substitution Dialog
-       */
-      onCloseAddDialog: function ()
-      {
-        this.byId("addRuleDialog").close();
-      },
-
-      /**
-       * Save new Substitution Rule via OData V4 Create
-       */
-      onSaveRule: function ()
-      {
-        const oModel = this.getView().getModel();
-        const oNewRuleData = this.getView().getModel("newRule").getData();
-        const oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-
-        // Validate Input
-        if (
-          !oNewRuleData.substituteId ||
-          oNewRuleData.substituteId.trim() === ""
-        )
-        {
-          MessageBox.error(oResourceBundle.getText("msgSelectUser"));
-          return;
-        }
-
-        // Format Dates to yyyy-MM-dd
-        const oDateFormat = DateFormat.getDateInstance({
-          pattern: "yyyy-MM-dd",
-        });
-        let sBeginDate = null;
-        let sEndDate = null;
-
-        if (oNewRuleData.type === "P")
-        {
-          if (!oNewRuleData.beginDate || !oNewRuleData.endDate)
-          {
-            MessageBox.error(oResourceBundle.getText("msgSelectDates"));
-            return;
-          }
-          sBeginDate = oDateFormat.format(oNewRuleData.beginDate);
-          sEndDate = oDateFormat.format(oNewRuleData.endDate);
-        }
-
-        // Build Payload
-        const oPayload = {
-          UserSubstitutedBy: oNewRuleData.substituteId.trim(),
-          SubstitutionType: oNewRuleData.type,
-          SubstitutionProfile: oNewRuleData.profileId,
-        };
-
-        if (oNewRuleData.type === "P")
-        {
-          oPayload.BeginDate = sBeginDate;
-          oPayload.EndDate = sEndDate;
-        }
-
-        // OData V4 Create via ListBinding
-        const oListBinding = oModel.bindList("/Substitutions");
-        const oContext = oListBinding.create(oPayload);
-
-        this.getView().setBusy(true);
-
-        // Attach to Create Completed event
-        oListBinding.attachEventOnce(
-          "createCompleted",
-          function (oEvent)
-          {
-            this.getView().setBusy(false);
-
-            const bSuccess = oEvent.getParameter("success");
-
-            if (bSuccess)
-            {
-              // success case
-              MessageToast.show(oResourceBundle.getText("msgCreateSuccess"));
-              this.onCloseAddDialog();
-
-              // Refresh the table bindings to show new row
-              const oTablePlanned = this.byId("tablePlanned");
-              const oTableUnplanned = this.byId("tableUnplanned");
-              const oTableIncoming = this.byId("tableIncoming");
-
-              if (oTablePlanned && oTablePlanned.getBinding("items"))
-              {
-                oTablePlanned.getBinding("items").refresh();
-              }
-              if (oTableUnplanned && oTableUnplanned.getBinding("items"))
-              {
-                oTableUnplanned.getBinding("items").refresh();
-              }
-              if (oTableIncoming && oTableIncoming.getBinding("items"))
-              {
-                oTableIncoming.getBinding("items").refresh();
-              }
-
-              this._applyFilters();
-            } else
-            {
-              // error case
-              let sErrorMsg = "An error occurred during creation.";
-
-              const aMessages = sap.ui
-                .getCore()
-                .getMessageManager()
-                .getMessageModel()
-                .getData();
-
-              const aErrors = aMessages.filter(function (oMsg)
-              {
-                return oMsg.type === "Error";
-              });
-
-              if (aErrors.length > 0)
-              {
-                sErrorMsg = aErrors[aErrors.length - 1].message;
-              }
-
-              MessageBox.error(sErrorMsg);
-
-              oContext.delete();
-            }
-          }.bind(this),
-        );
+        AddSubstitutionDialogHelper.onOpen(oView);
       },
 
       // --- DELETE FUNCTION ---
@@ -677,72 +526,8 @@ sap.ui.define(
       // --- UPDATE END DATE FUNCTION ---
       onOpenUpdateDialog: function (oEvent)
       {
-        const oView = this.getView();
-        const oContext = oEvent.getSource().getBindingContext();
-
-        // save context of current selected rule to use in confirm handler
-        this._oSelectedContext = oContext;
-
-        if (!this.byId("updateRuleDialog"))
-        {
-          Fragment.load({
-            id: oView.getId(),
-            name: "z.wf.zwfmanagement.view.fragments.dialog.UpdateSubstitutionDialog",
-            controller: this,
-          }).then(function (oDialog)
-          {
-            oView.addDependent(oDialog);
-            // set current EndDate to input field in dialog
-            const sCurrentDate = oContext.getProperty("EndDate");
-            oView.byId("inpUpdateEndDate").setValue(sCurrentDate);
-            oDialog.open();
-          });
-        } else
-        {
-          const sCurrentDate = oContext.getProperty("EndDate");
-          this.byId("inpUpdateEndDate").setValue(sCurrentDate);
-          this.byId("updateRuleDialog").open();
-        }
-      },
-
-      onCloseUpdateDialog: function ()
-      {
-        this.byId("updateRuleDialog").close();
-        this._oSelectedContext = null;
-      },
-
-      onConfirmUpdateRule: function ()
-      {
-        const oDatePicker = this.byId("inpUpdateEndDate");
-        const sNewDate = oDatePicker.getValue(); // Format yyyy-MM-dd
-        const oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-
-        if (!sNewDate)
-        {
-          MessageBox.error(oResourceBundle.getText("msgSelectDates"));
-          return;
-        }
-
-        if (this._oSelectedContext)
-        {
-          // update by context
-          this._oSelectedContext
-            .setProperty("EndDate", sNewDate)
-            .then(() =>
-            {
-              // refresh context -> sync data
-              this._oSelectedContext.refresh();
-
-              MessageToast.show(oResourceBundle.getText("msgUpdateSuccess"));
-              this.onCloseUpdateDialog();
-            })
-            .catch((oError) =>
-            {
-              MessageBox.error(oError.message);
-            });
-        }
+        var oView = this.getView();
+        UpdateSubstitutionDialogHelper.onOpen(oView, oEvent);
       },
 
       // --- TOGGLE ACTIVE FUNCTION (Bound Action) ---
