@@ -30,12 +30,6 @@ img.sapMSelectListItemIcon {
   padding: 0.5rem 0 !important;
 }
 
-/* Center align status icons in ObjectStatus */
-.sapMObjStatus {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
 
 .sapMObjStatusIcon {
   margin: 0 !important;

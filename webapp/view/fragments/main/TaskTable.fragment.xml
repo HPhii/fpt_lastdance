@@ -1,0 +1,199 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Table
+        id="idTasksList"
+        sticky="ColumnHeaders,HeaderToolbar"
+        inset="false"
+        growing="true"
+        growingThreshold="20"
+        class="sapFDynamicPageAlignContent"
+        width="auto"
+        mode="{worklistView>/listMode}"
+        selectionChange=".onSelectionChange"
+        items="{ 
+            path: '/WfTasks',
+            sorter: { 
+                path: 'Priority', 
+                descending: false 
+            }
+        }"
+    >
+        <headerToolbar>
+            <OverflowToolbar>
+                <Toolbar>
+                    <Title
+                        text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
+                        level="H2"
+                    />
+                    <ToolbarSpacer />
+                    <Button
+                        icon="sap-icon://sort"
+                        press=".onSort"
+                        tooltip="{i18n>tooltipHeaderSort}"
+                    />
+                    <Button
+                        icon="sap-icon://filter"
+                        press=".onFilter"
+                        tooltip="{i18n>tooltipHeaderFilter}"
+                    />
+                    <Button
+                        icon="sap-icon://group-2"
+                        press=".onGroup"
+                        tooltip="{i18n>tooltipHeaderGroup}"
+                    />
+                    <Button
+                        icon="sap-icon://action-settings"
+                        press=".onCustomColumn"
+                        tooltip="Settings"
+                    />
+                    <Button
+                        text="{i18n>tableHeaderSelectAll}"
+                        press=".onSelectAll"
+                        icon="sap-icon://multiselect-all"
+                        visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                    />
+                    <Button
+                        text="{i18n>tableHeaderDeselectAll}"
+                        press=".onDeselectAll"
+                        icon="sap-icon://multiselect-none"
+                        visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                    />
+                    <Button
+                        icon="sap-icon://multi-select"
+                        press=".onToggleMultiSelect"
+                        tooltip="Toggle Multi-Select Mode"
+                        type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
+                    />
+                    <SearchField
+                        width="auto"
+                        placeholder="{i18n>tableHeaderSearchPlaceholder}"
+                        search=".onSearch"
+                    />
+                </Toolbar>
+            </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+            <Column
+                id="colTaskName"
+                visible="{worklistView>/columns/taskName}"
+            >
+                <Text text="{i18n>columnTaskName}" />
+            </Column>
+            <Column
+                id="colTaskID"
+                minScreenWidth="Tablet"
+                demandPopin="true"
+                visible="{worklistView>/columns/taskID}"
+            >
+                <Text text="{i18n>columnTaskId}" />
+            </Column>
+            <Column
+                id="colWorkItemID"
+                minScreenWidth="Tablet"
+                demandPopin="true"
+                visible="{worklistView>/columns/workItemID}"
+            >
+                <Text text="{i18n>columnTaskWorkItemId}" />
+            </Column>
+            <Column
+                id="colCreationDate"
+                minScreenWidth="Tablet"
+                demandPopin="true"
+                visible="{worklistView>/columns/creationDate}"
+            >
+                <Text text="{i18n>columnTaskCreationDate}" />
+            </Column>
+            <Column
+                id="colEndDate"
+                minScreenWidth="Tablet"
+                demandPopin="true"
+                visible="{worklistView>/columns/endDate}"
+            >
+                <Text text="{i18n>columnTaskEndDate}" />
+            </Column>
+            <Column
+                id="colDaysToDeadline"
+                minScreenWidth="Desktop"
+                visible="{worklistView>/columns/daysToDeadline}"
+            >
+                <Text text="{i18n>columnTaskDaysToDeadline}" />
+            </Column>
+            <Column
+                id="colStatus"
+                minScreenWidth="Desktop"
+                demandPopin="true"
+                hAlign="Center"
+                visible="{worklistView>/columns/status}"
+            >
+                <Text text="{i18n>columnTaskStatus}" />
+            </Column>
+
+            <Column
+                id="colAssignedUser"
+                minScreenWidth="Desktop"
+                demandPopin="true"
+                visible="{worklistView>/columns/assignedUser}"
+            >
+                <Text text="{i18n>columnTaskAssignedUser}" />
+            </Column>
+            <Column
+                id="colAssignedUserName"
+                minScreenWidth="Desktop"
+                demandPopin="true"
+                visible="{worklistView>/columns/assignedUserName}"
+            >
+                <Text text="{i18n>columnTaskAssignedUserName}" />
+            </Column>
+            <Column
+                id="colPriority"
+                hAlign="Center"
+                visible="{worklistView>/columns/priority}"
+            >
+                <Text text="{i18n>columnTaskPriority}" />
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem
+                type="Navigation"
+                press=".onTaskPress"
+                vAlign="Middle"
+            >
+                <cells>
+                    <ObjectIdentifier
+                        title="{WorkItemText}"
+                        text="{TaskText}"
+                    />
+                    <Text text="{TaskID}" />
+                    <Text text="{WorkItemID}" />
+                    <ObjectIdentifier text="{CreationDate}" />
+                    <Text text="{= ${EndDate} || 'N/A' }" />
+                    <ObjectAttribute
+                        text="{= 
+                            ${DaysToDeadline} &gt; '1000' 
+                            ? 'Infinity' 
+                            : ${DaysToDeadline} &lt; '1' 
+                            ? 'Overdue' : ${DaysToDeadline} + 'Days'
+                        }"
+                    />
+                    <ObjectStatus
+                        class="sapUiTextBold"
+                        text="{TechnicalStatus}"
+                        state="{
+                            path: 'TechnicalStatus',
+                            formatter: '.formatter.technicalStatusState'
+                        }"
+                    />
+                    <Text text="{AssignedUser}" />
+                    <Text text="{AssignedUserName}" />
+                    <ObjectStatus
+                        text="{PriorityText}"
+                        icon="sap-icon://{= ${Priority} &lt; '5' ? 'alert' : 'information' }"
+                        state="{= ${Priority} &lt; '5' ? 'Warning' : 'Information' }"
+                    />
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>

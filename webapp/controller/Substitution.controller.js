@@ -502,7 +502,7 @@ sap.ui.define(
         {
           Fragment.load({
             id: oView.getId(),
-            name: "z.wf.zwfmanagement.view.fragments.AddSubstitutionDialog",
+            name: "z.wf.zwfmanagement.view.fragments.dialog.AddSubstitutionDialog",
             controller: this,
           }).then(function (oDialog)
           {
@@ -687,7 +687,7 @@ sap.ui.define(
         {
           Fragment.load({
             id: oView.getId(),
-            name: "z.wf.zwfmanagement.view.fragments.UpdateSubstitutionDialog",
+            name: "z.wf.zwfmanagement.view.fragments.dialog.UpdateSubstitutionDialog",
             controller: this,
           }).then(function (oDialog)
           {

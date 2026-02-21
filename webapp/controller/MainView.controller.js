@@ -517,7 +517,7 @@ sap.ui.define([
       {
         sap.ui.core.Fragment.load({
           id: oView.getId(),
-          name: "z.wf.zwfmanagement.view.fragments.ColumnSettingsDialog",
+          name: "z.wf.zwfmanagement.view.fragments.dialog.ColumnSettingsDialog",
           controller: this
         }).then(function (oDialog)
         {

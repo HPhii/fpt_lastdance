@@ -1,0 +1,44 @@
+<core:FragmentDefinition
+    xmlns:m="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <m:OverflowToolbar>
+        <m:ToolbarSpacer />
+        <m:Button
+            text="{i18n>buttonApprove}"
+            type="Accept"
+            press=".onApproveAction"
+            visible="{__OperationControl/approve}"
+        />
+        <m:Button
+            text="{i18n>buttonReject}"
+            type="Reject"
+            press=".onRejectAction"
+            visible="{__OperationControl/reject}"
+        />
+        <m:Button
+            text="{i18n>buttonClaim}"
+            type="Emphasized"
+            press=".onClaimAction"
+            visible="{__OperationControl/claim}"
+        />
+        <m:Button
+            text="{i18n>buttonForward}"
+            type="Default"
+            press=".onForwardAction"
+            visible="{__OperationControl/forward}"
+        />
+        <m:Button
+            text="{i18n>buttonRelease}"
+            type="Default"
+            press=".onReleaseAction"
+            visible="{__OperationControl/release}"
+        />
+        <m:Button
+            text="{i18n>buttonSuspend}"
+            type="Default"
+            press=".onSuspendAction"
+            visible="{__OperationControl/suspend}"
+        />
+    </m:OverflowToolbar>
+</core:FragmentDefinition>

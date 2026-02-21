@@ -261,7 +261,7 @@ sap.ui.define(
         {
           this._oForwardDialog = Fragment.load({
             id: oView.getId(),
-            name: "z.wf.zwfmanagement.view.fragments.ForwardDialog",
+            name: "z.wf.zwfmanagement.view.fragments.dialog.ForwardDialog",
             controller: this
           }).then(function (oDialog)
           {
@@ -298,15 +298,15 @@ sap.ui.define(
         var oView = this.getView();
         var oContext = oView.getBindingContext();
         var oUserInput = this.byId("forwardUserInput");
-        var userId = oUserInput.getValue();
+        var sUserId = oUserInput.getValue();
 
-        if (!userId)
+        if (!sUserId)
         {
           MessageToast.show("Please enter a user ID to forward the task.");
           return;
         }
 
-        const payload = { USER_ID: userId };
+        const payload = { USER_ID: sUserId };
 
         this._callBoundAction("forward", oContext, payload);
 
@@ -331,7 +331,7 @@ sap.ui.define(
       onValueHelpUserID: function (oEvent)
       {
         var oInput = this.byId("forwardUserInput");
-        var userId = oInput.getValue();
+        var sUserId = oInput.getValue();
         var oUserInfoList = this.getView().getModel("userInfoList");
 
         const sServiceUrl = "/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/";
@@ -350,7 +350,7 @@ sap.ui.define(
           urlParameters: {
             "sap-client": "324",
             "SAP__Origin": "LOCAL_TGW",
-            "SearchPattern": userId
+            "SearchPattern": sUserId
           },
           success: function (oData)
           {
@@ -397,7 +397,7 @@ sap.ui.define(
         {
           this._pSuspendDialog = Fragment.load({
             id: oView.getId(),
-            name: "z.wf.zwfmanagement.view.fragments.SuspendDialog",
+            name: "z.wf.zwfmanagement.view.fragments.dialog.SuspendDialog",
             controller: this
           }).then(function (oDialog)
           {
