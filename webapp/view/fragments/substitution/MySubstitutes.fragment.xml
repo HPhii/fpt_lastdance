@@ -97,9 +97,9 @@
                                             {path: 'RuleStatus', targetType: 'any'},
                                             {path: 'DaysToStart', targetType: 'any'}
                                         ],
-                                        formatter: '.formatDaysToStartText'
+                                        formatter: '.formatter.formatDaysToStartText'
                                     }"
-                                    visible="{= ${RuleStatus} === 'Inactive' }"
+                                    visible="{= %{RuleStatus} === 'Inactive' }"
                                     class="substDimmedText sapUiTinyMarginTop"
                                 />
                             </VBox>
@@ -127,11 +127,11 @@
                             <ObjectStatus
                                 state="{
                                     path: 'RuleStatus',
-                                    formatter: '.formatStatusState'
+                                    formatter: '.formatter.formatStatusState'
                                 }"
                                 icon="{
                                     path: 'RuleStatus',
-                                    formatter: '.formatStatusIcon'
+                                    formatter: '.formatter.formatStatusIcon'
                                 }"
                             />
                             <HBox justifyContent="End">
@@ -203,12 +203,12 @@
                             <Text
                                 text="{
                                     parts: ['SubstitutionType', 'BeginDate'],
-                                    formatter: '.formatDateOrNA'
+                                    formatter: '.formatter.formatDateOrNA'
                                 }"
                             />
                             <ObjectStatus
-                                state="{= ${Active} === true ? 'Success' : 'Error' }"
-                                icon="{= ${Active} === true ? 'sap-icon://status-positive' : 'sap-icon://status-inactive' }"
+                                state="{= %{Active} === true ? 'Success' : 'Error' }"
+                                icon="{= %{Active} === true ? 'sap-icon://status-positive' : 'sap-icon://status-inactive' }"
                             />
                             <HBox
                                 justifyContent="End"
@@ -219,7 +219,7 @@
                                     type="Transparent"
                                     tooltip="{i18n>btnDelete}"
                                     press=".onDeleteRule"
-                                    visible="{= ${Direction} === 'OUTGOING' }"
+                                    visible="{= %{Direction} === 'OUTGOING' }"
                                 />
                             </HBox>
                         </cells>

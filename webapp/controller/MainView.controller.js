@@ -7,8 +7,6 @@ sap.ui.define([
   "sap/m/ViewSettingsDialog",
   "sap/m/ViewSettingsItem",
   "sap/ui/model/Sorter",
-  "sap/m/MessageToast",
-  "../model/formatter",
   "sap/ui/model/odata/v2/ODataModel",
   "../utils/ColumnSettingsDialog",
 ], function (
@@ -20,8 +18,6 @@ sap.ui.define([
   ViewSettingsDialog,
   ViewSettingsItem,
   Sorter,
-  MessageToast,
-  formatter,
   ODataV2Model,
   ColumnSettingsDialogHelper
 )
@@ -29,7 +25,6 @@ sap.ui.define([
   "use strict";
 
   return BaseController.extend("z.wf.zwfmanagement.controller.MainView", {
-    formatter: formatter,
     onInit: function ()
     {
       BaseController.prototype.onInit.apply(this, arguments);

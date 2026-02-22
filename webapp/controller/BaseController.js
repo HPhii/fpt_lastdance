@@ -2,12 +2,15 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
-    "sap/m/MessageToast"
-], function (Controller, JSONModel, MessageBox, MessageToast)
+    "sap/m/MessageToast",
+    "../model/formatter",
+], function (Controller, JSONModel, MessageBox, MessageToast, formatter)
 {
     "use strict";
 
     return Controller.extend("z.wf.zwfmanagement.controller.BaseController", {
+        formatter: formatter,
+
         onInit: function ()
         {
             let sCurrentLanguage = sap.ui.getCore().getConfiguration().getLanguage();

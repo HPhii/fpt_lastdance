@@ -81,27 +81,27 @@
                             <Text
                                 text="{
                                     parts: ['SubstitutionType', 'BeginDate'],
-                                    formatter: '.formatDateOrNA'
+                                    formatter: '.formatter.formatDateOrNA'
                                 }"
                             />
                             <Text
                                 text="{
                                     parts: ['SubstitutionType', 'EndDate'],
-                                    formatter: '.formatDateOrNA'
+                                    formatter: '.formatter.formatDateOrNA'
                                 }"
                             />
                             <ObjectStatus
                                 text="{
                                     path: 'RuleStatus',
-                                    formatter: '.formatStatusText'
+                                    formatter: '.formatter.formatStatusText'
                                 }"
                                 state="{
                                     path: 'RuleStatus',
-                                    formatter: '.formatStatusState'
+                                    formatter: '.formatter.formatStatusState'
                                 }"
                                 icon="{
                                     path: 'RuleStatus',
-                                    formatter: '.formatStatusIcon'
+                                    formatter: '.formatter.formatStatusIcon'
                                 }"
                             />
                         </cells>
@@ -160,7 +160,7 @@
                             <Text
                                 text="{
                                     parts: ['SubstitutionType', 'BeginDate'],
-                                    formatter: '.formatDateOrNA'
+                                    formatter: '.formatter.formatDateOrNA'
                                 }"
                             />
                             <ObjectStatus

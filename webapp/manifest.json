@@ -76,7 +76,10 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "z.wf.zwfmanagement.i18n.i18n",
-          "supportedLocales": ["en", "de"],
+          "supportedLocales": [
+            "en",
+            "de"
+          ],
           "fallbackLocale": "en"
         }
       },
@@ -121,7 +124,10 @@
         {
           "pattern": "tasks/{propertyPath}/{layout}",
           "name": "RouteDetail",
-          "target": ["TargetMainView", "TargetDetail"]
+          "target": [
+            "TargetMainView",
+            "TargetDetail"
+          ]
         },
         {
           "pattern": "analytics",
