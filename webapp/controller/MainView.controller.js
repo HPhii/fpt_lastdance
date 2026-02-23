@@ -257,26 +257,16 @@ sap.ui.define([
       this._oGroupDialog.open();
     },
 
-    onCloseDetail: function ()
-    {
-      var oViewModel = this.getView().getModel("worklistView");
-      oViewModel.setProperty("/detailVisible", false);
-      this._oList.removeSelections(true);
-    },
-
     onSelectionChange: function (oEvent)
     {
       var oSelectedItem = oEvent.getParameter("listItem");
       var oContext = oSelectedItem ? oSelectedItem.getBindingContext() : null;
       var oViewModel = this.getView().getModel("worklistView");
-      console.log("Hello");
 
       if (!oContext)
       {
         return;
       }
-
-      console.log(oSelectedItem, oContext.getPath().split("'")[1]);
 
       var oHelper = this.getOwnerComponent().getHelper();
 
@@ -302,64 +292,6 @@ sap.ui.define([
       this.oRouter.navTo("RouteDetail", {
         layout: oNextUIState.layout,
         propertyPath: id
-      });
-    },
-
-    _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)
-    {
-      var oModel = new JSONModel({
-        isLoading: true
-      });
-
-      this.getView().setModel(oModel, "purchaseOrderItem");
-
-      var oBusinessContainer = this.byId("businessObjectContainer");
-      if (!oBusinessContainer)
-      {
-        oBusinessContainer = this.byId("detailPanel");
-      }
-
-      // Get existing model
-      var oCurrentModel = this.getView().getModel("businessModel");
-
-      if (!oCurrentModel || oCurrentModel.sServiceUrl !== sServiceUrl)
-      {
-        // Create new OData V2 Model
-        var oNewModel = new ODataV2Model(sServiceUrl, {
-          json: true,
-          useBatch: false, // Turn off batch
-          defaultBindingMode: "OneWay",
-        });
-
-        this.getView().setModel(oNewModel, "businessModel");
-      }
-
-      // Create binding path
-      var sPath = "/" + sEntitySet + "('" + sKey + "')";
-
-      // 4. Bind Element
-      oBusinessContainer.bindElement({
-        path: sPath,
-        model: "businessModel",
-        parameters: {
-          expand: sExpand
-        },
-        events: {
-          dataReceived: function ()
-          {
-            console.log("Business Object Loaded: " + sPath);
-            oModel.setProperty("/isLoading", false);
-          },
-          change: function ()
-          {
-            // Todo: Handle data change if needed
-
-          },
-          dataRequested: function ()
-          {
-            console.log("Requesting Business Object Data: " + sPath);
-          }
-        }
       });
     },
 
@@ -429,14 +361,21 @@ sap.ui.define([
 
       if (sQuery)
       {
+        var aInnerFilters = [
+          new Filter("TaskText", FilterOperator.Contains, sQuery),
+          new Filter("WorkItemText", FilterOperator.Contains, sQuery),
+        ];
+
+        // Only filter on short fields if query fits within their MaxLength (12)
+        if (sQuery.length <= 12)
+        {
+          aInnerFilters.push(new Filter("WorkItemID", FilterOperator.Contains, sQuery));
+          aInnerFilters.push(new Filter("AssignedUser", FilterOperator.Contains, sQuery));
+        }
+
         var aFilters = [
           new Filter({
-            filters: [
-              new Filter("TaskText", FilterOperator.Contains, sQuery),
-              new Filter("WorkItemText", FilterOperator.Contains, sQuery),
-              new Filter("WorkItemID", FilterOperator.Contains, sQuery),
-              new Filter("AssignedUser", FilterOperator.Contains, sQuery),
-            ],
+            filters: aInnerFilters,
             and: false,
           }),
         ];
@@ -462,55 +401,6 @@ sap.ui.define([
     {
       var oList = this.byId("idTasksList");
       oList.removeSelections(true);
-    },
-
-    _callODataV4Action: function (sWorkItemID, sDecisionKey)
-    {
-      var oModel = this.getView().getModel();
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oViewModel = this.getView().getModel("worklistView");
-
-      if (!oContext)
-      {
-        MessageBox.error("Context not found.");
-        return;
-      }
-
-      // Show busy indicator
-      oViewModel.setProperty("/detailBusy", true);
-
-      var oOperation = oModel.bindContext(
-        "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.executionDecision(...)",
-        oContext,
-      );
-
-      oOperation.setParameter("DecisionKey", sDecisionKey);
-      oOperation.setParameter("WorkItemID", sWorkItemID);
-      oOperation.setParameter("DecisionComment", "");
-
-      oOperation
-        .execute()
-        .then(
-          function ()
-          {
-            MessageBox.success("Action executed successfully!");
-
-            // Refresh the list and counts
-            this._oList.getBinding("items").refresh();
-            this._updateCounts();
-
-            // Hide detail panel and clear selection
-            oViewModel.setProperty("/detailVisible", false);
-            oViewModel.setProperty("/detailBusy", false);
-            this._oList.removeSelections(true);
-          }.bind(this),
-        )
-        .catch(function (oError)
-        {
-          oViewModel.setProperty("/detailBusy", false);
-          MessageBox.error("Error executing action: " + oError.message);
-        });
     },
 
     onNavBackToDashboard: function ()

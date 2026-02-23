@@ -1,0 +1,318 @@
+<core:FragmentDefinition
+    xmlns:m="sap.m"
+    xmlns="sap.uxap"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <ObjectPageSection
+        title="{i18n>purReqInfoTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>purReqInfoTitle}">
+                <blocks>
+                    <m:VBox alignItems="Start">
+                        <m:Title text="{i18n>purReqInfoItemDataTitle}" />
+                        <form:SimpleForm
+                            editable="false"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="3"
+                            columnsL="3"
+                            columnsM="2"
+                        >
+                            <form:content>
+                                <m:Label
+                                    text="{i18n>purReqInfoRequisitionLabel}"
+                                />
+                                <m:Text
+                                    text="{businessModel>FormattedPurRequisitionItem}"
+                                />
+
+                                <m:Label text="{i18n>purReqInfoDocTypeLabel}" />
+                                <m:Text
+                                    text="{businessModel>PurchaseRequisitionType_Text}"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoItemCategoryLabel}"
+                                />
+                                <m:Text
+                                    text="{businessModel>PurgDocItemCategoryName}"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoItemTextLabel}"
+                                />
+                                <m:Text
+                                    text="{businessModel>PurchaseRequisitionItemText}"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoMaterialLabel}"
+                                />
+                                <m:Text text="{businessModel>Material}" />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoMaterialGroupLabel}"
+                                />
+                                <m:Text
+                                    text="{businessModel>MaterialGroup_Text} ({businessModel>MaterialGroup})"
+                                />
+                            </form:content>
+                        </form:SimpleForm>
+                    </m:VBox>
+                    <m:VBox alignItems="Start">
+                        <m:Title text="{i18n>purReqInfoQuantityPriceTitle}" />
+                        <form:SimpleForm
+                            editable="false"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="3"
+                            columnsL="3"
+                            columnsM="2"
+                        >
+                            <form:content>
+                                <m:Label
+                                    text="{i18n>purReqInfoQuantityLabel}"
+                                />
+                                <m:ObjectNumber
+                                    number="{businessModel>RequestedQuantity}"
+                                    unit="{businessModel>BaseUnit}"
+                                    emphasized="false"
+                                />
+
+                                <m:Label text="{i18n>purReqInfoPriceLabel}" />
+                                <m:ObjectNumber
+                                    number="{businessModel>PurchaseRequisitionPrice}"
+                                    unit="{businessModel>PurReqnItemCurrency}"
+                                    emphasized="false"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoTotalAmountLabel}"
+                                />
+                                <m:ObjectNumber
+                                    number="{businessModel>PurReqnItemTotalAmount}"
+                                    unit="{businessModel>PurReqnItemCurrency}"
+                                    emphasized="false"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoDeliveryDateLabel}"
+                                />
+                                <m:Text
+                                    text="{path: 'businessModel>DeliveryDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                />
+
+                                <m:Label text="{i18n>purReqInfoAddressLabel}" />
+                                <m:Text text="{businessModel>PlainLongText}" />
+                            </form:content>
+                        </form:SimpleForm>
+                    </m:VBox>
+                    <m:VBox alignItems="Start">
+                        <m:Title text="{i18n>purReqInfoOrganizationTitle}" />
+                        <form:SimpleForm
+                            editable="false"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="3"
+                            columnsL="3"
+                            columnsM="2"
+                        >
+                            <form:content>
+                                <m:Label
+                                    text="{i18n>purReqInfoPurGroupLabel}"
+                                />
+                                <m:Text
+                                    text="{businessModel>PurchasingGroup}"
+                                />
+
+                                <m:Label text="{i18n>purReqInfoPurOrgLabel}" />
+                                <m:Text
+                                    text="{businessModel>PurchasingOrganization}"
+                                />
+
+                                <m:Label text="{i18n>purReqInfoPlantLabel}" />
+                                <m:Text text="{businessModel>Plant}" />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoCreatedByLabel}"
+                                />
+                                <m:Text text="{businessModel>CreatedByUser}" />
+
+                                <m:Label
+                                    text="{i18n>purReqInfoRequestorLabel}"
+                                />
+                                <m:Text
+                                    text="{businessModel>PurReqnRequestorFullName}"
+                                />
+                            </form:content>
+                        </form:SimpleForm>
+                    </m:VBox>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+
+    <ObjectPageSection
+        title="{i18n>purReqAcctAssgmtTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>purReqAcctAssgmtTitle}">
+                <blocks>
+                    <m:Table
+                        items="{to_PurReqnAccountAssignment>/results}"
+                        class="sapUiResponsiveMargin"
+                        width="auto"
+                    >
+                        <m:columns>
+                            <m:Column>
+                                <m:Text text="{i18n>purReqAcctAssgmtNumber}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>purReqAcctGLAccount}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>purReqAcctCostObject}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text
+                                    text="{i18n>purReqAcctCostObjectName}"
+                                />
+                            </m:Column>
+                            <m:Column hAlign="End">
+                                <m:Text text="{i18n>purReqAcctDistrPercent}" />
+                            </m:Column>
+                            <m:Column hAlign="End">
+                                <m:Text text="{i18n>purReqAcctQuantity}" />
+                            </m:Column>
+                        </m:columns>
+                        <m:items>
+                            <m:ColumnListItem>
+                                <m:cells>
+                                    <m:Text
+                                        text="{to_PurReqnAccountAssignment>PurchaseReqnAcctAssgmtNumber}"
+                                    />
+                                    <m:Text
+                                        text="{to_PurReqnAccountAssignment>GLAccount}"
+                                    />
+                                    <m:Text
+                                        text="{to_PurReqnAccountAssignment>PrimaryCostObject}"
+                                    />
+                                    <m:Text
+                                        text="{to_PurReqnAccountAssignment>PrimaryCostObjectName}"
+                                    />
+                                    <m:ObjectNumber
+                                        number="{to_PurReqnAccountAssignment>MultipleAcctAssgmtDistrPercent}"
+                                        unit="%"
+                                    />
+                                    <m:ObjectNumber
+                                        number="{to_PurReqnAccountAssignment>Quantity}"
+                                        unit="{to_PurReqnAccountAssignment>UnitOfMeasure}"
+                                    />
+                                </m:cells>
+                            </m:ColumnListItem>
+                        </m:items>
+                    </m:Table>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+
+    <ObjectPageSection
+        title="{i18n>purReqSourceOfSupplyTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>purReqSourceOfSupplyTitle}">
+                <blocks>
+                    <m:VBox alignItems="Start">
+                        <form:SimpleForm
+                            editable="false"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="3"
+                            columnsL="3"
+                            columnsM="2"
+                        >
+                            <form:content>
+                                <m:Label text="{i18n>purReqSosPlantLabel}" />
+                                <m:Text
+                                    text="{to_PurReqnItemSourceOfSupply>/Plant}"
+                                />
+
+                                <m:Label text="{i18n>purReqSosPurGroupLabel}" />
+                                <m:Text
+                                    text="{to_PurReqnItemSourceOfSupply>/PurchasingGroup}"
+                                />
+
+                                <m:Label text="{i18n>purReqSosPurOrgLabel}" />
+                                <m:Text
+                                    text="{to_PurReqnItemSourceOfSupply>/PurchasingOrganization}"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqSosPreferredSupplierLabel}"
+                                />
+                                <m:Text
+                                    text="{to_PurReqnItemSourceOfSupply>/PreferredSupplierName} ({to_PurReqnItemSourceOfSupply>/PreferredSupplier})"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqSosFixedSupplierLabel}"
+                                />
+                                <m:Text
+                                    text="{to_PurReqnItemSourceOfSupply>/ExternalSupplierName} ({to_PurReqnItemSourceOfSupply>/FixedSupplier})"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqSosOutlineAgreementLabel}"
+                                />
+                                <m:Text
+                                    text="{to_PurReqnItemSourceOfSupply>/PurchaseOutlineAgreement}"
+                                />
+
+                                <m:Label
+                                    text="{i18n>purReqSosInfoRecordLabel}"
+                                />
+                                <m:Text
+                                    text="{to_PurReqnItemSourceOfSupply>/PurchasingInfoRecord}"
+                                />
+                            </form:content>
+                        </form:SimpleForm>
+                    </m:VBox>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+</core:FragmentDefinition>

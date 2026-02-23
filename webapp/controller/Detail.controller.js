@@ -4,15 +4,18 @@ sap.ui.define(
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/model/odata/v2/ODataModel",
     "../utils/ForwardDialog",
-    "../utils/SuspendDialog"
+    "../utils/SuspendDialog",
+    "../utils/DetailOdata"
   ],
-  function (BaseController, MessageToast, MessageBox, JSONModel, ODataV2Model, ForwardDialogHelper, SuspendDialogHelper)
+  function (BaseController, MessageToast, MessageBox, JSONModel, ForwardDialogHelper, SuspendDialogHelper, DetailOdataHelper)
   {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Detail", {
+      _currentHeaderFragmentId: null,
+      _currentBodyFragmentIds: [],
+
       onInit: function ()
       {
         this.oRouter = this.getOwnerComponent().getRouter();
@@ -20,7 +23,9 @@ sap.ui.define(
         var oViewModel = new JSONModel({
           headerBusy: false,
           bodyBusy: false,
-          today: new Date()
+          today: new Date(),
+          headerSubtitle: "",
+          snappedTitle: ""
         });
 
         this.getView().setModel(oViewModel, "detailView");
@@ -33,9 +38,10 @@ sap.ui.define(
 
       _onObjectMatched: function (oEvent)
       {
-        var oViewModel = this.getView().getModel("detailView");
-        var oDetailPanel = this.byId("DetailObjectPageLayout");
         var that = this;
+        var oView = this.getView();
+        var oViewModel = oView.getModel("detailView");
+        var oDetailPanel = this.byId("DetailObjectPageLayout");
 
         // Get the propertyPath parameter from the route
         var sPropertyPath = oEvent.getParameter("arguments").propertyPath;
@@ -44,7 +50,7 @@ sap.ui.define(
 
         console.log("Detail view matched, binding to:", sPath);
 
-        this.getView().bindElement({
+        oView.bindElement({
           path: sPath,
           parameters: {
             $select: "*,__OperationControl",
@@ -65,86 +71,28 @@ sap.ui.define(
                 var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
                 var sKey = oBoundContext.getProperty("ObjectID");
                 var sExpand = oBoundContext.getProperty("TargetExpandParams");
-
-                console.log(sServiceUrl);
-                console.log(sEntitySet);
-                console.log(sKey);
-                console.log(sExpand);
-
+                var sExpand2 = oBoundContext.getProperty("TargetExpandParams2");
 
                 if (sServiceUrl && sEntitySet && sKey)
                 {
-                  that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand);
+                  // that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand, sExpand2);
+                  // that._loadFragmentsForEntitySet(sEntitySet);
+                  DetailOdataHelper.callODataService(oView, {
+                    serviceUrl: sServiceUrl,
+                    entitySet: sEntitySet,
+                    key: sKey,
+                    expands: [sExpand, sExpand2].filter(Boolean)
+                  });
+
+                  DetailOdataHelper.loadFragmentsForEntitySet(oView, sEntitySet);
                 }
               }
             },
             dataRequested: function ()
             {
-              // var oCurrentModel = that.getView().getModel("businessModel");
-              // if (oCurrentModel)
-              // {
-              //   oCurrentModel.refresh(true);
-              // }
-
               oViewModel.setProperty("/headerBusy", true);
             },
           },
-        });
-      },
-
-      _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)
-      {
-        var oViewModel = this.getView().getModel("detailView");
-
-        var oBusinessContainer = this.byId("DetailObjectPageLayout");
-        if (!oBusinessContainer)
-        {
-          oBusinessContainer = this.byId("detailPanel");
-        }
-
-        // Get existing model
-        var oCurrentModel = this.getView().getModel("businessModel");
-
-        if (!oCurrentModel || oCurrentModel.sServiceUrl !== sServiceUrl)
-        {
-          // Create new OData V2 Model
-          var oNewModel = new ODataV2Model(sServiceUrl, {
-            json: true,
-            useBatch: false, // Turn off batch
-            defaultBindingMode: "OneWay",
-          });
-
-          this.getView().setModel(oNewModel, "businessModel");
-        }
-
-        // Create binding path
-        var sPath = "/" + sEntitySet + "('" + sKey + "')";
-
-        // 4. Bind Element
-        oBusinessContainer.bindElement({
-          path: sPath,
-          model: "businessModel",
-          parameters: {
-            expand: sExpand
-          },
-          events: {
-            dataReceived: function ()
-            {
-              console.log("Business Object Loaded: " + sPath);
-              oViewModel.setProperty("/bodyBusy", false);
-            },
-            change: function ()
-            {
-              // Todo: Handle data change if needed
-
-            },
-            dataRequested: function ()
-            {
-              oViewModel.setProperty("/bodyBusy", true);
-
-              console.log("Requesting Business Object Data: " + sPath);
-            }
-          }
         });
       },
 
@@ -163,9 +111,6 @@ sap.ui.define(
         {
           sDecisionKey = sDecisionKey.toString().padStart(4, "0");
         }
-
-        console.log("Key FE", sDecisionKey);
-        console.log("Data type:", typeof sDecisionKey);
 
         var that = this;
         var sConfirmMessage = oResourceBundle.getText("confirmDecision", [

@@ -22,7 +22,7 @@
     >
         <headerToolbar>
             <OverflowToolbar>
-                <Toolbar>
+                <Toolbar width="100%">
                     <Title
                         text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
                         level="H2"
@@ -69,6 +69,7 @@
                     <SearchField
                         width="auto"
                         placeholder="{i18n>tableHeaderSearchPlaceholder}"
+                        class="sapUiSmallMargin"
                         search=".onSearch"
                     />
                 </Toolbar>

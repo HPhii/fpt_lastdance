@@ -1,0 +1,57 @@
+<core:FragmentDefinition
+    xmlns:m="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <m:FlexBox
+        busy="{detailView>/headerBusy}"
+        wrap="Wrap"
+        fitContainer="true"
+        alignItems="Stretch"
+    >
+        <m:Avatar
+            displaySize="L"
+            displayShape="Square"
+            class="sapUiSmallMarginEnd"
+        />
+        <m:VBox
+            justifyContent="Center"
+            class="sapUiSmallMarginEnd"
+        >
+            <m:Label text="{i18n>purReqHeaderStatusLabel}" />
+            <m:Text text="{businessModel>PurReqnReleaseStatus_Text}" />
+        </m:VBox>
+        <m:VBox
+            justifyContent="Center"
+            class="sapUiSmallMarginEnd"
+        >
+            <m:Label text="{i18n>purReqHeaderProcessingStatusLabel}" />
+            <m:Text text="{businessModel>ProcessingStatusName}" />
+        </m:VBox>
+        <m:VBox
+            justifyContent="Center"
+            class="sapUiSmallMarginEnd"
+        >
+            <m:Label text="{i18n>purReqHeaderCreationDateLabel}" />
+            <m:Text
+                text="{
+                    path: 'businessModel>PurReqCreationDate',
+                    type: 'sap.ui.model.type.Date',
+                    formatOptions: {
+                        pattern: 'dd.MM.yyyy'
+                    }
+                }"
+            />
+        </m:VBox>
+        <m:VBox
+            justifyContent="Center"
+            class="sapUiSmallMarginEnd"
+        >
+            <m:Label text="{i18n>purReqHeaderTotalAmountLabel}" />
+            <m:ObjectNumber
+                number="{businessModel>PurReqnItemTotalAmount}"
+                unit="{businessModel>PurReqnItemCurrency}"
+                emphasized="false"
+            />
+        </m:VBox>
+    </m:FlexBox>
+</core:FragmentDefinition>

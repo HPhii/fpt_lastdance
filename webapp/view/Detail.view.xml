@@ -27,17 +27,17 @@
                             wrapping="true"
                             class="sapUiSmallMarginEnd"
                         />
-                        <m:Text text="{businessModel>PurchaseOrderType_Text}" />
+                        <m:Text text="{detailView>/headerSubtitle}" />
                     </m:VBox>
                 </expandedHeading>
 
                 <snappedHeading>
                     <m:VBox>
                         <m:Title
-                            text="{businessModel>PurchaseOrder}"
+                            text="{detailView>/snappedTitle}"
                             wrapping="true"
                         />
-                        <m:Text text="{businessModel>PurchaseOrderType_Text}" />
+                        <m:Text text="{detailView>/headerSubtitle}" />
                     </m:VBox>
                 </snappedHeading>
 
@@ -63,20 +63,6 @@
                 </navigationActions>
             </ObjectPageDynamicHeaderTitle>
         </headerTitle>
-
-        <headerContent>
-            <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.detail.DetailHeader"
-                type="XML"
-            />
-        </headerContent>
-
-        <sections>
-            <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.detail.DetailBody"
-                type="XML"
-            />
-        </sections>
 
         <footer>
             <core:Fragment
