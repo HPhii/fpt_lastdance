@@ -40,10 +40,6 @@ sap.ui.define([
       //keeps the search state
       this._aTableSearchState = [];
 
-      this.oRouter.navTo("RouteMainView", {
-        layout: "OneColumn"
-      });
-
       // Model used to manipulate control states
       oViewModel = new JSONModel({
         worklistTableTitle: "",

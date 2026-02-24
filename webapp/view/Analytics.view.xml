@@ -31,6 +31,8 @@
                     <TileContent footer="Total Open Tasks">
                         <content>
                             <NumericContent
+                                class="sapUiSmallMargin"
+                                width="auto"
                                 valueColor="Neutral"
                                 value="{
                                     path: '/WfTasks/$count',
@@ -47,6 +49,7 @@
                     <TileContent footer="Overdue/Critical Tasks">
                         <content>
                             <NumericContent
+                                width="auto"
                                 valueColor="Error"
                                 value="{
                                     path: '/WfTasks/$count',
@@ -63,6 +66,7 @@
                     <TileContent footer="High Priority Tasks">
                         <content>
                             <NumericContent
+                                width="auto"
                                 valueColor="Critical"
                                 value="{
                                     path: '/WfTasks/$count',
@@ -78,51 +82,6 @@
                     </TileContent>
                 </HeaderContainer>
             </HBox>
-            <Panel>
-                <!-- <FlexBox
-                    width="20rem"
-                    height="10rem"
-                    alignItems="Start"
-                    justifyContent="SpaceBetween"
-                >
-                    <items>
-                        <microchart:InteractiveDonutChart
-                            selectionChanged="onSelectionChanged"
-                        >
-                            <microchart:segments>
-                                <microchart:InteractiveDonutChartSegment
-                                    label="Implementation Phase"
-                                    value="{
-                                        path: '/WfTasks/$count',
-                                        parameters: {
-                                            $filter: 'Priority eq \'5\''
-                                        }
-                                    }"
-                                    displayedValue="{
-                                        path: '/WfTasks/$count',
-                                        parameters: {
-                                            $filter: 'Priority eq \'5\''
-                                        }
-                                    }%"
-                                    color="Error"
-                                />
-                                <microchart:InteractiveDonutChartSegment
-                                    label="Design Phase"
-                                    value="21.5"
-                                    displayedValue="21.5%"
-                                    color="Critical"
-                                />
-                                <microchart:InteractiveDonutChartSegment
-                                    label="Test Phase"
-                                    value="38.5"
-                                    displayedValue="38.5%"
-                                    color="Good"
-                                />
-                            </microchart:segments>
-                        </microchart:InteractiveDonutChart>
-                    </items>
-                </FlexBox> -->
-            </Panel>
             <Panel>
                 <card:Card
                     manifest="./cards/calendarCard/manifest.json"

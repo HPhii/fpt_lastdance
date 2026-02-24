@@ -11,6 +11,20 @@ sap.ui.define([
             this.oRouter = this.getOwnerComponent().getRouter();
             this.oRouter.attachRouteMatched(this.onRouteMatched, this);
             this.oRouter.attachBeforeRouteMatched(this.onBeforeRouteMatched, this);
+
+            // Apply pending layout from deep link (initial URL paste)
+            // The Component's _onBeforeRouteMatched may have fired before this view was ready
+            var sPendingLayout = this.getOwnerComponent()._sPendingLayout;
+            if (sPendingLayout)
+            {
+                var oFCL = this.byId("fcl");
+                if (oFCL)
+                {
+                    oFCL.setLayout(sPendingLayout);
+                }
+
+                this.getOwnerComponent()._sPendingLayout = null;
+            }
         },
 
         onBeforeRouteMatched: function (oEvent)
@@ -44,9 +58,9 @@ sap.ui.define([
             var sRouteName = oEvent.getParameter("name");
             var oArguments = oEvent.getParameter("arguments");
 
-            // Save the current route name
+            // Save the current route name and property path
             this.currentRouteName = sRouteName;
-            this.currentProduct = oArguments.product;
+            this.currentPropertyPath = oArguments.propertyPath;
         },
 
         onColumnResize: function (oEvent)
@@ -74,7 +88,7 @@ sap.ui.define([
             {
                 this.oRouter.navTo(this.currentRouteName, {
                     layout: sLayout,
-                    product: this.currentProduct
+                    propertyPath: this.currentPropertyPath
                 }, true);
             }
         },
