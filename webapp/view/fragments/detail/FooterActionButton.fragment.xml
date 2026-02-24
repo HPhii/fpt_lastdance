@@ -23,6 +23,18 @@
             visible="{__OperationControl/claim}"
         />
         <m:Button
+            text="{i18n>buttonReSubmission}"
+            type="Default"
+            press=".onReSubmissionAction"
+            visible="{__OperationControl/reSubmission}"
+        />
+        <m:Button
+            text="{i18n>buttonSetPriority}"
+            type="Default"
+            press=".onSetPriorityAction"
+            visible="{__OperationControl/setPriority}"
+        />
+        <m:Button
             text="{i18n>buttonForward}"
             type="Default"
             press=".onForwardAction"
