@@ -6,6 +6,14 @@ sap.ui.define([
 {
     "use strict";
 
+    /**
+     * @typedef {Object} OConfig
+     * @property {string} serviceUrl
+     * @property {string} entitySet
+     * @property {string} key
+     * @property {string[]} [expands]
+     */
+
     return {
         // Cache for loaded fragments to avoid redundant loading
         _oFragmentCache: {},
@@ -13,7 +21,7 @@ sap.ui.define([
         /**
          * Calls the OData service to bind the detail view based on the provided parameters.
          * @param oView
-         * @param {Object} oConfig - { serviceUrl, entitySet, key, expands: [] }
+         * @param {OConfig} oConfig - { serviceUrl, entitySet, key, expands: [] }
          */
         callODataService: function (oView, oConfig)
         {
@@ -37,7 +45,8 @@ sap.ui.define([
             switch (oConfig.entitySet)
             {
                 case "C_PurchaseOrderFs":
-                    this._callPurchaseOrderService(oView, oConfig);
+                case "C_RequestForQuotationEnhWD":
+                    this._callPurchaseOrderOrRFQService(oView, oConfig);
                     break;
                 case "C_PurRequisitionItemFs":
                     this._callPurchaseRequisitionService(oView, oConfig);
@@ -47,7 +56,12 @@ sap.ui.define([
             }
         },
 
-        _callPurchaseOrderService: function (oView, oConfig)
+        /**
+         * Call Purchase Order service and bind the view
+         * @param oView 
+         * @param {OConfig} oConfig 
+         */
+        _callPurchaseOrderOrRFQService: function (oView, oConfig)
         {
             var that = this;
 
@@ -55,7 +69,11 @@ sap.ui.define([
             var oBusinessContainer = oView.byId("DetailObjectPageLayout");
 
             // Create binding path
-            var sPath = `/${oConfig.entitySet}('${oConfig.key}')`;
+            var sPath =
+                oConfig.entitySet === "C_PurchaseOrderFs" ?
+                    `/${oConfig.entitySet}('${oConfig.key}')` :
+                    `/${oConfig.entitySet}(RequestForQuotation='${oConfig.key}',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)`;
+            ;
             var sExpandStr = oConfig.expands ? oConfig.expands.join(",") : "";
 
             // 4. Bind Element
@@ -84,6 +102,11 @@ sap.ui.define([
             });
         },
 
+        /**
+         * Call Purchase Requisition service and bind the view (handles composite key)
+         * @param oView 
+         * @param {OConfig} oConfig 
+         */
         _callPurchaseRequisitionService: function (oView, oConfig)
         {
             var that = this;
@@ -122,6 +145,13 @@ sap.ui.define([
             });
         },
 
+        /**
+         * Load expand parameters for a given parent path
+         * @param oView 
+         * @param {String} sParentPath 
+         * @param {String[]} aExpandParams 
+         * @returns
+         */
         _loadExpandParams: function (oView, sParentPath, aExpandParams)
         {
             var oBusinessModel = oView.getModel("businessModel");
@@ -189,6 +219,10 @@ sap.ui.define([
                     sHeaderFragment = "z.wf.zwfmanagement.view.fragments.detail.PurReqHeader";
                     sBodyFragment = "z.wf.zwfmanagement.view.fragments.detail.PurReqBody";
                     break;
+                case "C_RequestForQuotationEnhWD":
+                    sHeaderFragment = "z.wf.zwfmanagement.view.fragments.detail.RFQHeader";
+                    sBodyFragment = "z.wf.zwfmanagement.view.fragments.detail.RFQBody";
+                    break;
                 default:
                     return;
             }
@@ -245,6 +279,12 @@ sap.ui.define([
             }.bind(this));
         },
 
+        /**
+         * Update header title and subtitle based on the entity set and bound context
+         * @param oView 
+         * @param {String} sEntitySet
+         * @returns 
+         */
         _updateHeaderTitleForEntitySet: function (oView, sEntitySet)
         {
             var oObjectPageLayout = oView.byId("DetailObjectPageLayout");
@@ -284,6 +324,10 @@ sap.ui.define([
                 case "C_PurRequisitionItemFs":
                     oViewModel.setProperty("/headerSubtitle", oContext.getProperty("PurchaseRequisitionType_Text") || "");
                     oViewModel.setProperty("/snappedTitle", oContext.getProperty("FormattedPurRequisitionItem") || "");
+                    break;
+                case "C_RequestForQuotationEnhWD":
+                    oViewModel.setProperty("/headerSubtitle", oContext.getProperty("RequestForQuotation_Text") || "");
+                    oViewModel.setProperty("/snappedTitle", oContext.getProperty("RequestForQuotation") || "");
                     break;
                 default:
                     oViewModel.setProperty("/headerSubtitle", "");

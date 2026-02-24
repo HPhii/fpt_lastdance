@@ -1,0 +1,389 @@
+<core:FragmentDefinition
+    xmlns:m="sap.m"
+    xmlns="sap.uxap"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <!-- Section 1: General Information -->
+    <ObjectPageSection
+        title="{i18n>rfqInfoTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>rfqInfoTitle}">
+                <blocks>
+                    <m:VBox alignItems="Start">
+                        <m:Title text="{i18n>rfqInfoBasicDataTitle}" />
+                        <form:SimpleForm
+                            editable="false"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="3"
+                            columnsL="3"
+                            columnsM="2"
+                        >
+                            <form:content>
+                                <m:Label text="{i18n>rfqInfoRFQNumberLabel}" />
+                                <m:Text
+                                    text="{businessModel>RequestForQuotation}"
+                                />
+
+                                <m:Label text="{i18n>rfqInfoRFQNameLabel}" />
+                                <m:Text
+                                    text="{businessModel>RequestForQuotationName}"
+                                />
+
+                                <m:Label text="{i18n>rfqInfoDocTypeLabel}" />
+                                <m:Text
+                                    text="{businessModel>PurchasingDocumentType_Text}"
+                                />
+
+                                <m:Label text="{i18n>rfqInfoCurrencyLabel}" />
+                                <m:Text
+                                    text="{businessModel>DocumentCurrency}"
+                                />
+
+                                <m:Label text="{i18n>rfqInfoLanguageLabel}" />
+                                <m:Text text="{businessModel>Language}" />
+
+                                <m:Label
+                                    text="{i18n>rfqInfoLifecycleStatusLabel}"
+                                />
+                                <m:Text
+                                    text="{businessModel>to_RFQLifecycleStatus/RFQLifecycleStatus_Text}"
+                                />
+                            </form:content>
+                        </form:SimpleForm>
+                    </m:VBox>
+                    <m:VBox alignItems="Start">
+                        <m:Title text="{i18n>rfqInfoOrganizationTitle}" />
+                        <form:SimpleForm
+                            editable="false"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="3"
+                            columnsL="3"
+                            columnsM="2"
+                        >
+                            <form:content>
+                                <m:Label
+                                    text="{i18n>rfqInfoCompanyCodeLabel}"
+                                />
+                                <m:Text text="{businessModel>CompanyCode}" />
+
+                                <m:Label text="{i18n>rfqInfoPurOrgLabel}" />
+                                <m:Text
+                                    text="{businessModel>PurchasingOrganization}"
+                                />
+
+                                <m:Label text="{i18n>rfqInfoPurGroupLabel}" />
+                                <m:Text
+                                    text="{businessModel>PurchasingGroup}"
+                                />
+                            </form:content>
+                        </form:SimpleForm>
+                    </m:VBox>
+                    <m:VBox alignItems="Start">
+                        <m:Title text="{i18n>rfqInfoDatesTitle}" />
+                        <form:SimpleForm
+                            editable="false"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="3"
+                            columnsL="3"
+                            columnsM="2"
+                        >
+                            <form:content>
+                                <m:Label text="{i18n>rfqInfoCreatedByLabel}" />
+                                <m:Text text="{businessModel>CreatedByUser}" />
+
+                                <m:Label
+                                    text="{i18n>rfqInfoCreationDateLabel}"
+                                />
+                                <m:Text
+                                    text="{path: 'businessModel>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                />
+
+                                <m:Label
+                                    text="{i18n>rfqInfoPublishingDateLabel}"
+                                />
+                                <m:Text
+                                    text="{path: 'businessModel>RFQPublishingDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                />
+
+                                <m:Label
+                                    text="{i18n>rfqInfoSubmissionDateLabel}"
+                                />
+                                <m:Text
+                                    text="{path: 'businessModel>QuotationLatestSubmissionDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                />
+
+                                <m:Label text="{i18n>rfqInfoApproverLabel}" />
+                                <m:Text text="{businessModel>ApproverName}" />
+                            </form:content>
+                        </form:SimpleForm>
+                    </m:VBox>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+
+    <!-- Section 2: RFQ Items -->
+    <ObjectPageSection
+        title="{i18n>rfqItemTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>rfqItemTitle}">
+                <blocks>
+                    <m:Table
+                        items="{businessModel>to_RFQItemEnhWD}"
+                        class="sapUiResponsiveMargin"
+                        width="auto"
+                    >
+                        <m:columns>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqItemNumber}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqItemText}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqItemMaterial}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqItemMaterialGroup}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqItemPlant}" />
+                            </m:Column>
+                            <m:Column hAlign="End">
+                                <m:Text text="{i18n>rfqItemOrderQuantity}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqItemDeliveryDate}" />
+                            </m:Column>
+                        </m:columns>
+                        <m:items>
+                            <m:ColumnListItem type="Active">
+                                <m:cells>
+                                    <m:Text
+                                        text="{businessModel>RequestForQuotationItem}"
+                                    />
+                                    <m:Text
+                                        text="{businessModel>PurchasingDocumentItemText}"
+                                    />
+                                    <m:Text text="{businessModel>Material}" />
+                                    <m:Text
+                                        text="{businessModel>MaterialGroup_Text}"
+                                    />
+                                    <m:Text text="{businessModel>PlantName}" />
+                                    <m:ObjectNumber
+                                        number="{businessModel>ScheduleLineOrderQuantity}"
+                                        unit="{businessModel>OrderQuantityUnit}"
+                                    />
+                                    <m:Text
+                                        text="{path: 'businessModel>ScheduleLineDeliveryDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                    />
+                                </m:cells>
+                            </m:ColumnListItem>
+                        </m:items>
+                    </m:Table>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+
+    <!-- Section 3: Bidders -->
+    <ObjectPageSection
+        title="{i18n>rfqBidderTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>rfqBidderTitle}">
+                <blocks>
+                    <m:Table
+                        items="{businessModel>to_RFQBidderEnhWD}"
+                        class="sapUiResponsiveMargin"
+                        width="auto"
+                    >
+                        <m:columns>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqBidderSupplier}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqBidderAddress}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqBidderCountry}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqBidderHasQuotation}" />
+                            </m:Column>
+                        </m:columns>
+                        <m:items>
+                            <m:ColumnListItem>
+                                <m:cells>
+                                    <m:Text text="{businessModel>Supplier}" />
+                                    <m:Text
+                                        text="{businessModel>FormattedAddress}"
+                                    />
+                                    <m:Text text="{businessModel>Country}" />
+                                    <m:Text
+                                        text="{= ${businessModel>HasNoSupplierQuotation} === false ? 'Yes' : 'No'}"
+                                    />
+                                </m:cells>
+                            </m:ColumnListItem>
+                        </m:items>
+                    </m:Table>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+
+    <!-- Section 4: Supplier Quotations -->
+    <ObjectPageSection
+        title="{i18n>rfqSupplierQuotationTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>rfqSupplierQuotationTitle}">
+                <blocks>
+                    <m:Table
+                        items="{businessModel>to_SupplierQuotation}"
+                        class="sapUiResponsiveMargin"
+                        width="auto"
+                    >
+                        <m:columns>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqSQNumber}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqSQSupplier}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqSQSubmissionDate}" />
+                            </m:Column>
+                            <m:Column hAlign="End">
+                                <m:Text text="{i18n>rfqSQTotalNetAmount}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqSQStatus}" />
+                            </m:Column>
+                        </m:columns>
+                        <m:items>
+                            <m:ColumnListItem>
+                                <m:cells>
+                                    <m:Text
+                                        text="{businessModel>SupplierQuotation}"
+                                    />
+                                    <m:Text
+                                        text="{businessModel>SupplierName} ({businessModel>Supplier})"
+                                    />
+                                    <m:Text
+                                        text="{path: 'businessModel>QuotationSubmissionDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                    />
+                                    <m:ObjectNumber
+                                        number="{businessModel>TotalNetAmount}"
+                                        unit="{businessModel>DocumentCurrency}"
+                                    />
+                                    <m:Text
+                                        text="{businessModel>QtnLifecycleStatus_Text}"
+                                    />
+                                </m:cells>
+                            </m:ColumnListItem>
+                        </m:items>
+                    </m:Table>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+
+    <!-- Section 5: Change Documents -->
+    <ObjectPageSection
+        title="{i18n>rfqChangeDocTitle}"
+        busy="{detailView>/bodyBusy}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>rfqChangeDocTitle}">
+                <blocks>
+                    <m:Table
+                        items="{businessModel>to_RFQChangeDocumentItem}"
+                        class="sapUiResponsiveMargin"
+                        width="auto"
+                    >
+                        <m:columns>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqChangeDocDate}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqChangeDocUser}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqChangeDocTable}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqChangeDocField}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqChangeDocChangeType}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqChangeDocOldValue}" />
+                            </m:Column>
+                            <m:Column>
+                                <m:Text text="{i18n>rfqChangeDocNewValue}" />
+                            </m:Column>
+                        </m:columns>
+                        <m:items>
+                            <m:ColumnListItem>
+                                <m:cells>
+                                    <m:Text
+                                        text="{path: 'businessModel>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd.MM.yyyy'}}"
+                                    />
+                                    <m:Text text="{businessModel>FullName}" />
+                                    <m:Text
+                                        text="{businessModel>DatabaseTable_Text}"
+                                    />
+                                    <m:Text
+                                        text="{businessModel>ChangeDocDatabaseTableField_Text}"
+                                    />
+                                    <m:Text
+                                        text="{businessModel>ChangeDocItemChangeType_Text}"
+                                    />
+                                    <m:Text
+                                        text="{businessModel>ChangeDocPreviousFieldValue}"
+                                    />
+                                    <m:Text
+                                        text="{businessModel>ChangeDocNewFieldValue}"
+                                    />
+                                </m:cells>
+                            </m:ColumnListItem>
+                        </m:items>
+                    </m:Table>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+</core:FragmentDefinition>

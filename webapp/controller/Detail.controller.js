@@ -8,14 +8,19 @@ sap.ui.define(
     "../utils/SuspendDialog",
     "../utils/DetailOdata"
   ],
-  function (BaseController, MessageToast, MessageBox, JSONModel, ForwardDialogHelper, SuspendDialogHelper, DetailOdataHelper)
+  function (
+    BaseController,
+    MessageToast,
+    MessageBox,
+    JSONModel,
+    ForwardDialogHelper,
+    SuspendDialogHelper,
+    DetailOdataHelper
+  )
   {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Detail", {
-      _currentHeaderFragmentId: null,
-      _currentBodyFragmentIds: [],
-
       onInit: function ()
       {
         this.oRouter = this.getOwnerComponent().getRouter();
@@ -75,8 +80,6 @@ sap.ui.define(
 
                 if (sServiceUrl && sEntitySet && sKey)
                 {
-                  // that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand, sExpand2);
-                  // that._loadFragmentsForEntitySet(sEntitySet);
                   DetailOdataHelper.callODataService(oView, {
                     serviceUrl: sServiceUrl,
                     entitySet: sEntitySet,
@@ -256,8 +259,6 @@ sap.ui.define(
               MessageToast.show(oResourceBundle.getText("successMessage"));
 
               oModel.refresh();
-
-              var oRouter = this.getOwnerComponent().getRouter();
             }.bind(this),
           )
           .catch(function (oError)
