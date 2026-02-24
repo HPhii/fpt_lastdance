@@ -67,6 +67,7 @@
                         type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
                     />
                     <SearchField
+                        id="searchTaskField"
                         width="auto"
                         placeholder="{i18n>tableHeaderSearchPlaceholder}"
                         class="sapUiSmallMargin"

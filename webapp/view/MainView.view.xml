@@ -16,14 +16,15 @@
     >
         <f:title>
             <f:DynamicPageTitle>
-                <f:navigationActions>
-                    <Button
-                        type="Back"
-                        press=".onNavBackToDashboard"
-                    />
-                </f:navigationActions>
                 <f:heading>
-                    <Title text="{i18n>title}" />
+                    <HBox alignItems="Center">
+                        <Button
+                            type="Back"
+                            press=".onNavBackToDashboard"
+                            class="sapUiSmallMarginEnd"
+                        />
+                        <Title text="{i18n>title}" />
+                    </HBox>
                 </f:heading>
                 <f:actions>
                     <core:Fragment

@@ -249,15 +249,30 @@ sap.ui.define([
 
         _getFragment: function (oView, sFragmentName)
         {
+            var oCachedContent = this._oFragmentCache[sFragmentName];
+
             // If fragment is already loaded, return it from cache
-            if (this._oFragmentCache[sFragmentName])
+            if (oCachedContent)
             {
-                return Promise.resolve(this._oFragmentCache[sFragmentName]);
+                var bIsDestroyed = Array.isArray(oCachedContent)
+                    ? oCachedContent[0].bIsDestroyed
+                    : oCachedContent.bIsDestroyed;
+
+                if (bIsDestroyed)
+                {
+                    // If the cached fragment was destroyed, remove it from cache and reload
+                    delete this._oFragmentCache[sFragmentName];
+                    oCachedContent = null;
+                }
+            }
+
+            if (oCachedContent)
+            {
+                return Promise.resolve(oCachedContent);
             }
 
             this._fragmentCounter = (this._fragmentCounter || 0) + 1;
             var sFragmentId = oView.getId() + "--Fragment" + this._fragmentCounter;
-
 
             // If not loaded, load the fragment and store it in cache
             return Fragment.load({
@@ -268,13 +283,6 @@ sap.ui.define([
             {
                 // Store in cache
                 this._oFragmentCache[sFragmentName] = oContent;
-                if (Array.isArray(oContent))
-                {
-                    oContent.forEach(function (oItem) { oView.addDependent(oItem); });
-                } else
-                {
-                    oView.addDependent(oContent);
-                }
                 return oContent;
             }.bind(this));
         },

@@ -3,22 +3,18 @@ sap.ui.define([
   "sap/ui/model/json/JSONModel",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "sap/m/MessageBox",
   "sap/m/ViewSettingsDialog",
   "sap/m/ViewSettingsItem",
   "sap/ui/model/Sorter",
-  "sap/ui/model/odata/v2/ODataModel",
   "../utils/ColumnSettingsDialog",
 ], function (
   BaseController,
   JSONModel,
   Filter,
   FilterOperator,
-  MessageBox,
   ViewSettingsDialog,
   ViewSettingsItem,
   Sorter,
-  ODataV2Model,
   ColumnSettingsDialogHelper
 )
 {
@@ -31,6 +27,9 @@ sap.ui.define([
 
       // Initialize router
       this.oRouter = this.getOwnerComponent().getRouter();
+
+      // Clear selection when navigating back to main view (e.g. browser back button)
+      this.oRouter.getRoute("RouteMainView").attachPatternMatched(this._onMainViewMatched, this);
 
       let oViewModel,
         oList = this.byId("idTasksList");
@@ -315,14 +314,13 @@ sap.ui.define([
       {
         // Switch to single select
         oViewModel.setProperty("/listMode", "SingleSelectMaster");
-        this._oList.removeSelections(true);
       } else
       {
         // Switch to multi select and hide detail
         oViewModel.setProperty("/listMode", "MultiSelect");
         oViewModel.setProperty("/detailVisible", false);
-        this._oList.removeSelections(true);
       }
+      this._oList.removeSelections(true);
     },
 
     onFilterStatus: function (oEvent)
@@ -401,6 +399,8 @@ sap.ui.define([
 
     onNavBackToDashboard: function ()
     {
+      this.byId("searchTaskField").setValue("");
+      this._oList.getBinding("items").filter([]);
       this.getOwnerComponent().getRouter().navTo("RouteDashboard");
     },
 
@@ -409,6 +409,16 @@ sap.ui.define([
       var oView = this.getView();
 
       ColumnSettingsDialogHelper.onCustomColumnOpen(oView);
+    },
+
+    _onMainViewMatched: function ()
+    {
+      // Clear list selection when returning to one-column layout (e.g. browser back)
+      // so that clicking the same row again will fire onSelectionChange
+      if (this._oList)
+      {
+        this._oList.removeSelections(true);
+      }
     },
 
   });
