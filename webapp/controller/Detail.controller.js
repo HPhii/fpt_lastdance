@@ -147,8 +147,11 @@ sap.ui.define(
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that.callBoundAction("approve", oContext);
+              var oPayload = {
+                ELEMENT: "0001"
+              };
 
+              that.callBoundAction("executionDecision", oContext, oPayload);
               that.getOwnerComponent().getRouter().navTo("RouteMainView", {}, true);
             }
           },
@@ -169,7 +172,12 @@ sap.ui.define(
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that.callBoundAction("reject", oContext);
+              var oPayload = {
+                ELEMENT: "0002"
+              };
+
+              that.callBoundAction("executionDecision", oContext, oPayload);
+              that.getOwnerComponent().getRouter().navTo("RouteMainView", {}, true);
             }
           },
         });

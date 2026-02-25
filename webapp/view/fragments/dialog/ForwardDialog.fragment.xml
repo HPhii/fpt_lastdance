@@ -7,7 +7,6 @@
         id="forwardDialog"
         contentWidth="400px"
         contentHeight="auto"
-        busy="{userInfoList>/busy}"
     >
         <content>
             <VBox class="sapUiSmallMargin">
@@ -21,22 +20,8 @@
                     placeholder="{i18n>forwardUserPlaceholder}"
                     showValueHelp="true"
                     required="true"
-                    valueHelpRequest=".onValueHelpUserID"
+                    valueHelpRequest=".onOpenUserSearchHelp"
                 />
-                <List
-                    visible="{userInfoList>/visible}"
-                    items="{path: 'userInfoList>/users'}"
-                >
-                    <items>
-                        <StandardListItem
-                            title="{userInfoList>DisplayName}"
-                            description="{userInfoList>Company}"
-                            info="{userInfoList>UniqueName}"
-                            type="Active"
-                            press=".onSelectForwardUser"
-                        />
-                    </items>
-                </List>
             </VBox>
         </content>
         <buttons>

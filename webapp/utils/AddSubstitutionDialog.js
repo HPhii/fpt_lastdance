@@ -3,8 +3,9 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
-    "sap/ui/core/format/DateFormat"
-], function (Fragment, JSONModel, MessageBox, MessageToast, DateFormat)
+    "sap/ui/core/format/DateFormat",
+    "../utils/UserSearchHelpDialog"
+], function (Fragment, JSONModel, MessageBox, MessageToast, DateFormat, UserSearchHelpDialogHelper)
 {
     "use strict";
 
@@ -175,5 +176,13 @@ sap.ui.define([
                 }.bind(this),
             );
         },
+
+        onOpenUserSearchHelp: function ()
+        {
+            var oView = this._oView;
+            var oUserInput = oView.byId("substituteUserInput");
+
+            UserSearchHelpDialogHelper.onOpen(oView, oUserInput);
+        }
     };
 })

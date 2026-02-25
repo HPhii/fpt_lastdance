@@ -12,26 +12,49 @@
             <f:SimpleForm
                 editable="true"
                 layout="ResponsiveGridLayout"
-                labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12"
-                emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
-                columnsXL="1" columnsL="1" columnsM="1"
+                labelSpanXL="4"
+                labelSpanL="4"
+                labelSpanM="4"
+                labelSpanS="12"
+                emptySpanXL="0"
+                emptySpanL="0"
+                emptySpanM="0"
+                emptySpanS="0"
+                columnsXL="1"
+                columnsL="1"
+                columnsM="1"
             >
                 <f:content>
                     <Label text="{i18n>labelRuleType}" />
                     <SegmentedButton selectedKey="{newRule>/type}">
                         <items>
-                            <SegmentedButtonItem key="P" text="{i18n>substModePlanned}" />
-                            <SegmentedButtonItem key="U" text="{i18n>substModeUnplanned}" />
+                            <SegmentedButtonItem
+                                key="P"
+                                text="{i18n>substModePlanned}"
+                            />
+                            <SegmentedButtonItem
+                                key="U"
+                                text="{i18n>substModeUnplanned}"
+                            />
                         </items>
                     </SegmentedButton>
 
-                    <Label text="{i18n>labelSubstituteUser}" required="true" />
-                    <Input 
-                        value="{newRule>/substituteId}" 
-                        placeholder="e.g. DEV-111" 
+                    <Label
+                        text="{i18n>labelSubstituteUser}"
+                        required="true"
+                    />
+                    <Input
+                        id="substituteUserInput"
+                        value="{newRule>/substituteId}"
+                        placeholder="e.g. DEV-111"
+                        valueHelpRequest=".onOpenUserSearchHelp"
+                        showValueHelp="true"
                     />
 
-                    <Label text="{i18n>labelProfile}" required="true" />
+                    <Label
+                        text="{i18n>labelProfile}"
+                        required="true"
+                    />
                     <Select
                         selectedKey="{newRule>/profileId}"
                         forceSelection="true"
@@ -40,10 +63,17 @@
                             templateShareable: false
                         }"
                     >
-                        <core:Item key="{ProfileId}" text="{ProfileText}" />
+                        <core:Item
+                            key="{ProfileId}"
+                            text="{ProfileText}"
+                        />
                     </Select>
 
-                    <Label text="{i18n>labelDateRange}" required="true" visible="{= ${newRule>/type} === 'P'}" />
+                    <Label
+                        text="{i18n>labelDateRange}"
+                        required="true"
+                        visible="{= ${newRule>/type} === 'P'}"
+                    />
                     <DateRangeSelection
                         dateValue="{newRule>/beginDate}"
                         secondDateValue="{newRule>/endDate}"
@@ -54,8 +84,15 @@
             </f:SimpleForm>
         </content>
         <buttons>
-            <Button text="{i18n>btnSave}" type="Emphasized" press=".onSaveRule" />
-            <Button text="{i18n>btnCancel}" press=".onCloseAddDialog" />
+            <Button
+                text="{i18n>btnSave}"
+                type="Emphasized"
+                press=".onSaveRule"
+            />
+            <Button
+                text="{i18n>btnCancel}"
+                press=".onCloseAddDialog"
+            />
         </buttons>
     </Dialog>
 </core:FragmentDefinition>
