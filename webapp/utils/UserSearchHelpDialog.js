@@ -2,8 +2,7 @@ sap.ui.define([
     "sap/ui/core/Fragment",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
-    "sap/ui/model/odata/v2/ODataModel"
-], function (Fragment, JSONModel, MessageBox, ODataV2Model)
+], function (Fragment, JSONModel, MessageBox)
 {
     "use strict";
 
@@ -50,12 +49,7 @@ sap.ui.define([
             var oUserInfoList = oView.getModel("userInfoList");
             var sUserId = oUserInfoList.getProperty("/userId");
 
-            const sServiceUrl = "/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/";
-            const oODataModel = new ODataV2Model(sServiceUrl, {
-                json: true,
-                useBatch: false,
-            });
-
+            const oODataModel = oView.getModel("taskProcessingModel");
             const sEntityPath = "/SearchUsers";
 
             oUserInfoList.setProperty("/busy", true);

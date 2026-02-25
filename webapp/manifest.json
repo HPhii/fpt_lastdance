@@ -24,6 +24,16 @@
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "4.0"
         }
+      },
+      "taskProcessingService": {
+        "uri": "/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/taskProcessingService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
       }
     },
     "crossNavigation": {
@@ -85,6 +95,16 @@
       },
       "": {
         "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "taskProcessingModel": {
+        "dataSource": "taskProcessingService",
         "preload": true,
         "settings": {
           "synchronizationMode": "None",

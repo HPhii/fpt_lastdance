@@ -7,7 +7,6 @@ sap.ui.define(
     "sap/ui/core/Fragment",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
-    "sap/ui/model/odata/v2/ODataModel",
     "../utils/UpdateSubstitutionDialog",
     "../utils/AddSubstitutionDialog"
   ],
@@ -19,7 +18,6 @@ sap.ui.define(
     Fragment,
     MessageBox,
     MessageToast,
-    ODataModel,
     UpdateSubstitutionDialogHelper,
     AddSubstitutionDialogHelper
   )
@@ -119,14 +117,7 @@ sap.ui.define(
         // Set loading state
         oView.setBusy(true);
 
-        // Create OData V2 model for TASKPROCESSING service
-        const sServiceUrl = "/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/";
-        const oODataModel = new ODataModel(sServiceUrl, {
-          json: true,
-          useBatch: false,
-        });
-
-        console.log(sUserId);
+        const oODataModel = oView.getModel("taskProcessingModel");
 
         // Build the entity path
         const sEntityPath =
