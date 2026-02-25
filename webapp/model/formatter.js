@@ -36,6 +36,51 @@ sap.ui.define([], function ()
       }
     },
 
+    formatPriorityIcon: function (sPriority)
+    {
+      switch (sPriority)
+      {
+        case "1":
+        case "2":
+          return "sap-icon://high-priority";
+        case "3":
+        case "4":
+          return "sap-icon://alert";
+        case "5":
+          return "sap-icon://information";
+        case "6":
+        case "7":
+          return "sap-icon://message-information";
+        case "8":
+        case "9":
+          return "sap-icon://master-task-triangle";
+        default:
+          return "";
+      }
+    },
+
+    formatPriorityState: function (sPriority)
+    {
+      switch (sPriority)
+      {
+        case "1":
+        case "2":
+          return "Error";
+        case "3":
+        case "4":
+          return "Warning";
+        case "5":
+          return "Information";
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+          return "None";
+        default:
+          return "None";
+      }
+    },
+
     /**
      * Formatter for days to deadline text
      * @param {string} sNumberOfDays 

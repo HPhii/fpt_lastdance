@@ -189,8 +189,14 @@
                     <Text text="{AssignedUserName}" />
                     <ObjectStatus
                         text="{PriorityText}"
-                        icon="sap-icon://{= ${Priority} &lt; '5' ? 'alert' : 'information' }"
-                        state="{= ${Priority} &lt; '5' ? 'Warning' : 'Information' }"
+                        icon="{
+                            path: 'Priority',
+                            formatter: '.formatter.formatPriorityIcon'
+                        }"
+                        state="{
+                            path: 'Priority',
+                            formatter: '.formatter.formatPriorityState'
+                        }"
                     />
                 </cells>
             </ColumnListItem>

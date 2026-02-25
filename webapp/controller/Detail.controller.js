@@ -6,7 +6,8 @@ sap.ui.define(
     "sap/ui/model/json/JSONModel",
     "../utils/ForwardDialog",
     "../utils/SuspendDialog",
-    "../utils/DetailOdata"
+    "../utils/DetailOdata",
+    "../utils/SetPriorityDialog"
   ],
   function (
     BaseController,
@@ -15,7 +16,8 @@ sap.ui.define(
     JSONModel,
     ForwardDialogHelper,
     SuspendDialogHelper,
-    DetailOdataHelper
+    DetailOdataHelper,
+    SetPriorityDialogHelper
   )
   {
     "use strict";
@@ -218,6 +220,12 @@ sap.ui.define(
             }
           },
         });
+      },
+
+      onSetPriorityAction: function ()
+      {
+        var oView = this.getView();
+        SetPriorityDialogHelper.openSetPriorityDialog(oView);
       },
 
       onSuspendAction: function ()

@@ -1,0 +1,45 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="setPriorityDialog"
+        title="{i18n>setPriorityDialogTitle}"
+        contentWidth="400px"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label
+                    text="{i18n>priorityLabel}"
+                    labelFor="prioritySelect"
+                    required="true"
+                />
+                <Select
+                    id="prioritySelect"
+                    forceSelection="false"
+                    selectedKey=""
+                    items="{priorityModel>/priorities}"
+                    width="100%"
+                >
+                    <core:Item
+                        key="{priorityModel>key}"
+                        text="{priorityModel>text}"
+                    />
+                </Select>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button
+                text="{i18n>buttonConfirm}"
+                type="Emphasized"
+                press=".onConfirmSetPriority"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                text="{i18n>buttonCancel}"
+                press=".onClosePriorityDialog"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
