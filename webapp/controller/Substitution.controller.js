@@ -117,7 +117,7 @@ sap.ui.define(
         // Set loading state
         oView.setBusy(true);
 
-        const oODataModel = oView.getModel("taskProcessingModel");
+        const oODataModel = oView.getModel("taskProcessing");
 
         // Build the entity path
         const sEntityPath =

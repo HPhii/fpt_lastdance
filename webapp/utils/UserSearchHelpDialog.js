@@ -49,7 +49,7 @@ sap.ui.define([
             var oUserInfoList = oView.getModel("userInfoList");
             var sUserId = oUserInfoList.getProperty("/userId");
 
-            const oODataModel = oView.getModel("taskProcessingModel");
+            const oODataModel = oView.getModel("taskProcessing");
             const sEntityPath = "/SearchUsers";
 
             oUserInfoList.setProperty("/busy", true);
