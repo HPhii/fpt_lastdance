@@ -269,10 +269,7 @@ sap.ui.define(
       {
         var oView = this.getView();
         var sValue = oEvent.getParameter("value").trim();
-        if (!sValue)
-        {
-          return;
-        }
+        if (!sValue) return;
 
         var oContext = oView.getBindingContext();
         const oPayload = {
