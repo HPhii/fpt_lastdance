@@ -1,7 +1,6 @@
 sap.ui.define(
   [
     "./BaseController",
-    "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/model/json/JSONModel",
     "../utils/ForwardDialog",
@@ -12,7 +11,6 @@ sap.ui.define(
   ],
   function (
     BaseController,
-    MessageToast,
     MessageBox,
     JSONModel,
     ForwardDialogHelper,
@@ -122,16 +120,23 @@ sap.ui.define(
         }
 
         var that = this;
+        var oContext = this.getView().getBindingContext();
+
         var sConfirmMessage = oResourceBundle.getText("confirmDecision", [
           sText,
         ]);
 
+        const oPayload = {
+          DecisionKey: sDecisionKey,
+          WorkItemID: sWorkItemID,
+          DecisionComment: ""
+        };
         MessageBox.confirm(sConfirmMessage, {
           onClose: function (oAction)
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that._callODataV4Action(sWorkItemID, sDecisionKey);
+              that.callBoundAction("executionDecision", oContext, oPayload);
             }
           },
         });
@@ -262,92 +267,19 @@ sap.ui.define(
 
       onPostComment: function (oEvent)
       {
-        MessageToast.show("Comming Soon.");
-        // var sValue = oEvent.getParameter("value");
-        // if (!sValue || !sValue.trim())
-        // {
-        //   return;
-        // }
-
-        // var oView = this.getView();
-        // var oContext = oView.getBindingContext();
-        // var oModel = oView.getModel();
-        // var oResourceBundle = oView.getModel("i18n").getResourceBundle();
-
-        // if (!oContext)
-        // {
-        //   MessageBox.error(oResourceBundle.getText("errorNoContext"));
-        //   return;
-        // }
-
-        // var sWorkItemID = oContext.getProperty("WorkItemID");
-
-        // var oListBinding = oModel.bindList("_Comments", oContext);
-        // oListBinding.create({
-        //   WorkItemID: sWorkItemID,
-        //   line: sValue.trim(),
-        //   title: "COMMENT"
-        // });
-
-        // var that = this;
-        // oModel.submitBatch("$auto").then(
-        //   function ()
-        //   {
-        //     MessageToast.show(oResourceBundle.getText("commentPostSuccess"));
-
-        //     // Refresh the element binding to re-fetch _Comments via $expand
-        //     var oElementBinding = oView.getElementBinding();
-        //     if (oElementBinding)
-        //     {
-        //       oElementBinding.refresh();
-        //     }
-        //   }
-        // ).catch(
-        //   function (oError)
-        //   {
-        //     MessageBox.error("Error: " + oError.message);
-        //   }
-        // );
-      },
-
-      _callODataV4Action: function (sWorkItemID, sDecisionKey)
-      {
-        var oModel = this.getView().getModel();
         var oView = this.getView();
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-
-        var oContext = oView.getBindingContext();
-
-        if (!oContext)
+        var sValue = oEvent.getParameter("value").trim();
+        if (!sValue)
         {
-          MessageBox.error(oResourceBundle.getText("errorNoContext"));
           return;
         }
 
-        var oOperation = oModel.bindContext(
-          "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.executionDecision(...)",
-          oContext,
-        );
-        oOperation.setParameter("DecisionKey", sDecisionKey);
-        oOperation.setParameter("WorkItemID", sWorkItemID);
-        oOperation.setParameter("DecisionComment", "");
+        var oContext = oView.getBindingContext();
+        const oPayload = {
+          note: sValue
+        };
 
-        oOperation
-          .execute()
-          .then(
-            function ()
-            {
-              MessageToast.show(oResourceBundle.getText("successMessage"));
-
-              oModel.refresh();
-            }.bind(this),
-          )
-          .catch(function (oError)
-          {
-            MessageBox.error("Error: " + oError.message);
-          });
+        this.callBoundAction("comment", oContext, oPayload);
       },
 
       handleFullScreen: function ()

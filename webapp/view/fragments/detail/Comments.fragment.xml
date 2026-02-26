@@ -37,7 +37,7 @@
                             <m:CustomListItem type="Inactive">
                                 <m:HBox
                                     alignItems="Center"
-                                    class="sapUiSmallMarginTopBottom"
+                                    class="sapUiSmallMargin"
                                 >
                                     <m:Avatar
                                         initials="{= ${commentsModel>created}.substring(0,2).toUpperCase() }"
