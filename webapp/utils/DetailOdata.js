@@ -208,6 +208,7 @@ sap.ui.define([
             oObjectPageLayout.removeAllSections();
 
             var sHeaderFragment, sBodyFragment;
+            var sCommentFragment = "z.wf.zwfmanagement.view.fragments.detail.Comments";
 
             switch (sEntitySet)
             {
@@ -224,23 +225,38 @@ sap.ui.define([
                     sBodyFragment = "z.wf.zwfmanagement.view.fragments.detail.RFQBody";
                     break;
                 default:
-                    return;
+                    break;
             }
 
-            this._getFragment(oView, sHeaderFragment).then(function (oHeader)
-            {
-                oObjectPageLayout.addHeaderContent(oHeader);
-            });
+            var that = this;
 
-            this._getFragment(oView, sBodyFragment).then(function (oBody)
+            var pHeader = sHeaderFragment
+                ? this._getFragment(oView, sHeaderFragment).then(function (oHeader)
+                {
+                    oObjectPageLayout.addHeaderContent(oHeader);
+                })
+                : Promise.resolve();
+
+            var pBody = sBodyFragment
+                ? this._getFragment(oView, sBodyFragment).then(function (oBody)
+                {
+                    if (Array.isArray(oBody))
+                    {
+                        oBody.forEach(function (oSec) { oObjectPageLayout.addSection(oSec); });
+                    } else
+                    {
+                        oObjectPageLayout.addSection(oBody);
+                    }
+                })
+                : Promise.resolve();
+
+            // Add comments section only AFTER body sections are added
+            pBody.then(function ()
             {
-                if (Array.isArray(oBody))
-                {
-                    oBody.forEach(function (oSec) { oObjectPageLayout.addSection(oSec); });
-                } else
-                {
-                    oObjectPageLayout.addSection(oBody);
-                }
+                return that._getFragment(oView, sCommentFragment);
+            }).then(function (oCommentsSection)
+            {
+                oObjectPageLayout.addSection(oCommentsSection);
             });
 
             // Update header title bindings based on entity set

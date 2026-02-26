@@ -4,22 +4,22 @@ sap.ui.define(
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
-    "sap/ui/core/Fragment",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
     "../utils/UpdateSubstitutionDialog",
-    "../utils/AddSubstitutionDialog"
+    "../utils/AddSubstitutionDialog",
+    "../utils/UserInfoPopover",
   ],
   function (
     BaseController,
     JSONModel,
     Filter,
     FilterOperator,
-    Fragment,
     MessageBox,
     MessageToast,
     UpdateSubstitutionDialogHelper,
-    AddSubstitutionDialogHelper
+    AddSubstitutionDialogHelper,
+    UserInfoPopoverHelper
   )
   {
     "use strict";
@@ -51,26 +51,18 @@ sap.ui.define(
        */
       onShowUserInfo: function (oEvent)
       {
+        const oView = this.getView();
         const oSource = oEvent.getSource();
         const oContext = oSource.getBindingContext();
 
-        if (!oContext)
-        {
-          return;
-        }
+        if (!oContext) return;
 
         // Get the substitute user ID from the context
         const oData = oContext.getObject();
         const sUserId = oData.UserSubstitutedBy;
 
-        if (!sUserId)
-        {
-          MessageToast.show("User ID not found");
-          return;
-        }
-
         // Fetch user info and open popover
-        this._fetchAndShowUserInfo(sUserId, oSource);
+        UserInfoPopoverHelper.onOpen(oView, oSource, sUserId);
       },
 
       /**
@@ -78,101 +70,18 @@ sap.ui.define(
        */
       onShowOwnerInfo: function (oEvent)
       {
+        const oView = this.getView();
         const oSource = oEvent.getSource();
         const oContext = oSource.getBindingContext();
 
-        if (!oContext)
-        {
-          return;
-        }
+        if (!oContext) return;
 
         // Get the owner user ID from the context
         const oData = oContext.getObject();
         const sUserId = oData.UserSubstitutedFor;
 
-        if (!sUserId)
-        {
-          MessageToast.show("User ID not found");
-          return;
-        }
-
         // Fetch user info and open popover
-        this._fetchAndShowUserInfo(sUserId, oSource);
-      },
-
-      /**
-       * Fetch user information from TASKPROCESSING service
-       */
-      _fetchAndShowUserInfo: function (sUserId, oSource)
-      {
-        const oView = this.getView();
-
-        // Create user info model if not exists
-        if (!this._oUserInfoModel)
-        {
-          this._oUserInfoModel = new JSONModel();
-          oView.setModel(this._oUserInfoModel, "userInfo");
-        }
-
-        // Set loading state
-        oView.setBusy(true);
-
-        const oODataModel = oView.getModel("taskProcessing");
-
-        // Build the entity path
-        const sEntityPath =
-          "/UserInfoCollection(SAP__Origin='LOCAL_TGW',UniqueName='" +
-          sUserId +
-          "')";
-
-        // Read user info
-        oODataModel.read(sEntityPath, {
-          success: function (oData)
-          {
-            oView.setBusy(false);
-
-            // Set user info data to model
-            this._oUserInfoModel.setData(oData.d || oData);
-
-            // Open popover
-            this._openUserInfoPopover(oSource);
-          }.bind(this),
-          error: function (oError)
-          {
-            oView.setBusy(false);
-            MessageBox.error(
-              "Failed to load user information: " +
-              (oError.responseText || oError.message || "Unknown error"),
-            );
-          },
-        });
-      },
-
-      /**
-       * Open user info popover
-       */
-      _openUserInfoPopover: function (oSource)
-      {
-        const oView = this.getView();
-
-        if (!this._oUserInfoPopover)
-        {
-          Fragment.load({
-            id: oView.getId(),
-            name: "z.wf.zwfmanagement.view.fragments.UserInfoPopover",
-            controller: this,
-          }).then(
-            function (oPopover)
-            {
-              this._oUserInfoPopover = oPopover;
-              oView.addDependent(oPopover);
-              oPopover.openBy(oSource);
-            }.bind(this),
-          );
-        } else
-        {
-          this._oUserInfoPopover.openBy(oSource);
-        }
+        UserInfoPopoverHelper.onOpen(oView, oSource, sUserId);
       },
 
       onTabSelect: function (oEvent)
@@ -282,6 +191,7 @@ sap.ui.define(
       createGroupHeader: function (oGroup)
       {
         const that = this;
+        const oView = this.getView();
         let sUserId = "";
 
         const oTable = this.byId("tableUnplanned");
@@ -310,9 +220,11 @@ sap.ui.define(
           type: sap.m.ListType.Active,
           press: function (oEvent)
           {
+            var oSource = oEvent.getSource();
+
             if (sUserId)
             {
-              that._fetchAndShowUserInfo(sUserId, oEvent.getSource());
+              UserInfoPopoverHelper.onOpen(oView, oSource, sUserId);
             }
           }
         });

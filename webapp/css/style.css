@@ -12,7 +12,6 @@ img.sapMSelectListItemIcon {
 .substDimmedText {
   font-style: italic;
   color: #89919a;
-  /* Màu xám chuẩn của SAP Fiori cho subdued text */
   font-size: 0.875rem;
 }
 
@@ -57,4 +56,24 @@ img.sapMSelectListItemIcon {
 
 .userInfoPopover .sapMTitle {
   color: #32363a;
+}
+
+.commentBubble {
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.875rem;
+}
+
+*/ .commentSender .sapMLnk {
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.commentTimestamp {
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.commentText {
+  font-size: 0.875rem;
+  line-height: 1.4;
 }

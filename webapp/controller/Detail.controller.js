@@ -7,7 +7,8 @@ sap.ui.define(
     "../utils/ForwardDialog",
     "../utils/SuspendDialog",
     "../utils/DetailOdata",
-    "../utils/SetPriorityDialog"
+    "../utils/SetPriorityDialog",
+    "../utils/UserInfoPopover"
   ],
   function (
     BaseController,
@@ -17,7 +18,8 @@ sap.ui.define(
     ForwardDialogHelper,
     SuspendDialogHelper,
     DetailOdataHelper,
-    SetPriorityDialogHelper
+    SetPriorityDialogHelper,
+    UserInfoPopoverHelper
   )
   {
     "use strict";
@@ -36,6 +38,7 @@ sap.ui.define(
         });
 
         this.getView().setModel(oViewModel, "detailView");
+        this.getView().setModel(new JSONModel({ comments: [] }), "commentsModel");
         this.oModel = this.getOwnerComponent().getModel();
 
         this.oRouter
@@ -45,7 +48,6 @@ sap.ui.define(
 
       _onObjectMatched: function (oEvent)
       {
-        var that = this;
         var oView = this.getView();
         var oViewModel = oView.getModel("detailView");
         var oDetailPanel = this.byId("DetailObjectPageLayout");
@@ -61,7 +63,7 @@ sap.ui.define(
           path: sPath,
           parameters: {
             $select: "*,__OperationControl",
-            $expand: "_DecisionOptions",
+            $expand: "_DecisionOptions,_Comments",
           },
           events: {
             dataReceived: function ()
@@ -71,9 +73,11 @@ sap.ui.define(
 
               // Get the bound context of the detail panel
               var oBoundContext = oDetailPanel.getBindingContext();
-
               if (oBoundContext)
               {
+                var aComments = oBoundContext.getObject("_Comments") || [];
+                oView.getModel("commentsModel").setProperty("/comments", aComments);
+
                 var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
                 var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
                 var sKey = oBoundContext.getProperty("ObjectID");
@@ -88,9 +92,9 @@ sap.ui.define(
                     key: sKey,
                     expands: [sExpand, sExpand2].filter(Boolean)
                   });
-
-                  DetailOdataHelper.loadFragmentsForEntitySet(oView, sEntitySet);
                 }
+
+                DetailOdataHelper.loadFragmentsForEntitySet(oView, sEntitySet);
               }
             },
             dataRequested: function ()
@@ -241,6 +245,69 @@ sap.ui.define(
         var oView = this.getView();
 
         SuspendDialogHelper.onSuspendDialogOpen(oView);
+      },
+
+      onShowUserInfo: function (oEvent)
+      {
+        var oView = this.getView();
+        var oSource = oEvent.getSource();
+        var oContext = oSource.getBindingContext();
+
+        if (!oContext) return;
+
+        var sUserId = oSource.getText();
+
+        UserInfoPopoverHelper.onOpen(oView, oSource, sUserId);
+      },
+
+      onPostComment: function (oEvent)
+      {
+        MessageToast.show("Comming Soon.");
+        // var sValue = oEvent.getParameter("value");
+        // if (!sValue || !sValue.trim())
+        // {
+        //   return;
+        // }
+
+        // var oView = this.getView();
+        // var oContext = oView.getBindingContext();
+        // var oModel = oView.getModel();
+        // var oResourceBundle = oView.getModel("i18n").getResourceBundle();
+
+        // if (!oContext)
+        // {
+        //   MessageBox.error(oResourceBundle.getText("errorNoContext"));
+        //   return;
+        // }
+
+        // var sWorkItemID = oContext.getProperty("WorkItemID");
+
+        // var oListBinding = oModel.bindList("_Comments", oContext);
+        // oListBinding.create({
+        //   WorkItemID: sWorkItemID,
+        //   line: sValue.trim(),
+        //   title: "COMMENT"
+        // });
+
+        // var that = this;
+        // oModel.submitBatch("$auto").then(
+        //   function ()
+        //   {
+        //     MessageToast.show(oResourceBundle.getText("commentPostSuccess"));
+
+        //     // Refresh the element binding to re-fetch _Comments via $expand
+        //     var oElementBinding = oView.getElementBinding();
+        //     if (oElementBinding)
+        //     {
+        //       oElementBinding.refresh();
+        //     }
+        //   }
+        // ).catch(
+        //   function (oError)
+        //   {
+        //     MessageBox.error("Error: " + oError.message);
+        //   }
+        // );
       },
 
       _callODataV4Action: function (sWorkItemID, sDecisionKey)

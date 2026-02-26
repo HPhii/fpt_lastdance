@@ -1,0 +1,80 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.uxap"
+    xmlns:m="sap.m"
+>
+    <ObjectPageSection
+        id="commentsSection"
+        title="{i18n>commentSectionTitle}"
+    >
+        <subSections>
+            <ObjectPageSubSection title="{i18n>commentSectionTitle}">
+                <blocks>
+                    <m:VBox class="sapUiSmallMargin">
+                        <m:FeedInput
+                            id="commentInput"
+                            post=".onPostComment"
+                            placeholder="{i18n>commentPlaceholder}"
+                        />
+                        <m:List
+                            id="commentList"
+                            items="{
+                                path: 'commentsModel>/comments',
+                                sorter: [
+                                    { 
+                                        path: 'dateCreated', 
+                                        descending: true 
+                                    },
+                                    { 
+                                        path: 'createdAt', 
+                                        descending: true 
+                                    }
+                                ]
+                            }"
+                            noDataText="{i18n>commentNoData}"
+                            showSeparators="Inner"
+                        >
+                            <m:CustomListItem type="Inactive">
+                                <m:HBox
+                                    alignItems="Center"
+                                    class="sapUiSmallMarginTopBottom"
+                                >
+                                    <m:Avatar
+                                        initials="{= ${commentsModel>created}.substring(0,2).toUpperCase() }"
+                                        displaySize="XS"
+                                        class="sapUiSmallMarginEnd"
+                                        backgroundColor="Accent6"
+                                    />
+                                    <m:VBox
+                                        class="commentBubble"
+                                        width="100%"
+                                    >
+                                        <m:HBox
+                                            alignItems="Center"
+                                            justifyContent="SpaceBetween"
+                                        >
+                                            <m:Link
+                                                text="{commentsModel>created}"
+                                                press=".onShowUserInfo"
+                                                class="commentSender sapUiTextBold"
+                                            />
+                                            <m:Text
+                                                text="{= ${commentsModel>dateCreated} + ' ' + ${commentsModel>createdAt} }"
+                                                class="commentTimestamp"
+                                            />
+                                        </m:HBox>
+                                        <m:Text
+                                            text="{commentsModel>line}"
+                                            wrapping="true"
+                                            class="sapUiTinyMarginTop commentText"
+                                        />
+                                    </m:VBox>
+                                </m:HBox>
+                            </m:CustomListItem>
+                        </m:List>
+                    </m:VBox>
+                </blocks>
+            </ObjectPageSubSection>
+        </subSections>
+    </ObjectPageSection>
+</core:FragmentDefinition>
