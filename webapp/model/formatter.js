@@ -193,5 +193,20 @@ sap.ui.define([], function ()
       });
       return oOutputFormat.format(oDate);
     },
+
+    formatCompletionRate: function (sCompleted, sTotal)
+    {
+      if (!sCompleted || !sTotal || parseInt(sTotal, 10) === 0)
+      {
+        return "0.00";
+      }
+      var fCompleted = parseFloat(sCompleted);
+      var fTotal = parseFloat(sTotal);
+
+      var fRate = (fCompleted / fTotal) * 100;
+      console.log(fRate);
+
+      return fRate.toFixed(2);
+    }
   };
 });

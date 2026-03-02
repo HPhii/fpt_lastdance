@@ -25,6 +25,7 @@ sap.ui.define(
     return BaseController.extend("z.wf.zwfmanagement.controller.Detail", {
       onInit: function ()
       {
+        var oView = this.getView();
         this.oRouter = this.getOwnerComponent().getRouter();
 
         var oViewModel = new JSONModel({
@@ -35,8 +36,8 @@ sap.ui.define(
           snappedTitle: ""
         });
 
-        this.getView().setModel(oViewModel, "detailView");
-        this.getView().setModel(new JSONModel({ comments: [] }), "commentsModel");
+        oView.setModel(oViewModel, "detailView");
+        oView.setModel(new JSONModel({ comments: [] }), "commentsModel");
         this.oModel = this.getOwnerComponent().getModel();
 
         this.oRouter

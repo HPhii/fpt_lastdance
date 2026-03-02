@@ -50,16 +50,9 @@ sap.ui.define([
 
         onClosePriorityDialog: function ()
         {
-            var oView = this._oView;
-            var oSelect = oView.byId("prioritySelect");
-
             this._oSetPriorityDialog.then(function (oDialog)
             {
                 oDialog.close();
-                if (oSelect)
-                {
-                    oSelect.setSelectedKey("");
-                }
             });
         },
 

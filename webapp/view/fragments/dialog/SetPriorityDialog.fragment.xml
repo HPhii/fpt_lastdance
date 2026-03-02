@@ -17,7 +17,7 @@
                 <Select
                     id="prioritySelect"
                     forceSelection="false"
-                    selectedKey=""
+                    selectedKey="{Priority}"
                     items="{priorityModel>/priorities}"
                     width="100%"
                 >

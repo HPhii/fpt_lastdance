@@ -41,7 +41,7 @@
         "settings": {
           "annotations": [],
           "localUri": "localService/statsAnalyticsService/metadata.xml",
-          "odataVersion": "4.0",
+          "odataVersion": "2.0",
           "defaultBindingMode": "OneWay"
         }
       },
@@ -118,6 +118,9 @@
   },
   "sap.ui5": {
     "flexEnabled": false,
+    "config": {
+      "fullWidth": true
+    },
     "dependencies": {
       "minUI5Version": "1.108.0",
       "libs": {

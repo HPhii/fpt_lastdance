@@ -11,21 +11,21 @@ img.sapMSelectListItemIcon {
 /* Custom class for subdued italic text in Substitution table */
 .substDimmedText {
   font-style: italic;
-  color: #89919a;
-  font-size: 0.875rem;
+  color: var(--sapNeutralColor);
+  font-size: var(--sapFontSize);
 }
 
 /* Custom styling for Group Headers in Substitution list */
 .sapMGHLI {
-  background-color: #f7f7f7 !important;
+  background-color: var(--sapBackgroundColor) !important;
   font-weight: 600 !important;
-  border-top: 1px solid #e5e5e5 !important;
-  border-bottom: 1px solid #e5e5e5 !important;
+  border-top: 1px solid var(--sapList_BorderColor) !important;
+  border-bottom: 1px solid var(--sapList_BorderColor) !important;
 }
 
 .sapMGHLI .sapMGHLITitle {
-  font-size: 0.875rem !important;
-  color: #32363a !important;
+  font-size: var(--sapFontSize) !important;
+  /* color: var(--sapTitleColor) !important; */
   padding: 0.5rem 0 !important;
 }
 
@@ -40,22 +40,13 @@ img.sapMSelectListItemIcon {
 }
 
 .userInfoPopover .contactLabel {
-  color: #6a6d70;
   font-weight: 400;
 }
 
 .userInfoPopover .contactDetailsBox,
 .userInfoPopover .companyBox {
   padding-left: 1rem;
-  border-left: 2px solid #e5e5e5;
-}
-
-.userInfoPopover .sapUiTinyText {
-  color: #6a6d70;
-}
-
-.userInfoPopover .sapMTitle {
-  color: #32363a;
+  border-left: 2px solid var(--sapList_BorderColor);
 }
 
 .commentBubble {
@@ -76,4 +67,91 @@ img.sapMSelectListItemIcon {
 .commentText {
   font-size: 0.875rem;
   line-height: 1.4;
+}
+
+/* ========== Analytics Stats Panel ========== */
+.statsPanel .sapMPanelContent {
+  padding: 0.75rem 1rem !important;
+  margin-right: 2rem !important;
+}
+
+.statsCardsRow {
+  gap: 1rem;
+  flex-wrap: wrap !important;
+}
+
+.statsCard {
+  flex: 1 1 calc(25% - 1rem);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  align-items: center;
+  min-width: 12rem;
+  box-sizing: border-box;
+}
+
+.statsCardBlue {
+  background-color: var(--sapInformationBackground);
+}
+
+.statsCardGreen {
+  background-color: var(--sapSuccessBackground);
+}
+
+.statsCardRed {
+  background-color: var(--sapErrorBackground);
+}
+
+.statsCardYellow {
+  background-color: var(--sapWarningBackground);
+}
+
+.statsCardIcon {
+  font-size: 2.25rem !important;
+  margin-right: 0.75rem;
+}
+
+.statsCardIconBlue {
+  color: var(--sapInformativeColor) !important;
+}
+
+.statsCardIconGreen {
+  color: var(--sapPositiveElementColor) !important;
+}
+
+.statsCardIconRed {
+  color: var(--sapNegativeElementColor) !important;
+}
+
+.statsCardIconYellow {
+  color: var(--sapCriticalElementColor) !important;
+}
+
+.statsCardContent {
+  justify-content: center;
+}
+
+.statsCardValue {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+}
+
+.statsCardValueBlue {
+  color: var(--sapInformativeTextColor) !important;
+}
+
+.statsCardValueGreen {
+  color: var(--sapPositiveTextColor) !important;
+}
+
+.statsCardValueRed {
+  color: var(--sapNegativeTextColor) !important;
+}
+
+.statsCardValueYellow {
+  color: var(--sapCriticalTextColor) !important;
+}
+
+.statsCardLabelGreen>span {
+  color: var(--sapPositiveTextColor) !important;
 }
