@@ -5,10 +5,12 @@
 >
     <ObjectPageSection
         id="commentsSection"
-        title="{i18n>commentSectionTitle}"
+        title="{i18n>commentSectionTitle} ({= ${commentsModel>/comments}.length })"
     >
         <subSections>
-            <ObjectPageSubSection title="{i18n>commentSectionTitle}">
+            <ObjectPageSubSection
+                title="{i18n>commentSectionTitle} ({= ${commentsModel>/comments}.length })"
+            >
                 <blocks>
                     <m:VBox class="sapUiSmallMargin">
                         <m:FeedInput
@@ -22,11 +24,11 @@
                                 path: 'commentsModel>/comments',
                                 sorter: [
                                     { 
-                                        path: 'dateCreated', 
+                                        path: 'DateCreated', 
                                         descending: true 
                                     },
                                     { 
-                                        path: 'createdAt', 
+                                        path: 'CreatedAt', 
                                         descending: true 
                                     }
                                 ]
@@ -40,8 +42,8 @@
                                     class="sapUiSmallMargin"
                                 >
                                     <m:Avatar
-                                        initials="{= ${commentsModel>created}.substring(0,2).toUpperCase() }"
-                                        displaySize="XS"
+                                        initials="{= ${commentsModel>CreatedBy}.split('-')[0].toUpperCase() }"
+                                        displaySize="S"
                                         class="sapUiSmallMarginEnd"
                                         backgroundColor="Accent6"
                                     />
@@ -54,17 +56,17 @@
                                             justifyContent="SpaceBetween"
                                         >
                                             <m:Link
-                                                text="{commentsModel>created}"
+                                                text="{commentsModel>CreatedBy}"
                                                 press=".onShowUserInfo"
                                                 class="commentSender sapUiTextBold"
                                             />
                                             <m:Text
-                                                text="{= ${commentsModel>dateCreated} + ' ' + ${commentsModel>createdAt} }"
+                                                text="{= ${commentsModel>DateCreated} + ' ' + ${commentsModel>CreatedAt} }"
                                                 class="commentTimestamp"
                                             />
                                         </m:HBox>
                                         <m:Text
-                                            text="{commentsModel>line}"
+                                            text="{commentsModel>CommentText}"
                                             wrapping="true"
                                             class="sapUiTinyMarginTop commentText"
                                         />

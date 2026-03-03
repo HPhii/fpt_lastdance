@@ -24,6 +24,7 @@ sap.ui.define([
 
     _onObjectMatched: function (oEvent)
     {
+      this._callUserWorkloadOData();
       var oView = this.getView();
       var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
       var oStatsModel = oView.getModel("statsAnalyticsModel");
@@ -54,6 +55,27 @@ sap.ui.define([
         }.bind(this)
       })
 
+    },
+
+    _callUserWorkloadOData: function ()
+    {
+      var oView = this.getView();
+      var oWorkloadAnalyticsModel = oView.getModel("workloadAnalytics");
+
+      oView.setModel(new JSONModel({ result: [] }), "workloadAnalyticsData");
+
+
+      oWorkloadAnalyticsModel.read("/ZC_GSP26SAP02_WF_AGT", {
+        success: function (oData)
+        {
+          oView.getModel("workloadAnalyticsData").setProperty("/result", oData.results);
+          console.log("User workload data:", oData);
+        },
+        error: function (oError)
+        {
+          console.error("Failed to fetch user workload data:", oError);
+        }
+      });
     },
 
     onNavBackToDashboard: function ()

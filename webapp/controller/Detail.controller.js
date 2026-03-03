@@ -7,7 +7,8 @@ sap.ui.define(
     "../utils/SuspendDialog",
     "../utils/DetailOdata",
     "../utils/SetPriorityDialog",
-    "../utils/UserInfoPopover"
+    "../utils/UserInfoPopover",
+    "sap/m/MessageToast"
   ],
   function (
     BaseController,
@@ -17,7 +18,8 @@ sap.ui.define(
     SuspendDialogHelper,
     DetailOdataHelper,
     SetPriorityDialogHelper,
-    UserInfoPopoverHelper
+    UserInfoPopoverHelper,
+    MessageToast
   )
   {
     "use strict";
@@ -54,7 +56,8 @@ sap.ui.define(
         // Get the propertyPath parameter from the route
         var sPropertyPath = oEvent.getParameter("arguments").propertyPath;
         this._propertyPath = sPropertyPath; // Store for navigation
-        var sPath = "/WfTasks('" + window.decodeURIComponent(sPropertyPath) + "')";
+
+        var sPath = "/WfTasks(WorkItemID='" + window.decodeURIComponent(sPropertyPath) + "',IsActiveEntity=true)";
 
         console.log("Detail view matched, binding to:", sPath);
 
@@ -317,6 +320,39 @@ sap.ui.define(
           layout: "OneColumn"
         });
       },
+
+      onUploadAttachment: function ()
+      {
+        // Implement attachment upload logic here
+        console.log("Upload attachment button pressed");
+      },
+
+      onRemoveAttachment: function (oEvent)
+      {
+        var oBindingContext = oEvent.getSource().getBindingContext();
+        if (!oBindingContext) return;
+
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+
+        MessageBox.confirm(oResourceBundle.getText("attachmentMessageRemoveConfirm"), {
+          onClose: function (sAction)
+          {
+            if (sAction === MessageBox.Action.OK)
+            {
+              oBindingContext.delete().then(function ()
+              {
+                MessageToast.show(oResourceBundle.getText("attachmentMessageRemoveSuccess"));
+              }.bind(this)).catch(function (oError)
+              {
+                MessageBox.error(oResourceBundle.getText("attachmentMessageRemoveError", [oError.message]));
+              });
+
+            }
+          }.bind(this)
+        });
+      }
     });
   },
 );

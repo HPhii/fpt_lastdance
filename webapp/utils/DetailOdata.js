@@ -209,6 +209,7 @@ sap.ui.define([
 
             var sHeaderFragment, sBodyFragment;
             var sCommentFragment = "z.wf.zwfmanagement.view.fragments.detail.Comments";
+            var sAttachmentFragment = "z.wf.zwfmanagement.view.fragments.detail.Attachments";
 
             switch (sEntitySet)
             {
@@ -250,8 +251,16 @@ sap.ui.define([
                 })
                 : Promise.resolve();
 
-            // Add comments section only AFTER body sections are added
-            pBody.then(function ()
+            var pAttachments = pBody.then(function ()
+            {
+                return that._getFragment(oView, sAttachmentFragment);
+            }).then(function (oAttachmentSection)
+            {
+                oObjectPageLayout.addSection(oAttachmentSection);
+            });
+
+            // Add comments section only AFTER attachment sections are added
+            pAttachments.then(function ()
             {
                 return that._getFragment(oView, sCommentFragment);
             }).then(function (oCommentsSection)

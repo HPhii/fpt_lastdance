@@ -51,7 +51,7 @@
         "settings": {
           "annotations": [],
           "localUri": "localService/performanceAnalyticsService/metadata.xml",
-          "odataVersion": "4.0",
+          "odataVersion": "2.0",
           "defaultBindingMode": "OneWay"
         }
       },
@@ -61,7 +61,7 @@
         "settings": {
           "annotations": [],
           "localUri": "localService/bottleneckAnalyticsService/metadata.xml",
-          "odataVersion": "4.0",
+          "odataVersion": "2.0",
           "defaultBindingMode": "OneWay"
         }
       },
@@ -71,7 +71,7 @@
         "settings": {
           "annotations": [],
           "localUri": "localService/reportAnalyticsService/metadata.xml",
-          "odataVersion": "4.0",
+          "odataVersion": "2.0",
           "defaultBindingMode": "OneWay"
         }
       },
@@ -81,7 +81,7 @@
         "settings": {
           "annotations": [],
           "localUri": "localService/workloadAnalyticsService/metadata.xml",
-          "odataVersion": "4.0",
+          "odataVersion": "2.0",
           "defaultBindingMode": "OneWay"
         }
       }

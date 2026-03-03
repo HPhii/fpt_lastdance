@@ -1,0 +1,58 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
+>
+    <Panel>
+        <viz:VizFrame
+            id="idVizFrame"
+            uiConfig="{applicationSet:'fiori'}"
+            height='100%'
+            width="100%"
+            vizType='column'
+        >
+            <viz:dataset>
+                <viz.data:FlattenedDataset
+                    data="{workloadAnalyticsData>/result}"
+                >
+                    <viz.data:dimensions>
+                        <viz.data:DimensionDefinition
+                            name="Agent"
+                            value="{workloadAnalyticsData>ActualAgent}"
+                        />
+                    </viz.data:dimensions>
+                    <viz.data:measures>
+                        <viz.data:MeasureDefinition
+                            name="Open"
+                            value="{workloadAnalyticsData>IsOpenCount}"
+                        />
+                        <viz.data:MeasureDefinition
+                            name="Completed"
+                            value="{workloadAnalyticsData>IsCompletedCount}"
+                        />
+                    </viz.data:measures>
+                </viz.data:FlattenedDataset>
+            </viz:dataset>
+
+            <viz:feeds>
+                <viz.feeds:FeedItem
+                    id='valueAxisFeed'
+                    uid="valueAxis"
+                    type="Measure"
+                    values="Open,Completed"
+                />
+                <viz.feeds:FeedItem
+                    id='categoryAxisFeed'
+                    uid="categoryAxis"
+                    type="Dimension"
+                    values="Agent"
+                />
+            </viz:feeds>
+            <viz:dependents>
+                <viz:Popover id="idPopOver" />
+            </viz:dependents>
+        </viz:VizFrame>
+    </Panel>
+</core:FragmentDefinition>

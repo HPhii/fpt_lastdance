@@ -144,11 +144,13 @@
     </ObjectPageSection>
 
     <ObjectPageSection
-        title="{i18n>detailItemTitle}"
+        title="{i18n>detailItemTitle} ({= ${businessModel>to_PurchaseOrderItem} ? ${businessModel>to_PurchaseOrderItem}.length : 0 })"
         busy="{detailView>/bodyBusy}"
     >
         <subSections>
-            <ObjectPageSubSection title="{i18n>detailItemTitle} (1)">
+            <ObjectPageSubSection
+                title="{i18n>detailItemTitle} ({= ${businessModel>to_PurchaseOrderItem} ? ${businessModel>to_PurchaseOrderItem}.length : 0 })"
+            >
                 <blocks>
                     <m:Table
                         items="{businessModel>to_PurchaseOrderItem}"

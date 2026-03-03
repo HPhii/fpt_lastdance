@@ -25,12 +25,18 @@
             type="XML"
         />
 
+        <!-- User Workload Panel -->
+        <core:Fragment
+            fragmentName="z.wf.zwfmanagement.view.fragments.analytics.UserWorkloadPanel"
+            type="XML"
+        />
+
         <Panel>
             <!-- <card:Card
-                    manifest="./cards/calendarCard/manifest.json"
-                    width="400px"
-                    height="auto"
-                /> -->
+                manifest="./cards/calendarCard/manifest.json"
+                width="300px"
+                height="auto"
+            /> -->
         </Panel>
     </Page>
 </mvc:View>

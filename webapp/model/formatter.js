@@ -1,4 +1,7 @@
-sap.ui.define([], function ()
+sap.ui.define([
+  "sap/ui/core/format/DateFormat",
+  "sap/ui/core/format/FileSizeFormat"
+], function (DateFormat, FileSizeFormat)
 {
   "use strict";
 
@@ -178,7 +181,7 @@ sap.ui.define([], function ()
       }
 
       // parse date format
-      const oInputFormat = sap.ui.core.format.DateFormat.getDateInstance({
+      const oInputFormat = DateFormat.getDateInstance({
         pattern: "yyyy-MM-dd",
       });
       const oDate = oInputFormat.parse(sDate);
@@ -188,10 +191,46 @@ sap.ui.define([], function ()
         return sDate; // Fallback if parse fails
       }
 
-      const oOutputFormat = sap.ui.core.format.DateFormat.getDateInstance({
+      const oOutputFormat = DateFormat.getDateInstance({
         pattern: "dd/MM/yyyy",
       });
       return oOutputFormat.format(oDate);
+    },
+
+    formatFileSize: function (iSizeInBytes)
+    {
+      var oFileSizeFormat = FileSizeFormat.getInstance({
+        binaryFilesize: false,
+        decimals: 2
+      });
+
+      return oFileSizeFormat.format(iSizeInBytes);
+    },
+
+    formatAttachmentIcon: function (sFileExtension)
+    {
+      switch (sFileExtension.toLowerCase())
+      {
+        case "png":
+        case "jpg":
+        case "jpeg":
+          return "sap-icon://attachment-photo";
+        case "txt":
+          return "sap-icon://attachment-text-file";
+        case "pdf":
+          return "sap-icon://pdf-attachment";
+        case "doc":
+        case "docx":
+          return "sap-icon://doc-attachment";
+        case "xls":
+        case "xlsx":
+          return "sap-icon://excel-attachment";
+        case "ppt":
+        case "pptx":
+          return "sap-icon://ppt-attachment";
+        default:
+          return "sap-icon://attachment";
+      }
     },
 
     formatCompletionRate: function (sCompleted, sTotal)
