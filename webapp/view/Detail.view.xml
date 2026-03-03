@@ -6,69 +6,103 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
     xmlns:m="sap.m"
+    xmlns:f="sap.f"
     xmlns:form="sap.ui.layout.form"
 >
-    <ObjectPageLayout
-        id="DetailObjectPageLayout"
-        showTitleInHeaderContent="true"
-        alwaysShowContentHeader="false"
-        preserveHeaderStateOnScroll="false"
-        headerContentPinnable="true"
-        isChildPage="true"
-        upperCaseAnchorBar="false"
-        showFooter="true"
+    <f:SidePanel
+        id="mySidePanel"
+        toggle=".onToggleSidePanel"
+        sidePanelResizable="true"
+        sidePanelWidth="500px"
     >
-        <headerTitle>
-            <ObjectPageDynamicHeaderTitle>
-                <expandedHeading>
-                    <m:VBox>
-                        <m:Title
-                            text="{WorkItemText}"
-                            wrapping="true"
-                            class="sapUiSmallMarginEnd"
-                        />
-                        <m:Text text="{detailView>/headerSubtitle}" />
-                    </m:VBox>
-                </expandedHeading>
+        <f:mainContent>
+            <ObjectPageLayout
+                id="DetailObjectPageLayout"
+                showTitleInHeaderContent="true"
+                alwaysShowContentHeader="false"
+                preserveHeaderStateOnScroll="false"
+                headerContentPinnable="true"
+                isChildPage="true"
+                upperCaseAnchorBar="false"
+                showFooter="true"
+            >
+                <headerTitle>
+                    <ObjectPageDynamicHeaderTitle>
+                        <expandedHeading>
+                            <m:VBox>
+                                <m:Title
+                                    text="{WorkItemText}"
+                                    wrapping="true"
+                                    class="sapUiSmallMarginEnd"
+                                />
+                                <m:Text text="{detailView>/headerSubtitle}" />
+                            </m:VBox>
+                        </expandedHeading>
 
-                <snappedHeading>
-                    <m:VBox>
-                        <m:Title
-                            text="{detailView>/snappedTitle}"
-                            wrapping="true"
-                        />
-                        <m:Text text="{detailView>/headerSubtitle}" />
-                    </m:VBox>
-                </snappedHeading>
+                        <snappedHeading>
+                            <m:VBox>
+                                <m:Title
+                                    text="{detailView>/snappedTitle}"
+                                    wrapping="true"
+                                />
+                                <m:Text text="{detailView>/headerSubtitle}" />
+                            </m:VBox>
+                        </snappedHeading>
 
-                <navigationActions>
-                    <m:OverflowToolbarButton
-                        type="Transparent"
-                        icon="sap-icon://full-screen"
-                        press=".handleFullScreen"
-                        tooltip="Enter Full Screen Mode"
-                    />
-                    <m:OverflowToolbarButton
-                        type="Transparent"
-                        icon="sap-icon://exit-full-screen"
-                        press=".handleExitFullScreen"
-                        tooltip="Exit Full Screen Mode"
-                    />
-                    <m:OverflowToolbarButton
-                        type="Transparent"
-                        icon="sap-icon://decline"
-                        press=".handleClose"
-                        tooltip="Close column"
-                    />
-                </navigationActions>
-            </ObjectPageDynamicHeaderTitle>
-        </headerTitle>
+                        <navigationActions>
+                            <m:OverflowToolbarButton
+                                type="Transparent"
+                                icon="sap-icon://full-screen"
+                                press=".handleFullScreen"
+                                tooltip="Enter Full Screen Mode"
+                            />
+                            <m:OverflowToolbarButton
+                                type="Transparent"
+                                icon="sap-icon://exit-full-screen"
+                                press=".handleExitFullScreen"
+                                tooltip="Exit Full Screen Mode"
+                            />
+                            <m:OverflowToolbarButton
+                                type="Transparent"
+                                icon="sap-icon://decline"
+                                press=".handleClose"
+                                tooltip="Close column"
+                            />
+                        </navigationActions>
+                    </ObjectPageDynamicHeaderTitle>
+                </headerTitle>
 
-        <footer>
-            <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.detail.FooterActionButton"
-                type="XML"
-            />
-        </footer>
-    </ObjectPageLayout>
+                <footer>
+                    <core:Fragment
+                        fragmentName="z.wf.zwfmanagement.view.fragments.detail.FooterActionButton"
+                        type="XML"
+                    />
+                </footer>
+            </ObjectPageLayout>
+        </f:mainContent>
+        <f:items>
+            <f:SidePanelItem
+                id="traceLogsSidePanelItem"
+                icon="sap-icon://history"
+                text="{i18n>traceLogsTitle}"
+            >
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.detail.TraceLogs"
+                    type="XML"
+                />
+            </f:SidePanelItem>
+            <f:SidePanelItem
+                icon="sap-icon://attachment"
+                text="Attachments"
+            >
+                <m:Text text="Attachments" />
+            </f:SidePanelItem>
+            <f:SidePanelItem
+                icon="sap-icon://comment"
+                text="Comments"
+            >
+                <m:Text text="Comments" />
+            </f:SidePanelItem>
+        </f:items>
+    </f:SidePanel>
 </mvc:View>

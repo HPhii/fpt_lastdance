@@ -216,14 +216,4 @@
             </ObjectPageSubSection>
         </subSections>
     </ObjectPageSection>
-
-    <ObjectPageSection title="{i18n>detailItemLimitTitle}">
-        <subSections>
-            <ObjectPageSubSection title="{i18n>detailItemLimitTitle}">
-                <blocks>
-                    <m:Text text="No limit items available" />
-                </blocks>
-            </ObjectPageSubSection>
-        </subSections>
-    </ObjectPageSection>
 </core:FragmentDefinition>

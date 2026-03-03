@@ -65,7 +65,7 @@ sap.ui.define(
           path: sPath,
           parameters: {
             $select: "*,__OperationControl",
-            $expand: "_DecisionOptions,_Comments",
+            $expand: "_DecisionOptions,_Comments,_TraceLogs",
           },
           events: {
             dataReceived: function ()
@@ -352,7 +352,109 @@ sap.ui.define(
             }
           }.bind(this)
         });
-      }
+
+      },
+
+      onToggleSidePanel: function (oEvent)
+      {
+        var oView = this.getView(),
+          oItem = oEvent.getParameter("item"),
+          sItemId = oItem ? oItem.getId().split("--").slice(-1)[0] : "N/A";
+
+        if (sItemId === "traceLogsSidePanelItem")
+        {
+          var oContext = oView.getBindingContext();
+          if (!oContext) return;
+          oContext.requestObject("_TraceLogs").then(function (aTraceLogs)
+          {
+            if (!aTraceLogs || !aTraceLogs.length)
+            {
+              oView.setModel(new JSONModel({ nodes: [], lines: [] }), "traceLogGraph");
+              return;
+            }
+
+            // Sort by LogCounter ascending
+            var aSorted = aTraceLogs.slice().sort(function (a, b)
+            {
+              return parseInt(a.LogCounter, 10) - parseInt(b.LogCounter, 10);
+            });
+
+            console.log(aSorted);
+
+
+            // Build nodes
+            var aNodes = aSorted.map(function (oLog)
+            {
+              var sStatus;
+              var sIcon;
+              switch (oLog.StepStatus)
+              {
+                case "COMPLETED":
+                  sStatus = "Success";
+                  sIcon = "sap-icon://accept";
+                  break;
+                case "STARTED":
+                  sStatus = "Information";
+                  sIcon = "sap-icon://begin";
+                  break;
+                case "READY":
+                  sStatus = "Warning";
+                  sIcon = "sap-icon://pending";
+                  break;
+                case "ERROR":
+                case "CANCELLED":
+                  sStatus = "Error";
+                  sIcon = "sap-icon://error";
+                  break;
+                default:
+                  sStatus = "Standard";
+                  sIcon = "sap-icon://process";
+                  break;
+              }
+
+              return {
+                key: oLog.StepWorkItemID,
+                title: oLog.StepDescription,
+                icon: sIcon,
+                status: sStatus,
+                // Main properties (content)
+                stepStatus: oLog.StepStatus,
+                agent: oLog.ActualAgent || oLog.CreatedByUser || "",
+                stepCreationDate: oLog.StepCreationDate,
+                stepCreationTime: oLog.StepCreationTime,
+                logDate: oLog.LogDate,
+                logTime: oLog.LogTime,
+                // Secondary properties (attributes)
+                taskID: oLog.TaskID || "",
+                parentWorkItemID: oLog.ParentWorkItemID || "",
+                stepWorkItemID: oLog.StepWorkItemID || "",
+                taskShortText: oLog.TaskShortText || "",
+                workItemType: oLog.WorkItemType || "",
+                priority: oLog.Priority || "",
+                nodeID: oLog.NodeID || "",
+                predecessorWI: oLog.PredecessorWI || "",
+                parentWorkItem: oLog.ParentWorkItem || "",
+                completedDate: oLog.CompletedDate || "",
+                completedTime: oLog.CompletedTime || "",
+                returnCode: oLog.ReturnCode || "",
+                deadlineStatus: oLog.DeadlineStatus || ""
+              };
+            });
+
+            // Build lines: connect consecutive nodes by LogCounter order
+            var aLines = [];
+            for (var i = 0; i < aNodes.length - 1; i++)
+            {
+              aLines.push({
+                from: aNodes[i].key,
+                to: aNodes[i + 1].key
+              });
+            }
+
+            oView.setModel(new JSONModel({ nodes: aNodes, lines: aLines }), "traceLogGraph");
+          });
+        }
+      },
     });
   },
 );
