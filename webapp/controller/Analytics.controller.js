@@ -21,7 +21,7 @@ sap.ui.define(
           .attachPatternMatched(this._onObjectMatched, this);
       },
 
-      /* ROUTE MATCHED*/
+      /* ROUTE MATCHED                 */
       _onObjectMatched: function (oEvent) {
         this._callUserWorkloadOData();
         this._loadPerformanceChart();
@@ -53,7 +53,7 @@ sap.ui.define(
         });
       },
 
-      /* PERFORMANCE CHART*/
+      /* PERFORMANCE CHART     */
       _loadPerformanceChart: function () {
         this.byId("idPerfChart").setVizProperties({
           legend: {

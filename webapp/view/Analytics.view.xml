@@ -7,8 +7,8 @@
     xmlns:layout="sap.ui.layout"
     xmlns:card="sap.ui.integration.widgets"
     xmlns:viz="sap.viz.ui5.controls"
-xmlns:viz.data="sap.viz.ui5.data"
-xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
     <Shell>
         <Page
@@ -22,63 +22,12 @@ xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
                     type="XML"
                 />
             </headerContent>
-            <HBox
-                justifyContent="Center"
-                width="100%"
-            >
-                <HeaderContainer
-                    id="container2"
-                    scroll="false"
-                    width="auto"
-                >
-                    <TileContent footer="Total Open Tasks">
-                        <content>
-                            <NumericContent
-                                valueColor="Neutral"
-                                value="{
-                                    path: '/WfTasks/$count',
-                                    parameters: {
-                                        $filter: 'TechnicalStatus eq \'READY\' or TechnicalStatus eq \'RESERVED\''
-                                    }
-                                }"
-                                scale="Open"
-                                icon="sap-icon://activity-2"
-                            />
-                        </content>
-                    </TileContent>
-                    <TileContent footer="Overdue/Critical Tasks">
-                        <content>
-                            <NumericContent
-                                valueColor="Error"
-                                value="{
-                                    path: '/WfTasks/$count',
-                                    parameters: {
-                                        $filter: 'DaysToDeadline lt 0'
-                                    }
-                                }"
-                                scale="Critical"
-                                icon="sap-icon://alert"
-                            />
-                        </content>
-                    </TileContent>
-                    <TileContent footer="High Priority Tasks">
-                        <content>
-                            <NumericContent
-                                valueColor="Critical"
-                                value="{
-                                    path: '/WfTasks/$count',
-                                    parameters: {
-                                        $filter: 'Priority eq \'1\''
-                                    }
-                                }"
-                                scale="High"
-                                icon="sap-icon://high-priority"
-                            />
-                        </content>
-                    </TileContent>
-                </HeaderContainer>
-            </HBox>
-         
+            <!-- Volume & Status Panel -->
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
+                type="XML"
+            />
+
             <!-- <Panel>
                 <card:Card
                     manifest="./cards/calendarCard/manifest.json"
@@ -100,55 +49,59 @@ xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
                 />
             </Panel>
             <Panel class="sapUiMediumMarginTop">
-        <viz:VizFrame
-        id="idPerfChart"
-        vizType="dual_combination"
-        height="450px"
-        width="55%"
-         vizProperties="{
+                <viz:VizFrame
+                    id="idPerfChart"
+                    vizType="dual_combination"
+                    height="450px"
+                    width="55%"
+                    vizProperties="{
         title: {
             visible: true,
             text: 'Tasks Completed and Avg Cycle Time'
         }
         }"
-        >
-        
-        <viz:dataset>
-            <viz.data:FlattenedDataset data="{/PerfData}">
-                <viz.data:dimensions>
-                    <viz.data:DimensionDefinition
-                        name="Month"
-                        value="{Month}" />
-                </viz.data:dimensions>
+                >
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset data="{/PerfData}">
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition
+                                    name="Month"
+                                    value="{Month}"
+                                />
+                            </viz.data:dimensions>
 
-                <viz.data:measures>
-                    <viz.data:MeasureDefinition
-                        name="Completed"
-                        value="{Completed}" />
-                    <viz.data:MeasureDefinition
-                        name="Avg Cycle (Days)"
-                        value="{AvgCycle}" />
-                </viz.data:measures>
-            </viz.data:FlattenedDataset>
-        </viz:dataset>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition
+                                    name="Completed"
+                                    value="{Completed}"
+                                />
+                                <viz.data:MeasureDefinition
+                                    name="Avg Cycle (Days)"
+                                    value="{AvgCycle}"
+                                />
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
 
-        <viz:feeds>
-            <viz.feeds:FeedItem
-                uid="primaryValues"
-                type="Measure"
-                values="Completed" />
-            <viz.feeds:FeedItem
-                uid="secondaryValues"
-                type="Measure"
-                values="Avg Cycle (Days)" />
-            <viz.feeds:FeedItem
-                uid="axisLabels"
-                type="Dimension"
-                values="Month" />
-        </viz:feeds>
-
-    </viz:VizFrame>
-</Panel>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem
+                            uid="primaryValues"
+                            type="Measure"
+                            values="Completed"
+                        />
+                        <viz.feeds:FeedItem
+                            uid="secondaryValues"
+                            type="Measure"
+                            values="Avg Cycle (Days)"
+                        />
+                        <viz.feeds:FeedItem
+                            uid="axisLabels"
+                            type="Dimension"
+                            values="Month"
+                        />
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
         </Page>
     </Shell>
 </mvc:View>
