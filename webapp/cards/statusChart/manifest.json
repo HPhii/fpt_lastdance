@@ -1,0 +1,88 @@
+{
+  "_version": "1.83.1",
+  "sap.app": {
+    "id": "card.explorer.actions.chartActions",
+    "type": "card",
+    "title": "Sample of Chart Actions",
+    "subTitle": "Sample of Chart Actions",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "shortTitle": "A short title for this Card",
+    "info": "Additional information about this Card",
+    "description": "A long description for this Card",
+    "tags": {
+      "keywords": ["Analytical", "Card", "Line", "Sample"]
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://line-chart"
+    }
+  },
+  "sap.card": {
+    "type": "Analytical",
+    "header": {
+      "title": "Status Distribution"
+    },
+    "content": {
+      "chartType": "Donut",
+      "chartProperties": {
+        "legendGroup": {
+          "layout": {
+            "position": "top",
+            "alignment": "center"
+          }
+        },
+        "plotArea": {
+          "dataLabel": {
+            "visible": true
+          }
+        },
+        "title": {
+          "visible": false
+        }
+      },
+      "data": {
+        "request": {
+          "url": "/sap/opu/odata/sap/ZC_GSP26SAP02_WF_ANALYTICS_CDS/ZC_GSP26SAP02_WF_ANALYTICS?$select=StatusCategory,TaskCounter&$format=json"
+        },
+        "path": "/d/results"
+      },
+      "dimensions": [
+        {
+          "name": "StatusCategory",
+          "value": "{StatusCategory}"
+        }
+      ],
+      "measures": [
+        {
+          "name": "TaskCounter",
+          "value": "{TaskCounter}"
+        }
+      ],
+      "feeds": [
+        {
+          "type": "Dimension",
+          "uid": "color",
+          "values": ["StatusCategory"]
+        },
+        {
+          "type": "Measure",
+          "uid": "size",
+          "values": ["TaskCounter"]
+        }
+      ],
+      "actionableArea": "Chart",
+      "actions": [
+        {
+          "type": "Navigation",
+          "parameters": {
+            "url": "https://sap.com?id={id}&revenue={revenue}&storeName={storeName}"
+          }
+        }
+      ]
+    }
+  }
+}
