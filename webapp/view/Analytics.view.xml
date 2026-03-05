@@ -6,6 +6,9 @@
     xmlns:microchart="sap.suite.ui.microchart"
     xmlns:layout="sap.ui.layout"
     xmlns:card="sap.ui.integration.widgets"
+    xmlns:viz="sap.viz.ui5.controls"
+xmlns:viz.data="sap.viz.ui5.data"
+xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
     <Shell>
         <Page
@@ -39,7 +42,6 @@
                                     }
                                 }"
                                 scale="Open"
-                                busy="{= ${/WfTasks/$count} === undefined}"
                                 icon="sap-icon://activity-2"
                             />
                         </content>
@@ -55,7 +57,6 @@
                                     }
                                 }"
                                 scale="Critical"
-                                busy="{= ${/WfTasks/$count} === undefined}"
                                 icon="sap-icon://alert"
                             />
                         </content>
@@ -71,65 +72,76 @@
                                     }
                                 }"
                                 scale="High"
-                                busy="{= ${/WfTasks/$count} === undefined}"
                                 icon="sap-icon://high-priority"
                             />
                         </content>
                     </TileContent>
                 </HeaderContainer>
             </HBox>
-            <Panel>
-                <!-- <FlexBox
-                    width="20rem"
-                    height="10rem"
-                    alignItems="Start"
-                    justifyContent="SpaceBetween"
-                >
-                    <items>
-                        <microchart:InteractiveDonutChart
-                            selectionChanged="onSelectionChanged"
-                        >
-                            <microchart:segments>
-                                <microchart:InteractiveDonutChartSegment
-                                    label="Implementation Phase"
-                                    value="{
-                                        path: '/WfTasks/$count',
-                                        parameters: {
-                                            $filter: 'Priority eq \'5\''
-                                        }
-                                    }"
-                                    displayedValue="{
-                                        path: '/WfTasks/$count',
-                                        parameters: {
-                                            $filter: 'Priority eq \'5\''
-                                        }
-                                    }%"
-                                    color="Error"
-                                />
-                                <microchart:InteractiveDonutChartSegment
-                                    label="Design Phase"
-                                    value="21.5"
-                                    displayedValue="21.5%"
-                                    color="Critical"
-                                />
-                                <microchart:InteractiveDonutChartSegment
-                                    label="Test Phase"
-                                    value="38.5"
-                                    displayedValue="38.5%"
-                                    color="Good"
-                                />
-                            </microchart:segments>
-                        </microchart:InteractiveDonutChart>
-                    </items>
-                </FlexBox> -->
-            </Panel>
-            <Panel>
+         
+            <!-- <Panel>
                 <card:Card
                     manifest="./cards/calendarCard/manifest.json"
                     width="400px"
                     height="auto"
                 />
+            </Panel> -->
+            <Panel>
+                <card:Card
+                    manifest="/cards/statusChart/manifest.json"
+                    width="400px"
+                    height="400px"
+                />
+                <card:Card
+                    class="sapUiMediumMarginBegin"
+                    manifest="/cards/barPriorityChart/manifest.json"
+                    width="780px"
+                    height="400px"
+                />
             </Panel>
+            <Panel class="sapUiMediumMarginTop">
+        <viz:VizFrame
+        id="idPerfChart"
+        vizType="dual_combination"
+        height="450px"
+        width="100%">
+
+        <viz:dataset>
+            <viz.data:FlattenedDataset data="{/PerfData}">
+                <viz.data:dimensions>
+                    <viz.data:DimensionDefinition
+                        name="Month"
+                        value="{Month}" />
+                </viz.data:dimensions>
+
+                <viz.data:measures>
+                    <viz.data:MeasureDefinition
+                        name="Completed"
+                        value="{Completed}" />
+                    <viz.data:MeasureDefinition
+                        name="Avg Cycle"
+                        value="{AvgCycle}" />
+                </viz.data:measures>
+            </viz.data:FlattenedDataset>
+        </viz:dataset>
+
+        <viz:feeds>
+            <viz.feeds:FeedItem
+                uid="primaryValues"
+                type="Measure"
+                values="Completed" />
+            <viz.feeds:FeedItem
+                uid="secondaryValues"
+                type="Measure"
+                values="Avg Cycle" />
+            <viz.feeds:FeedItem
+                uid="axisLabels"
+                type="Dimension"
+                values="Month" />
+        </viz:feeds>
+
+    </viz:VizFrame>
+</Panel>
         </Page>
     </Shell>
 </mvc:View>
