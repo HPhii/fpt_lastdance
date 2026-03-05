@@ -21,10 +21,10 @@ sap.ui.define(
           .attachPatternMatched(this._onObjectMatched, this);
       },
 
-      /* ROUTE MATCHED                 */
+      /* ROUTE MATCHED*/
       _onObjectMatched: function (oEvent) {
         this._callUserWorkloadOData();
-        this._loadPerformanceChart(); // 🔥 thêm dòng này
+        this._loadPerformanceChart();
 
         var oView = this.getView();
         var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
@@ -53,7 +53,7 @@ sap.ui.define(
         });
       },
 
-      /* PERFORMANCE CHART     */
+      /* PERFORMANCE CHART*/
       _loadPerformanceChart: function () {
         this.byId("idPerfChart").setVizProperties({
           legend: {
