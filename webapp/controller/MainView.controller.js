@@ -66,28 +66,16 @@ sap.ui.define([
       this._mFilters = {
         all: [],
         ready: [new Filter("TechnicalStatus", FilterOperator.EQ, "READY")],
-        selected: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "SELECTED"),
-        ],
-        started: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "STARTED"),
-        ],
-        committed: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "COMMITTED"),
-        ],
-        waiting: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "WAITING"),
-        ],
-        checked: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "CHECKED"),
-        ],
-        completed: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "COMPLETED"),
-        ],
-        cancelled: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "CANCELLED"),
-        ],
+        selected: [new Filter("TechnicalStatus", FilterOperator.EQ, "SELECTED")],
+        started: [new Filter("TechnicalStatus", FilterOperator.EQ, "STARTED")],
+        committed: [new Filter("TechnicalStatus", FilterOperator.EQ, "COMMITTED")],
+        waiting: [new Filter("TechnicalStatus", FilterOperator.EQ, "WAITING")],
+        checked: [new Filter("TechnicalStatus", FilterOperator.EQ, "CHECKED")],
+        completed: [new Filter("TechnicalStatus", FilterOperator.EQ, "COMPLETED")],
+        cancelled: [new Filter("TechnicalStatus", FilterOperator.EQ, "CANCELLED")],
         error: [new Filter("TechnicalStatus", FilterOperator.EQ, "ERROR")],
+        overdue: [new Filter("IsOverdue", FilterOperator.EQ, "X")],
+        ondue: [new Filter("IsDueOn", FilterOperator.EQ, "X")]
       };
     },
 

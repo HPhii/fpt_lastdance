@@ -3,80 +3,71 @@
     xmlns="sap.uxap"
     xmlns:m="sap.m"
 >
-    <ObjectPageSection
-        id="commentsSection"
-        title="{i18n>commentSectionTitle} ({= ${commentsModel>/comments}.length })"
+    <m:VBox
+        class="sapUiSmallMargin"
+        width="100%"
+        height="100%"
     >
-        <subSections>
-            <ObjectPageSubSection
-                title="{i18n>commentSectionTitle} ({= ${commentsModel>/comments}.length })"
-            >
-                <blocks>
-                    <m:VBox class="sapUiSmallMargin">
-                        <m:FeedInput
-                            id="commentInput"
-                            post=".onPostComment"
-                            placeholder="{i18n>commentPlaceholder}"
-                        />
-                        <m:List
-                            id="commentList"
-                            items="{
-                                path: 'commentsModel>/comments',
-                                sorter: [
-                                    { 
-                                        path: 'DateCreated', 
-                                        descending: true 
-                                    },
-                                    { 
-                                        path: 'CreatedAt', 
-                                        descending: true 
-                                    }
-                                ]
-                            }"
-                            noDataText="{i18n>commentNoData}"
-                            showSeparators="Inner"
+        <m:FeedInput
+            id="commentInput"
+            post=".onPostComment"
+            placeholder="{i18n>commentPlaceholder}"
+        />
+        <m:List
+            id="commentList"
+            items="{
+                path: 'commentsModel>/comments',
+                sorter: [
+                    { 
+                        path: 'DateCreated', 
+                        descending: true 
+                    },
+                    { 
+                        path: 'CreatedAt', 
+                        descending: true 
+                    }
+                ]
+            }"
+            noDataText="{i18n>commentNoData}"
+            showSeparators="Inner"
+        >
+            <m:CustomListItem type="Inactive">
+                <m:HBox
+                    alignItems="Center"
+                    class="sapUiSmallMargin"
+                >
+                    <m:Avatar
+                        initials="{= ${commentsModel>CreatedBy}.split('-')[0].toUpperCase() }"
+                        displaySize="S"
+                        class="sapUiSmallMarginEnd"
+                        backgroundColor="Accent6"
+                    />
+                    <m:VBox
+                        class="commentBubble"
+                        width="100%"
+                    >
+                        <m:HBox
+                            alignItems="Center"
+                            justifyContent="SpaceBetween"
                         >
-                            <m:CustomListItem type="Inactive">
-                                <m:HBox
-                                    alignItems="Center"
-                                    class="sapUiSmallMargin"
-                                >
-                                    <m:Avatar
-                                        initials="{= ${commentsModel>CreatedBy}.split('-')[0].toUpperCase() }"
-                                        displaySize="S"
-                                        class="sapUiSmallMarginEnd"
-                                        backgroundColor="Accent6"
-                                    />
-                                    <m:VBox
-                                        class="commentBubble"
-                                        width="100%"
-                                    >
-                                        <m:HBox
-                                            alignItems="Center"
-                                            justifyContent="SpaceBetween"
-                                        >
-                                            <m:Link
-                                                text="{commentsModel>CreatedBy}"
-                                                press=".onShowUserInfo"
-                                                class="commentSender sapUiTextBold"
-                                            />
-                                            <m:Text
-                                                text="{= ${commentsModel>DateCreated} + ' ' + ${commentsModel>CreatedAt} }"
-                                                class="commentTimestamp"
-                                            />
-                                        </m:HBox>
-                                        <m:Text
-                                            text="{commentsModel>CommentText}"
-                                            wrapping="true"
-                                            class="sapUiTinyMarginTop commentText"
-                                        />
-                                    </m:VBox>
-                                </m:HBox>
-                            </m:CustomListItem>
-                        </m:List>
+                            <m:Link
+                                text="{commentsModel>CreatedBy}"
+                                press=".onShowUserInfo"
+                                class="commentSender sapUiTextBold"
+                            />
+                            <m:Text
+                                text="{= ${commentsModel>DateCreated} + ' ' + ${commentsModel>CreatedAt} }"
+                                class="commentTimestamp"
+                            />
+                        </m:HBox>
+                        <m:Text
+                            text="{commentsModel>CommentText}"
+                            wrapping="true"
+                            class="sapUiTinyMarginTop commentText"
+                        />
                     </m:VBox>
-                </blocks>
-            </ObjectPageSubSection>
-        </subSections>
-    </ObjectPageSection>
+                </m:HBox>
+            </m:CustomListItem>
+        </m:List>
+    </m:VBox>
 </core:FragmentDefinition>

@@ -69,7 +69,7 @@
             }
         }"
     />
-    <IconTabFilter
+    <!-- <IconTabFilter
         key="checked"
         icon="sap-icon://inspection"
         iconColor="Positive"
@@ -92,7 +92,7 @@
                 $filter: 'TechnicalStatus eq \'COMPLETED\''
             }
         }"
-    />
+    /> -->
     <IconTabFilter
         key="cancelled"
         icon="sap-icon://decline"
@@ -106,7 +106,7 @@
         }"
     />
     <IconTabFilter
-        key="overdue"
+        key="error"
         icon="sap-icon://error"
         iconColor="Negative"
         text="{i18n>WorklistFilterTasksError}"
@@ -114,6 +114,31 @@
             path: '/WfTasks/$count',
             parameters: {
                 $filter: 'TechnicalStatus eq \'ERROR\''
+            }
+        }"
+    />
+    <IconTabSeparator />
+    <IconTabFilter
+        key="ondue"
+        icon="sap-icon://away"
+        iconColor="Critical"
+        text="{i18n>WorklistFilterTasksOnDue}"
+        count="{
+            path: '/WfTasks/$count',
+            parameters: {
+                $filter: 'IsDueOn eq \'X\''
+            }
+        }"
+    />
+    <IconTabFilter
+        key="overdue"
+        icon="sap-icon://lateness"
+        iconColor="Negative"
+        text="{i18n>WorklistFilterTasksOverdue}"
+        count="{
+            path: '/WfTasks/$count',
+            parameters: {
+                $filter: 'IsOverdue eq \'X\''
             }
         }"
     />

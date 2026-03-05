@@ -13,7 +13,7 @@
         id="mySidePanel"
         toggle=".onToggleSidePanel"
         sidePanelResizable="true"
-        sidePanelWidth="500px"
+        sidePanelWidth="550px"
     >
         <f:mainContent>
             <ObjectPageLayout
@@ -83,7 +83,7 @@
         <f:items>
             <f:SidePanelItem
                 id="traceLogsSidePanelItem"
-                icon="sap-icon://history"
+                icon="sap-icon://past"
                 text="{i18n>traceLogsTitle}"
             >
                 <core:Fragment
@@ -93,15 +93,21 @@
             </f:SidePanelItem>
             <f:SidePanelItem
                 icon="sap-icon://attachment"
-                text="Attachments"
+                text="{i18n>attachmentsTitle}"
             >
-                <m:Text text="Attachments" />
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.detail.Attachments"
+                    type="XML"
+                />
             </f:SidePanelItem>
             <f:SidePanelItem
                 icon="sap-icon://comment"
-                text="Comments"
+                text="{i18n>commentSectionTitle} ({= ${commentsModel>/comments}.length })"
             >
-                <m:Text text="Comments" />
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.detail.Comments"
+                    type="XML"
+                />
             </f:SidePanelItem>
         </f:items>
     </f:SidePanel>

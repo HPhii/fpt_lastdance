@@ -208,8 +208,6 @@ sap.ui.define([
             oObjectPageLayout.removeAllSections();
 
             var sHeaderFragment, sBodyFragment;
-            var sCommentFragment = "z.wf.zwfmanagement.view.fragments.detail.Comments";
-            var sAttachmentFragment = "z.wf.zwfmanagement.view.fragments.detail.Attachments";
 
             switch (sEntitySet)
             {
@@ -229,16 +227,14 @@ sap.ui.define([
                     break;
             }
 
-            var that = this;
-
-            var pHeader = sHeaderFragment
+            sHeaderFragment
                 ? this._getFragment(oView, sHeaderFragment).then(function (oHeader)
                 {
                     oObjectPageLayout.addHeaderContent(oHeader);
                 })
                 : Promise.resolve();
 
-            var pBody = sBodyFragment
+            sBodyFragment
                 ? this._getFragment(oView, sBodyFragment).then(function (oBody)
                 {
                     if (Array.isArray(oBody))
@@ -250,26 +246,6 @@ sap.ui.define([
                     }
                 })
                 : Promise.resolve();
-
-            var pAttachments = pBody.then(function ()
-            {
-                return that._getFragment(oView, sAttachmentFragment);
-            }).then(function (oAttachmentSection)
-            {
-                oObjectPageLayout.addSection(oAttachmentSection);
-            });
-
-            // Add comments section only AFTER attachment sections are added
-            pAttachments.then(function ()
-            {
-                return that._getFragment(oView, sCommentFragment);
-            }).then(function (oCommentsSection)
-            {
-                oObjectPageLayout.addSection(oCommentsSection);
-            });
-
-            // Update header title bindings based on entity set
-            this._updateHeaderTitleForEntitySet(oView, sEntitySet);
         },
 
         _getFragment: function (oView, sFragmentName)
