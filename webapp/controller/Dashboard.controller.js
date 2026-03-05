@@ -1,27 +1,36 @@
-sap.ui.define(["./BaseController"], function (BaseController) {
+sap.ui.define(["./BaseController"], function (BaseController)
+{
   "use strict";
 
   return BaseController.extend("z.wf.zwfmanagement.controller.Dashboard", {
-    onInit: function () {
+
+    onInit: function ()
+    {
       BaseController.prototype.onInit.apply(this, arguments);
     },
-    onNavToTask: function () {
+
+    onNavToTask: function ()
+    {
       var oHelper = this.getOwnerComponent().getHelper();
-      if (oHelper) {
+      if (oHelper)
+      {
         var oNextUIState = oHelper.getNextUIState(0);
         this.getOwnerComponent()
           .getRouter()
           .navTo("RouteMainView", { layout: oNextUIState.layout });
-      } else {
+      } else
+      {
         this.getOwnerComponent().getRouter().navTo("RouteMainView");
       }
     },
 
-    onNavToAnalytics: function () {
+    onNavToAnalytics: function ()
+    {
       this.getOwnerComponent().getRouter().navTo("RouteAnalytics");
     },
 
-    onNavToHelp: function () {
+    onNavToHelp: function ()
+    {
       // Nếu muốn mở PDF tab mới thay vì navigate trong app:
       // window.open("link_to_pdf", "_blank");
 
@@ -29,7 +38,8 @@ sap.ui.define(["./BaseController"], function (BaseController) {
       this.getOwnerComponent().getRouter().navTo("RouteHelp");
     },
 
-    onNavToSubstitution: function () {
+    onNavToSubstitution: function ()
+    {
       this.getOwnerComponent().getRouter().navTo("RouteSubstitution");
     },
   });

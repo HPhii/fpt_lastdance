@@ -7,54 +7,67 @@ sap.ui.define(
       onInit: function () {
         BaseController.prototype.onInit.apply(this, arguments);
 
-        this._loadPerformanceChart(); // thêm dòng này
+        var oStatsModel = new JSONModel({
+          busy: false,
+          result: {},
+        });
+
+        this.getView().setModel(oStatsModel, "statsAnalyticsModel");
+
+        this.oRouter = this.getOwnerComponent().getRouter();
+
+        this.oRouter
+          .getRoute("RouteAnalytics")
+          .attachPatternMatched(this._onObjectMatched, this);
       },
 
-      _loadPerformanceChart: function () {
-        var oModel = this.getOwnerComponent().getModel();
+      _onObjectMatched: function (oEvent) {
+        this._callUserWorkloadOData();
+        var oView = this.getView();
+        var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
+        var oStatsModel = oView.getModel("statsAnalyticsModel");
 
-        var oListBinding = oModel.bindList("/ZC_GSP26SAP02_WF_PERF");
+        oStatsModel.setProperty("/busy", true);
 
-        oListBinding
-          .requestContexts()
-          .then(
-            function (aContexts) {
-              var aFormatted = aContexts.map(
-                function (oContext) {
-                  var item = oContext.getObject();
+        oStatsAnalyticsModel.read("/ZC_GSP26SAP02_WF_ANALYTICS", {
+          urlParameters: {
+            $select:
+              "IsOpenCount,IsCompletedThisMonth,IsOverdueCount,TaskCounter,IsCompletedCount",
+          },
+          success: function (oData) {
+            console.log(oData);
+            oStatsModel.setProperty("/busy", false);
 
-                  var completed = parseInt(item.IsCompletedCount);
-                  var totalDays = parseInt(item.CycleTimeDays);
+            var aResults = oData.results || [];
 
-                  return {
-                    Month: this._formatMonth(item.CreationYearMonth),
-                    Completed: completed,
-                    AvgCycle: completed > 0 ? totalDays / completed : 0,
-                  };
-                }.bind(this),
-              );
-
-              var oJsonModel = new JSONModel({
-                PerfData: aFormatted,
-              });
-
-              this.getView().setModel(oJsonModel);
-            }.bind(this),
-          )
-          .catch(function (err) {
-            console.error("OData V4 error:", err);
-          });
+            if (aResults.length > 0) {
+              var oStatsData = aResults[0];
+              oStatsModel.setProperty("/result", oStatsData);
+            }
+          }.bind(this),
+          error: function (oError) {
+            console.error("Failed to fetch analytics data:", oError);
+          }.bind(this),
+        });
       },
 
-      _formatMonth: function (yyyymm) {
-        if (!yyyymm || yyyymm.length !== 6) {
-          return yyyymm;
-        }
+      _callUserWorkloadOData: function () {
+        var oView = this.getView();
+        var oWorkloadAnalyticsModel = oView.getModel("workloadAnalytics");
 
-        var year = yyyymm.substring(0, 4);
-        var month = yyyymm.substring(4, 6);
+        oView.setModel(new JSONModel({ result: [] }), "workloadAnalyticsData");
 
-        return year + "-" + month;
+        oWorkloadAnalyticsModel.read("/ZC_GSP26SAP02_WF_AGT", {
+          success: function (oData) {
+            oView
+              .getModel("workloadAnalyticsData")
+              .setProperty("/result", oData.results);
+            console.log("User workload data:", oData);
+          },
+          error: function (oError) {
+            console.error("Failed to fetch user workload data:", oError);
+          },
+        });
       },
 
       onNavBackToDashboard: function () {

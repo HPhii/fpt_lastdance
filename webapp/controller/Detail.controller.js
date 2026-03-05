@@ -1,27 +1,45 @@
 sap.ui.define(
   [
     "./BaseController",
-    "sap/ui/core/routing/History",
-    "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/model/odata/v2/ODataModel"
+    "../utils/ForwardDialog",
+    "../utils/SuspendDialog",
+    "../utils/DetailOdata",
+    "../utils/SetPriorityDialog",
+    "../utils/UserInfoPopover",
+    "sap/m/MessageToast"
   ],
-  function (BaseController, History, MessageToast, MessageBox, JSONModel, ODataV2Model)
+  function (
+    BaseController,
+    MessageBox,
+    JSONModel,
+    ForwardDialogHelper,
+    SuspendDialogHelper,
+    DetailOdataHelper,
+    SetPriorityDialogHelper,
+    UserInfoPopoverHelper,
+    MessageToast
+  )
   {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Detail", {
       onInit: function ()
       {
+        var oView = this.getView();
         this.oRouter = this.getOwnerComponent().getRouter();
 
         var oViewModel = new JSONModel({
           headerBusy: false,
           bodyBusy: false,
+          today: new Date(),
+          headerSubtitle: "",
+          snappedTitle: ""
         });
 
-        this.getView().setModel(oViewModel, "detailView");
+        oView.setModel(oViewModel, "detailView");
+        oView.setModel(new JSONModel({}), "commentsModel");
         this.oModel = this.getOwnerComponent().getModel();
 
         this.oRouter
@@ -31,22 +49,23 @@ sap.ui.define(
 
       _onObjectMatched: function (oEvent)
       {
-        var oViewModel = this.getView().getModel("detailView");
+        var oView = this.getView();
+        var oViewModel = oView.getModel("detailView");
         var oDetailPanel = this.byId("DetailObjectPageLayout");
-        var that = this;
 
         // Get the propertyPath parameter from the route
         var sPropertyPath = oEvent.getParameter("arguments").propertyPath;
         this._propertyPath = sPropertyPath; // Store for navigation
-        var sPath = "/WfTasks('" + window.decodeURIComponent(sPropertyPath) + "')";
+
+        var sPath = "/WfTasks(WorkItemID='" + window.decodeURIComponent(sPropertyPath) + "')";
 
         console.log("Detail view matched, binding to:", sPath);
 
-        this.getView().bindElement({
+        oView.bindElement({
           path: sPath,
           parameters: {
             $select: "*,__OperationControl",
-            $expand: "_DecisionOptions",
+            $expand: "_DecisionOptions,_TraceLogs,_Comments",
           },
           events: {
             dataReceived: function ()
@@ -56,116 +75,41 @@ sap.ui.define(
 
               // Get the bound context of the detail panel
               var oBoundContext = oDetailPanel.getBindingContext();
-
               if (oBoundContext)
               {
+                var aComments = oBoundContext.getObject("_Comments") || [];
+                if (aComments && aComments.length > 0)
+                {
+                  oView.getModel("commentsModel").setData({
+                    comments: aComments
+                  });
+                }
+
                 var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
                 var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
                 var sKey = oBoundContext.getProperty("ObjectID");
                 var sExpand = oBoundContext.getProperty("TargetExpandParams");
-
-                console.log(sServiceUrl);
-                console.log(sEntitySet);
-                console.log(sKey);
-                console.log(sExpand);
-
+                var sExpand2 = oBoundContext.getProperty("TargetExpandParams2");
 
                 if (sServiceUrl && sEntitySet && sKey)
                 {
-                  that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand);
+                  DetailOdataHelper.callODataService(oView, {
+                    serviceUrl: sServiceUrl,
+                    entitySet: sEntitySet,
+                    key: sKey,
+                    expands: [sExpand, sExpand2].filter(Boolean)
+                  });
                 }
+
+                DetailOdataHelper.loadFragmentsForEntitySet(oView, sEntitySet);
               }
             },
             dataRequested: function ()
             {
-              // var oCurrentModel = that.getView().getModel("businessModel");
-              // if (oCurrentModel)
-              // {
-              //   oCurrentModel.refresh(true);
-              // }
-
               oViewModel.setProperty("/headerBusy", true);
             },
           },
         });
-      },
-
-      _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)
-      {
-        var oViewModel = this.getView().getModel("detailView");
-        oViewModel.setProperty("/bodyBusy", true);
-
-        var oBusinessContainer = this.byId("DetailObjectPageLayout");
-        if (!oBusinessContainer)
-        {
-          oBusinessContainer = this.byId("detailPanel");
-        }
-
-        // Get existing model
-        var oCurrentModel = this.getView().getModel("businessModel");
-
-        if (!oCurrentModel || oCurrentModel.sServiceUrl !== sServiceUrl)
-        {
-          // Create new OData V2 Model
-          var oNewModel = new ODataV2Model(sServiceUrl, {
-            json: true,
-            useBatch: false, // Turn off batch
-            defaultBindingMode: "OneWay",
-          });
-
-          this.getView().setModel(oNewModel, "businessModel");
-        }
-
-        // Create binding path
-        var sPath = "/" + sEntitySet + "('" + sKey + "')";
-
-        // 4. Bind Element
-        oBusinessContainer.bindElement({
-          path: sPath,
-          model: "businessModel",
-          parameters: {
-            expand: sExpand
-          },
-          events: {
-            dataReceived: function ()
-            {
-              console.log("Business Object Loaded: " + sPath);
-              oViewModel.setProperty("/bodyBusy", false);
-            },
-            change: function ()
-            {
-              // Todo: Handle data change if needed
-
-            },
-            dataRequested: function ()
-            {
-              console.log("Requesting Business Object Data: " + sPath);
-            }
-          }
-        });
-      },
-
-      onNavBack: function ()
-      {
-        var oHistory = History.getInstance();
-        var sPreviousHash = oHistory.getPreviousHash();
-        var oRouter = this.getOwnerComponent().getRouter();
-
-        if (sPreviousHash !== undefined)
-        {
-          window.history.go(-1);
-        } else
-        {
-          var oHelper = this.getOwnerComponent().getHelper();
-          if (oHelper)
-          {
-            var oNextUIState = oHelper.getNextUIState(0);
-            oRouter.navTo("RouteMainView", { layout: oNextUIState.layout }, true);
-          } else
-          {
-            oRouter.navTo("RouteMainView", {}, true);
-          }
-        }
       },
 
       onDecisionPress: function (oEvent)
@@ -184,20 +128,24 @@ sap.ui.define(
           sDecisionKey = sDecisionKey.toString().padStart(4, "0");
         }
 
-        console.log("Key FE", sDecisionKey);
-        console.log("Data type:", typeof sDecisionKey);
-
         var that = this;
+        var oContext = this.getView().getBindingContext();
+
         var sConfirmMessage = oResourceBundle.getText("confirmDecision", [
           sText,
         ]);
 
+        const oPayload = {
+          DecisionKey: sDecisionKey,
+          WorkItemID: sWorkItemID,
+          DecisionComment: ""
+        };
         MessageBox.confirm(sConfirmMessage, {
           onClose: function (oAction)
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that._callODataV4Action(sWorkItemID, sDecisionKey);
+              that.callBoundAction("executionDecision", oContext, oPayload);
             }
           },
         });
@@ -217,7 +165,12 @@ sap.ui.define(
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that._callBoundAction("approve", oContext);
+              var oPayload = {
+                ELEMENT: "0001"
+              };
+
+              that.callBoundAction("executionDecision", oContext, oPayload);
+              that.getOwnerComponent().getRouter().navTo("RouteMainView", {}, true);
             }
           },
         });
@@ -237,7 +190,12 @@ sap.ui.define(
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that._callBoundAction("reject", oContext);
+              var oPayload = {
+                ELEMENT: "0002"
+              };
+
+              that.callBoundAction("executionDecision", oContext, oPayload);
+              that.getOwnerComponent().getRouter().navTo("RouteMainView", {}, true);
             }
           },
         });
@@ -257,7 +215,7 @@ sap.ui.define(
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that._callBoundAction("claim", oContext);
+              that.callBoundAction("claim", oContext);
             }
           },
         });
@@ -265,22 +223,8 @@ sap.ui.define(
 
       onForwardAction: function ()
       {
-        var oContext = this.getView().getBindingContext();
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-        var sConfirmMessage = oResourceBundle.getText("confirmForward");
-
-        var that = this;
-        MessageBox.confirm(sConfirmMessage, {
-          onClose: function (oAction)
-          {
-            if (oAction === MessageBox.Action.OK)
-            {
-              that._callBoundAction("forward", oContext);
-            }
-          },
-        });
+        var oView = this.getView();
+        ForwardDialogHelper.onForwardDialogOpen(oView);
       },
 
       onReleaseAction: function ()
@@ -290,6 +234,7 @@ sap.ui.define(
           .getModel("i18n")
           .getResourceBundle();
         var sConfirmMessage = oResourceBundle.getText("confirmRelease");
+        var that = this;
 
         var that = this;
         MessageBox.confirm(sConfirmMessage, {
@@ -297,114 +242,73 @@ sap.ui.define(
           {
             if (oAction === MessageBox.Action.OK)
             {
-              that._callBoundAction("release", oContext);
+              that.callBoundAction("release", oContext);
             }
           },
         });
+      },
+
+      onSetPriorityAction: function ()
+      {
+        var oView = this.getView();
+        SetPriorityDialogHelper.openSetPriorityDialog(oView);
       },
 
       onSuspendAction: function ()
       {
-        var oContext = this.getView().getBindingContext();
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-        var sConfirmMessage = oResourceBundle.getText("confirmSuspend");
-
-        var that = this;
-        MessageBox.confirm(sConfirmMessage, {
-          onClose: function (oAction)
-          {
-            if (oAction === MessageBox.Action.OK)
-            {
-              that._callBoundAction("suspend", oContext);
-            }
-          },
-        });
-      },
-
-      _callBoundAction: function (sActionName, oContext)
-      {
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-
-        if (!oContext)
-        {
-          MessageBox.error(oResourceBundle.getText("errorNoContext"));
-          return;
-        }
-
-        var sPath =
-          "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001." +
-          sActionName +
-          "(...)";
-        var oModel = this.getView().getModel();
-
-        var oOperation = oModel.bindContext(sPath, oContext);
-
-        this.getView().setBusy(true);
-
-        oOperation
-          .execute()
-          .then(
-            function ()
-            {
-              this.getView().setBusy(false);
-              MessageToast.show(oResourceBundle.getText("successMessage"));
-
-              oModel.refresh();
-            }.bind(this),
-          )
-          .catch(
-            function (oError)
-            {
-              this.getView().setBusy(false);
-              MessageBox.error("Error: " + oError.message);
-            }.bind(this),
-          );
-      },
-
-      _callODataV4Action: function (sWorkItemID, sDecisionKey)
-      {
-        var oModel = this.getView().getModel();
         var oView = this.getView();
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
+
+        SuspendDialogHelper.onSuspendDialogOpen(oView);
+      },
+
+      onShowUserInfo: function (oEvent)
+      {
+        var oView = this.getView();
+        var oSource = oEvent.getSource();
+        var oContext = oSource.getBindingContext();
+
+        if (!oContext) return;
+
+        var sUserId = oSource.getText();
+
+        UserInfoPopoverHelper.onOpen(oView, oSource, sUserId);
+      },
+
+      onPostComment: function (oEvent)
+      {
+        var oView = this.getView();
+        var sValue = oEvent.getParameter("value").trim();
+        if (!sValue) return;
 
         var oContext = oView.getBindingContext();
+        if (!oContext) return;
 
-        if (!oContext)
+        var oModel = oView.getModel();
+        var oListBinding = oModel.bindList("_Comments", oContext, undefined, undefined, {
+          $$ownRequest: true
+        });
+
+        // 2nd param bSkipRefresh=true → prevents auto-refresh of transient entity (empty ObjectID → 404)
+        oListBinding.create({ Note: sValue }, true);
+
+        oListBinding.attachEventOnce("createCompleted", function (oEvent)
         {
-          MessageBox.error(oResourceBundle.getText("errorNoContext"));
-          return;
-        }
+          var bSuccess = oEvent.getParameter("success");
+          var oResourceBundle = oView.getModel("i18n").getResourceBundle();
 
-        var oOperation = oModel.bindContext(
-          "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.executionDecision(...)",
-          oContext,
-        );
-        oOperation.setParameter("DecisionKey", sDecisionKey);
-        oOperation.setParameter("WorkItemID", sWorkItemID);
-        oOperation.setParameter("DecisionComment", "");
-
-        oOperation
-          .execute()
-          .then(
-            function ()
-            {
-              MessageToast.show(oResourceBundle.getText("successMessage"));
-
-              oModel.refresh();
-
-              var oRouter = this.getOwnerComponent().getRouter();
-            }.bind(this),
-          )
-          .catch(function (oError)
+          if (bSuccess)
           {
-            MessageBox.error("Error: " + oError.message);
-          });
+            MessageToast.show(oResourceBundle.getText("commentPostSuccess"));
+            var oElementBinding = oView.getElementBinding();
+            if (oElementBinding)
+            {
+              oElementBinding.refresh();
+            }
+          } else
+          {
+            MessageBox.error(oResourceBundle.getText("commentPostError"));
+          }
+        });
       },
 
       handleFullScreen: function ()
@@ -414,6 +318,7 @@ sap.ui.define(
           propertyPath: this._propertyPath
         });
       },
+
       handleExitFullScreen: function ()
       {
         this.oRouter.navTo("RouteDetail", {
@@ -421,11 +326,234 @@ sap.ui.define(
           propertyPath: this._propertyPath
         });
       },
+
       handleClose: function ()
       {
+        // Clear the selection in the main view list
+        var oFCL = this.getOwnerComponent().getRootControl().byId("fcl");
+        if (oFCL)
+        {
+          var oBeginColumn = oFCL.getBeginColumnPages()[0];
+          if (oBeginColumn)
+          {
+            var oList = oBeginColumn.byId("idTasksList");
+            if (oList)
+            {
+              oList.removeSelections(true);
+            }
+          }
+        }
+
         this.oRouter.navTo("RouteMainView", {
           layout: "OneColumn"
         });
+      },
+
+      onUploadAttachment: function ()
+      {
+        var oView = this.getView();
+        var oContext = oView.getBindingContext();
+        if (!oContext) return;
+
+        // Create a hidden file input and trigger it
+        var oFileInput = document.createElement("input");
+        oFileInput.type = "file";
+        oFileInput.style.display = "none";
+        document.body.appendChild(oFileInput);
+
+        var that = this;
+        oFileInput.addEventListener("change", function (oEvt)
+        {
+          var oFile = oEvt.target.files[0];
+          if (!oFile)
+          {
+            document.body.removeChild(oFileInput);
+            return;
+          }
+
+          var oReader = new FileReader();
+          oReader.onload = function (oLoadEvt)
+          {
+            // Extract Base64 content (remove the data:...;base64, prefix)
+            var sBase64 = oLoadEvt.target.result.split(",")[1];
+
+            // Parse file name and extension
+            var sFileName = oFile.name;
+            var aNameParts = sFileName.split(".");
+            var sExtension = aNameParts.length > 1 ? aNameParts.pop() : "";
+            var sTitle = aNameParts.join(".");
+            var sMimeType = oFile.type || "application/octet-stream";
+
+            that._postAttachment(oView, oContext, {
+              DocumentTitle: sTitle,
+              FileExtension: sExtension,
+              MimeType: sMimeType,
+              NewFileContent: sBase64
+            });
+
+            document.body.removeChild(oFileInput);
+          };
+          oReader.readAsDataURL(oFile);
+        });
+
+        oFileInput.click();
+      },
+
+      _postAttachment: function (oView, oContext, oPayload)
+      {
+        var oModel = oView.getModel();
+        var oListBinding = oModel.bindList("_Attachments", oContext, undefined, undefined, {
+          $$ownRequest: true
+        });
+
+        oListBinding.create(oPayload, true);
+
+        var oResourceBundle = oView.getModel("i18n").getResourceBundle();
+        oListBinding.attachEventOnce("createCompleted", function (oEvt)
+        {
+          var bSuccess = oEvt.getParameter("success");
+          if (bSuccess)
+          {
+            MessageToast.show(oResourceBundle.getText("attachmentUploadSuccess"));
+            var oElementBinding = oView.getElementBinding();
+            if (oElementBinding)
+            {
+              oElementBinding.refresh();
+            }
+          } else
+          {
+            MessageBox.error(oResourceBundle.getText("attachmentUploadError"));
+          }
+        });
+      },
+
+      onRemoveAttachment: function (oEvent)
+      {
+        var oBindingContext = oEvent.getSource().getBindingContext();
+        if (!oBindingContext) return;
+
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+
+        MessageBox.confirm(oResourceBundle.getText("attachmentMessageRemoveConfirm"), {
+          onClose: function (sAction)
+          {
+            if (sAction === MessageBox.Action.OK)
+            {
+              oBindingContext.delete().then(function ()
+              {
+                MessageToast.show(oResourceBundle.getText("attachmentMessageRemoveSuccess"));
+              }.bind(this)).catch(function (oError)
+              {
+                MessageBox.error(oResourceBundle.getText("attachmentMessageRemoveError", [oError.message]));
+              });
+
+            }
+          }.bind(this)
+        });
+
+      },
+
+      onToggleSidePanel: function (oEvent)
+      {
+        var oView = this.getView(),
+          oItem = oEvent.getParameter("item"),
+          sItemId = oItem ? oItem.getId().split("--").slice(-1)[0] : "N/A";
+
+        if (sItemId === "traceLogsSidePanelItem")
+        {
+          var oContext = oView.getBindingContext();
+          if (!oContext) return;
+          oContext.requestObject("_TraceLogs").then(function (aTraceLogs)
+          {
+            if (!aTraceLogs || !aTraceLogs.length)
+            {
+              oView.setModel(new JSONModel({ nodes: [], lines: [] }), "traceLogGraph");
+              return;
+            }
+
+            // Sort by LogCounter ascending
+            var aSorted = aTraceLogs.slice().sort(function (a, b)
+            {
+              return parseInt(a.LogCounter, 10) - parseInt(b.LogCounter, 10);
+            });
+
+            console.log(aSorted);
+
+
+            // Build nodes
+            var aNodes = aSorted.map(function (oLog)
+            {
+              var sStatus;
+              var sIcon;
+              switch (oLog.StepStatus)
+              {
+                case "COMPLETED":
+                  sStatus = "Success";
+                  sIcon = "sap-icon://accept";
+                  break;
+                case "STARTED":
+                  sStatus = "Information";
+                  sIcon = "sap-icon://begin";
+                  break;
+                case "READY":
+                  sStatus = "Warning";
+                  sIcon = "sap-icon://pending";
+                  break;
+                case "ERROR":
+                case "CANCELLED":
+                  sStatus = "Error";
+                  sIcon = "sap-icon://error";
+                  break;
+                default:
+                  sStatus = "Standard";
+                  sIcon = "sap-icon://process";
+                  break;
+              }
+
+              return {
+                key: oLog.StepWorkItemID,
+                title: oLog.StepDescription,
+                icon: sIcon,
+                status: sStatus,
+                // Main properties (content)
+                stepStatus: oLog.StepStatus,
+                agent: oLog.ActualAgent || oLog.CreatedByUser || "",
+                stepCreationDate: oLog.StepCreationDate,
+                stepCreationTime: oLog.StepCreationTime,
+                logDate: oLog.LogDate,
+                logTime: oLog.LogTime,
+                // Secondary properties (attributes)
+                taskID: oLog.TaskID || "",
+                parentWorkItemID: oLog.ParentWorkItemID || "",
+                stepWorkItemID: oLog.StepWorkItemID || "",
+                taskShortText: oLog.TaskShortText || "",
+                workItemType: oLog.WorkItemType || "",
+                priority: oLog.Priority || "",
+                nodeID: oLog.NodeID || "",
+                predecessorWI: oLog.PredecessorWI || "",
+                parentWorkItem: oLog.ParentWorkItem || "",
+                completedDate: oLog.CompletedDate || "",
+                completedTime: oLog.CompletedTime || "",
+                returnCode: oLog.ReturnCode || "",
+                deadlineStatus: oLog.DeadlineStatus || ""
+              };
+            });
+
+            // Build lines: connect consecutive nodes by LogCounter order
+            var aLines = [];
+            for (var i = 0; i < aNodes.length - 1; i++)
+            {
+              aLines.push({
+                from: aNodes[i].key,
+                to: aNodes[i + 1].key
+              });
+            }
+
+            oView.setModel(new JSONModel({ nodes: aNodes, lines: aLines }), "traceLogGraph");
+          });
+        }
       },
     });
   },

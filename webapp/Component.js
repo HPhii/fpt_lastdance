@@ -24,8 +24,37 @@ sap.ui.define(
         // set the device model
         this.setModel(models.createDeviceModel(), "device");
 
+        // Attach layout handler BEFORE router initializes
+        // so deep links (direct URL paste) set the correct FCL layout
+        this.getRouter().attachBeforeRouteMatched(this._onBeforeRouteMatched, this);
+
         // enable routing
         this.getRouter().initialize();
+      },
+
+      _onBeforeRouteMatched: function (oEvent)
+      {
+        var sLayout = oEvent.getParameters().arguments.layout;
+
+        if (!sLayout)
+        {
+          sLayout = "OneColumn";
+        }
+
+        // Try to apply layout directly to FCL
+        var oRootControl = this.getRootControl();
+        if (oRootControl)
+        {
+          var oFCL = oRootControl.byId("fcl");
+          if (oFCL)
+          {
+            oFCL.setLayout(sLayout);
+            return;
+          }
+        }
+
+        // FCL not ready yet (async root view), store for later
+        this._sPendingLayout = sLayout;
       },
 
       getHelper: function ()
