@@ -1,10 +1,12 @@
 sap.ui.define(
   ["./BaseController", "sap/ui/model/json/JSONModel"],
-  function (BaseController, JSONModel) {
+  function (BaseController, JSONModel)
+  {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Analytics", {
-      onInit: function () {
+      onInit: function ()
+      {
         BaseController.prototype.onInit.apply(this, arguments);
 
         var oStatsModel = new JSONModel({
@@ -22,9 +24,10 @@ sap.ui.define(
       },
 
       /* ROUTE MATCHED                 */
-      _onObjectMatched: function (oEvent) {
+      _onObjectMatched: function (oEvent)
+      {
         this._callUserWorkloadOData();
-        this._loadPerformanceChart(); // 🔥 thêm dòng này
+        this._loadPerformanceChart();
 
         var oView = this.getView();
         var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
@@ -37,24 +40,28 @@ sap.ui.define(
             $select:
               "IsOpenCount,IsCompletedThisMonth,IsOverdueCount,TaskCounter,IsCompletedCount",
           },
-          success: function (oData) {
+          success: function (oData)
+          {
             oStatsModel.setProperty("/busy", false);
 
             var aResults = oData.results || [];
 
-            if (aResults.length > 0) {
+            if (aResults.length > 0)
+            {
               var oStatsData = aResults[0];
               oStatsModel.setProperty("/result", oStatsData);
             }
           }.bind(this),
-          error: function (oError) {
+          error: function (oError)
+          {
             console.error("Failed to fetch analytics data:", oError);
           }.bind(this),
         });
       },
 
       /* PERFORMANCE CHART     */
-      _loadPerformanceChart: function () {
+      _loadPerformanceChart: function ()
+      {
         this.byId("idPerfChart").setVizProperties({
           legend: {
             visible: true,
@@ -69,7 +76,8 @@ sap.ui.define(
         var oView = this.getView();
         var oPerfModel = oView.getModel("performanceAnalytics");
 
-        if (!oPerfModel) {
+        if (!oPerfModel)
+        {
           console.error("performanceAnalytics model not found");
           return;
         }
@@ -79,8 +87,10 @@ sap.ui.define(
             $select: "CreationYearMonth,IsCompletedCount,CycleTimeDays",
             $filter: "StatusCategory eq 'Completed'",
           },
-          success: function (oData) {
-            var aFormatted = (oData.results || []).map(function (item) {
+          success: function (oData)
+          {
+            var aFormatted = (oData.results || []).map(function (item)
+            {
               var completed = parseInt(item.IsCompletedCount);
               var totalDays = parseInt(item.CycleTimeDays);
 
@@ -121,32 +131,37 @@ sap.ui.define(
             oView.setModel(oJsonModel);
           }.bind(this),
 
-          error: function (oError) {
+          error: function (oError)
+          {
             console.error("Failed to fetch performance data:", oError);
           },
         });
       },
 
       /* WORKLOAD                     */
-      _callUserWorkloadOData: function () {
+      _callUserWorkloadOData: function ()
+      {
         var oView = this.getView();
         var oWorkloadAnalyticsModel = oView.getModel("workloadAnalytics");
 
         oView.setModel(new JSONModel({ result: [] }), "workloadAnalyticsData");
 
         oWorkloadAnalyticsModel.read("/ZC_GSP26SAP02_WF_AGT", {
-          success: function (oData) {
+          success: function (oData)
+          {
             oView
               .getModel("workloadAnalyticsData")
               .setProperty("/result", oData.results);
           },
-          error: function (oError) {
+          error: function (oError)
+          {
             console.error("Failed to fetch user workload data:", oError);
           },
         });
       },
 
-      onNavBackToDashboard: function () {
+      onNavBackToDashboard: function ()
+      {
         this.getOwnerComponent().getRouter().navTo("RouteDashboard");
       },
     });
