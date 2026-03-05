@@ -39,7 +39,7 @@ sap.ui.define(
         });
 
         oView.setModel(oViewModel, "detailView");
-        oView.setModel(new JSONModel({ comments: [] }), "commentsModel");
+        oView.setModel(new JSONModel({}), "commentsModel");
         this.oModel = this.getOwnerComponent().getModel();
 
         this.oRouter
@@ -57,7 +57,7 @@ sap.ui.define(
         var sPropertyPath = oEvent.getParameter("arguments").propertyPath;
         this._propertyPath = sPropertyPath; // Store for navigation
 
-        var sPath = "/WfTasks(WorkItemID='" + window.decodeURIComponent(sPropertyPath) + "',IsActiveEntity=true)";
+        var sPath = "/WfTasks(WorkItemID='" + window.decodeURIComponent(sPropertyPath) + "')";
 
         console.log("Detail view matched, binding to:", sPath);
 
@@ -65,7 +65,7 @@ sap.ui.define(
           path: sPath,
           parameters: {
             $select: "*,__OperationControl",
-            $expand: "_DecisionOptions,_Comments,_TraceLogs",
+            $expand: "_DecisionOptions,_TraceLogs,_Comments",
           },
           events: {
             dataReceived: function ()
@@ -78,7 +78,12 @@ sap.ui.define(
               if (oBoundContext)
               {
                 var aComments = oBoundContext.getObject("_Comments") || [];
-                oView.getModel("commentsModel").setProperty("/comments", aComments);
+                if (aComments && aComments.length > 0)
+                {
+                  oView.getModel("commentsModel").setData({
+                    comments: aComments
+                  });
+                }
 
                 var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
                 var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
@@ -276,11 +281,34 @@ sap.ui.define(
         if (!sValue) return;
 
         var oContext = oView.getBindingContext();
-        const oPayload = {
-          note: sValue
-        };
+        if (!oContext) return;
 
-        this.callBoundAction("comment", oContext, oPayload);
+        var oModel = oView.getModel();
+        var oListBinding = oModel.bindList("_Comments", oContext, undefined, undefined, {
+          $$ownRequest: true
+        });
+
+        // 2nd param bSkipRefresh=true → prevents auto-refresh of transient entity (empty ObjectID → 404)
+        oListBinding.create({ Note: sValue }, true);
+
+        oListBinding.attachEventOnce("createCompleted", function (oEvent)
+        {
+          var bSuccess = oEvent.getParameter("success");
+          var oResourceBundle = oView.getModel("i18n").getResourceBundle();
+
+          if (bSuccess)
+          {
+            MessageToast.show(oResourceBundle.getText("commentPostSuccess"));
+            var oElementBinding = oView.getElementBinding();
+            if (oElementBinding)
+            {
+              oElementBinding.refresh();
+            }
+          } else
+          {
+            MessageBox.error(oResourceBundle.getText("commentPostError"));
+          }
+        });
       },
 
       handleFullScreen: function ()
@@ -323,8 +351,80 @@ sap.ui.define(
 
       onUploadAttachment: function ()
       {
-        // Implement attachment upload logic here
-        console.log("Upload attachment button pressed");
+        var oView = this.getView();
+        var oContext = oView.getBindingContext();
+        if (!oContext) return;
+
+        // Create a hidden file input and trigger it
+        var oFileInput = document.createElement("input");
+        oFileInput.type = "file";
+        oFileInput.style.display = "none";
+        document.body.appendChild(oFileInput);
+
+        var that = this;
+        oFileInput.addEventListener("change", function (oEvt)
+        {
+          var oFile = oEvt.target.files[0];
+          if (!oFile)
+          {
+            document.body.removeChild(oFileInput);
+            return;
+          }
+
+          var oReader = new FileReader();
+          oReader.onload = function (oLoadEvt)
+          {
+            // Extract Base64 content (remove the data:...;base64, prefix)
+            var sBase64 = oLoadEvt.target.result.split(",")[1];
+
+            // Parse file name and extension
+            var sFileName = oFile.name;
+            var aNameParts = sFileName.split(".");
+            var sExtension = aNameParts.length > 1 ? aNameParts.pop() : "";
+            var sTitle = aNameParts.join(".");
+            var sMimeType = oFile.type || "application/octet-stream";
+
+            that._postAttachment(oView, oContext, {
+              DocumentTitle: sTitle,
+              FileExtension: sExtension,
+              MimeType: sMimeType,
+              NewFileContent: sBase64
+            });
+
+            document.body.removeChild(oFileInput);
+          };
+          oReader.readAsDataURL(oFile);
+        });
+
+        oFileInput.click();
+      },
+
+      _postAttachment: function (oView, oContext, oPayload)
+      {
+        var oModel = oView.getModel();
+        var oListBinding = oModel.bindList("_Attachments", oContext, undefined, undefined, {
+          $$ownRequest: true
+        });
+
+        oListBinding.create(oPayload, true);
+
+        var oResourceBundle = oView.getModel("i18n").getResourceBundle();
+        oListBinding.attachEventOnce("createCompleted", function (oEvt)
+        {
+          var bSuccess = oEvt.getParameter("success");
+          if (bSuccess)
+          {
+            MessageToast.show(oResourceBundle.getText("attachmentUploadSuccess"));
+            var oElementBinding = oView.getElementBinding();
+            if (oElementBinding)
+            {
+              oElementBinding.refresh();
+            }
+          } else
+          {
+            MessageBox.error(oResourceBundle.getText("attachmentUploadError"));
+          }
+        });
       },
 
       onRemoveAttachment: function (oEvent)

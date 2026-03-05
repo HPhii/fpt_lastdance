@@ -1,5 +1,6 @@
 <core:FragmentDefinition
     xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
     xmlns:core="sap.ui.core"
 >
     <Table
@@ -8,7 +9,7 @@
         inset="false"
         growing="true"
         growingThreshold="20"
-        class="sapFDynamicPageAlignContent"
+        class="sapFDynamicPageAlignContent sapUiTinyMargin"
         width="auto"
         mode="{worklistView>/listMode}"
         selectionChange=".onSelectionChange"
@@ -21,60 +22,58 @@
         }"
     >
         <headerToolbar>
-            <OverflowToolbar>
-                <Toolbar width="100%">
-                    <Title
-                        text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
-                        level="H2"
-                    />
-                    <ToolbarSpacer />
-                    <Button
-                        icon="sap-icon://sort"
-                        press=".onSort"
-                        tooltip="{i18n>tooltipHeaderSort}"
-                    />
-                    <Button
-                        icon="sap-icon://filter"
-                        press=".onFilter"
-                        tooltip="{i18n>tooltipHeaderFilter}"
-                    />
-                    <Button
-                        icon="sap-icon://group-2"
-                        press=".onGroup"
-                        tooltip="{i18n>tooltipHeaderGroup}"
-                    />
-                    <Button
-                        icon="sap-icon://action-settings"
-                        press=".onCustomColumn"
-                        tooltip="Settings"
-                    />
-                    <Button
-                        text="{i18n>tableHeaderSelectAll}"
-                        press=".onSelectAll"
-                        icon="sap-icon://multiselect-all"
-                        visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
-                    />
-                    <Button
-                        text="{i18n>tableHeaderDeselectAll}"
-                        press=".onDeselectAll"
-                        icon="sap-icon://multiselect-none"
-                        visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
-                    />
-                    <Button
-                        icon="sap-icon://multi-select"
-                        press=".onToggleMultiSelect"
-                        tooltip="Toggle Multi-Select Mode"
-                        type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
-                    />
-                    <SearchField
-                        id="searchTaskField"
-                        width="auto"
-                        placeholder="{i18n>tableHeaderSearchPlaceholder}"
-                        class="sapUiSmallMargin"
-                        search=".onSearch"
-                    />
-                </Toolbar>
-            </OverflowToolbar>
+            <Toolbar width="100%">
+                <Title
+                    text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
+                    level="H2"
+                />
+                <ToolbarSpacer />
+                <Button
+                    icon="sap-icon://sort"
+                    press=".onSort"
+                    tooltip="{i18n>tooltipHeaderSort}"
+                />
+                <Button
+                    icon="sap-icon://filter"
+                    press=".onFilter"
+                    tooltip="{i18n>tooltipHeaderFilter}"
+                />
+                <Button
+                    icon="sap-icon://group-2"
+                    press=".onGroup"
+                    tooltip="{i18n>tooltipHeaderGroup}"
+                />
+                <Button
+                    icon="sap-icon://action-settings"
+                    press=".onCustomColumn"
+                    tooltip="Settings"
+                />
+                <Button
+                    text="{i18n>tableHeaderSelectAll}"
+                    press=".onSelectAll"
+                    icon="sap-icon://multiselect-all"
+                    visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                />
+                <Button
+                    text="{i18n>tableHeaderDeselectAll}"
+                    press=".onDeselectAll"
+                    icon="sap-icon://multiselect-none"
+                    visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
+                />
+                <Button
+                    icon="sap-icon://multi-select"
+                    press=".onToggleMultiSelect"
+                    tooltip="Toggle Multi-Select Mode"
+                    type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
+                />
+                <SearchField
+                    id="searchTaskField"
+                    width="auto"
+                    placeholder="{i18n>tableHeaderSearchPlaceholder}"
+                    class="sapUiSmallMargin"
+                    search=".onSearch"
+                />
+            </Toolbar>
         </headerToolbar>
         <columns>
             <Column
@@ -118,6 +117,7 @@
             <Column
                 id="colDaysToDeadline"
                 minScreenWidth="Desktop"
+                demandPopin="true"
                 visible="{worklistView>/columns/daysToDeadline}"
             >
                 <Text text="{i18n>columnTaskDaysToDeadline}" />
@@ -171,12 +171,33 @@
                     <Text text="{WorkItemID}" />
                     <ObjectIdentifier text="{CreationDate}" />
                     <Text text="{= ${EndDate} || 'N/A' }" />
-                    <ObjectAttribute
-                        text="{
-                            path: 'DaysToDeadline',
-                            formatter: '.formatter.formatDaysToDeadlineText'
-                        }"
-                    />
+                    <HBox alignItems="Center">
+                        <VBox justifyContent="Center">
+                            <Text
+                                text="{
+                                    path: 'DaysToDeadline',
+                                    formatter: '.formatter.formatDaysToDeadlineText'
+                                }"
+                            />
+                            <tnt:InfoLabel
+                                text="{ActualDeadlineDate}"
+                                colorScheme="1"
+                                displayOnly="true"
+                                visible="{= ${IsDueOn} }"
+                                class="sapUiTinyMarginEnd"
+                            />
+                        </VBox>
+                        <ObjectStatus
+                            text="{
+                                parts: [
+                                    {path: 'IsOverdue'},
+                                    {path: 'IsDueOn'}
+                                ],
+                                formatter: '.formatter.formatDaysToDeadlineTitle'
+                            }"
+                            state="{= ${IsOverdue} ? 'Error' : ${IsDueOn} ? 'Warning' : 'None'}"
+                        />
+                    </HBox>
                     <ObjectStatus
                         class="sapUiTextBold"
                         text="{TechnicalStatus}"

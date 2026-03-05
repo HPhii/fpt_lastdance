@@ -93,12 +93,12 @@ sap.ui.define([
     {
       if (!sNumberOfDays) return "N/A";
 
-      if (sNumberOfDays > '1000')
+      if (sNumberOfDays === '9,999')
       {
         return "Infinity";
-      } else if (sNumberOfDays < '0')
+      } else if (parseInt(sNumberOfDays) < 0)
       {
-        return "Overdue";
+        return "";
       }
 
       return sNumberOfDays + " Days";
@@ -171,6 +171,18 @@ sap.ui.define([
         return oResourceBundle.getText("txtStartsInDays", [iDays]);
       }
       return "";
+    },
+
+    formatDaysToDeadlineTitle: function (bIsOverdue, bIsDueOn)
+    {
+      if (bIsOverdue)
+      {
+        return "(Overdue)";
+      }
+      if (bIsDueOn)
+      {
+        return "(Within a Week)";
+      }
     },
 
     formatDateOrNA: function (sType, sDate)
