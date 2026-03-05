@@ -104,8 +104,15 @@ xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
         id="idPerfChart"
         vizType="dual_combination"
         height="450px"
-        width="100%">
-
+        width="55%"
+         vizProperties="{
+        title: {
+            visible: true,
+            text: 'Tasks Completed and Avg Cycle Time'
+        }
+        }"
+        >
+        
         <viz:dataset>
             <viz.data:FlattenedDataset data="{/PerfData}">
                 <viz.data:dimensions>
@@ -119,7 +126,7 @@ xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
                         name="Completed"
                         value="{Completed}" />
                     <viz.data:MeasureDefinition
-                        name="Avg Cycle"
+                        name="Avg Cycle (Days)"
                         value="{AvgCycle}" />
                 </viz.data:measures>
             </viz.data:FlattenedDataset>
@@ -133,7 +140,7 @@ xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
             <viz.feeds:FeedItem
                 uid="secondaryValues"
                 type="Measure"
-                values="Avg Cycle" />
+                values="Avg Cycle (Days)" />
             <viz.feeds:FeedItem
                 uid="axisLabels"
                 type="Dimension"
