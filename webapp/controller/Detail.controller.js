@@ -8,6 +8,7 @@ sap.ui.define(
     "../utils/DetailOdata",
     "../utils/SetPriorityDialog",
     "../utils/UserInfoPopover",
+    "../utils/Attachments",
     "sap/m/MessageToast"
   ],
   function (
@@ -19,6 +20,7 @@ sap.ui.define(
     DetailOdataHelper,
     SetPriorityDialogHelper,
     UserInfoPopoverHelper,
+    AttachmentsHelper,
     MessageToast
   )
   {
@@ -349,110 +351,19 @@ sap.ui.define(
         });
       },
 
-      onUploadAttachment: function ()
+      onDownloadAttachment: function (oEvent)
       {
-        var oView = this.getView();
-        var oContext = oView.getBindingContext();
-        if (!oContext) return;
-
-        // Create a hidden file input and trigger it
-        var oFileInput = document.createElement("input");
-        oFileInput.type = "file";
-        oFileInput.style.display = "none";
-        document.body.appendChild(oFileInput);
-
-        var that = this;
-        oFileInput.addEventListener("change", function (oEvt)
-        {
-          var oFile = oEvt.target.files[0];
-          if (!oFile)
-          {
-            document.body.removeChild(oFileInput);
-            return;
-          }
-
-          var oReader = new FileReader();
-          oReader.onload = function (oLoadEvt)
-          {
-            // Extract Base64 content (remove the data:...;base64, prefix)
-            var sBase64 = oLoadEvt.target.result.split(",")[1];
-
-            // Parse file name and extension
-            var sFileName = oFile.name;
-            var aNameParts = sFileName.split(".");
-            var sExtension = aNameParts.length > 1 ? aNameParts.pop() : "";
-            var sTitle = aNameParts.join(".");
-            var sMimeType = oFile.type || "application/octet-stream";
-
-            that._postAttachment(oView, oContext, {
-              DocumentTitle: sTitle,
-              FileExtension: sExtension,
-              MimeType: sMimeType,
-              NewFileContent: sBase64
-            });
-
-            document.body.removeChild(oFileInput);
-          };
-          oReader.readAsDataURL(oFile);
-        });
-
-        oFileInput.click();
+        AttachmentsHelper.onDownloadAttachment(this.getView(), oEvent);
       },
 
-      _postAttachment: function (oView, oContext, oPayload)
+      onUploadAttachment: function ()
       {
-        var oModel = oView.getModel();
-        var oListBinding = oModel.bindList("_Attachments", oContext, undefined, undefined, {
-          $$ownRequest: true
-        });
-
-        oListBinding.create(oPayload, true);
-
-        var oResourceBundle = oView.getModel("i18n").getResourceBundle();
-        oListBinding.attachEventOnce("createCompleted", function (oEvt)
-        {
-          var bSuccess = oEvt.getParameter("success");
-          if (bSuccess)
-          {
-            MessageToast.show(oResourceBundle.getText("attachmentUploadSuccess"));
-            var oElementBinding = oView.getElementBinding();
-            if (oElementBinding)
-            {
-              oElementBinding.refresh();
-            }
-          } else
-          {
-            MessageBox.error(oResourceBundle.getText("attachmentUploadError"));
-          }
-        });
+        AttachmentsHelper.onUploadAttachment(this.getView());
       },
 
       onRemoveAttachment: function (oEvent)
       {
-        var oBindingContext = oEvent.getSource().getBindingContext();
-        if (!oBindingContext) return;
-
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-
-        MessageBox.confirm(oResourceBundle.getText("attachmentMessageRemoveConfirm"), {
-          onClose: function (sAction)
-          {
-            if (sAction === MessageBox.Action.OK)
-            {
-              oBindingContext.delete().then(function ()
-              {
-                MessageToast.show(oResourceBundle.getText("attachmentMessageRemoveSuccess"));
-              }.bind(this)).catch(function (oError)
-              {
-                MessageBox.error(oResourceBundle.getText("attachmentMessageRemoveError", [oError.message]));
-              });
-
-            }
-          }.bind(this)
-        });
-
+        AttachmentsHelper.onRemoveAttachment(this.getView(), oEvent);
       },
 
       onToggleSidePanel: function (oEvent)
