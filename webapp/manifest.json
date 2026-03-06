@@ -84,6 +84,26 @@
           "odataVersion": "2.0",
           "defaultBindingMode": "OneWay"
         }
+      },
+      "userKPIAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_MYKPIACT_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/userKPIAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "userProductivityAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_MYPERF_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/userProductivityAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
       }
     },
     "crossNavigation": {
@@ -209,6 +229,26 @@
       },
       "workloadAnalytics": {
         "dataSource": "workloadAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "userKPIAnalytics": {
+        "dataSource": "userKPIAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "userProductivityAnalytics": {
+        "dataSource": "userProductivityAnalyticsService",
         "preload": false,
         "settings": {
           "synchronizationMode": "None",

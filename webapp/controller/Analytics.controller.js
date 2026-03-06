@@ -94,7 +94,7 @@ sap.ui.define(
               var completed = parseInt(item.IsCompletedCount);
               var totalDays = parseInt(item.CycleTimeDays);
 
-              // 🔥 Format YYYYMM → Mar 2025
+              // Format YYYYMM → Mar 2025
               var sYearMonth = item.CreationYearMonth; // ví dụ 202503
               var sYear = sYearMonth.substring(0, 4);
               var sMonth = sYearMonth.substring(4, 6);
