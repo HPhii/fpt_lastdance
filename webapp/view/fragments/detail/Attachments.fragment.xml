@@ -56,6 +56,7 @@
                                 text="{DocumentTitle}.{FileExtension}"
                                 width="auto"
                                 wrapping="false"
+                                press=".onDownloadAttachment"
                             />
                             <m:HBox class="sapUiTinyMarginTop">
                                 <m:Text text="{DateCreated}, {CreatedAt}" />
