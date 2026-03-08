@@ -1,5 +1,9 @@
 sap.ui.define(
-  ["./BaseController", "sap/ui/model/json/JSONModel"],
+  [
+    "./BaseController",
+    "sap/ui/model/json/JSONModel",
+    "sap/viz/ui5/controls/VizFrame",
+  ],
   function (BaseController, JSONModel) {
     "use strict";
 
@@ -83,9 +87,7 @@ sap.ui.define(
             var aFormatted = (oData.results || []).map(function (item) {
               var completed = parseInt(item.IsCompletedCount);
               var totalDays = parseInt(item.CycleTimeDays);
-
-              // 🔥 Format YYYYMM → Mar 2025
-              var sYearMonth = item.CreationYearMonth; // ví dụ 202503
+              var sYearMonth = item.CreationYearMonth;
               var sYear = sYearMonth.substring(0, 4);
               var sMonth = sYearMonth.substring(4, 6);
 
