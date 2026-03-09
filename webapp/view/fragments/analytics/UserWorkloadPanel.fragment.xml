@@ -5,54 +5,176 @@
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
     xmlns:viz.data="sap.viz.ui5.data"
 >
-    <Panel>
-        <viz:VizFrame
-            id="idVizFrame"
-            uiConfig="{applicationSet:'fiori'}"
-            height='100%'
+    <Panel
+        class="sapUiSmallMargin statsPanel"
+        headerText="{i18n>userWorkloadTitle}"
+        width="98.5%"
+    >
+        <FlexBox
             width="100%"
-            vizType='column'
+            direction="Column"
         >
-            <viz:dataset>
-                <viz.data:FlattenedDataset
-                    data="{workloadAnalyticsData>/result}"
-                >
-                    <viz.data:dimensions>
-                        <viz.data:DimensionDefinition
-                            name="Agent"
-                            value="{workloadAnalyticsData>ActualAgent}"
-                        />
-                    </viz.data:dimensions>
-                    <viz.data:measures>
-                        <viz.data:MeasureDefinition
-                            name="Open"
-                            value="{workloadAnalyticsData>IsOpenCount}"
-                        />
-                        <viz.data:MeasureDefinition
-                            name="Completed"
-                            value="{workloadAnalyticsData>IsCompletedCount}"
-                        />
-                    </viz.data:measures>
-                </viz.data:FlattenedDataset>
-            </viz:dataset>
+            <!-- Group Column Chart -->
+            <viz:VizFrame
+                id="OpenCompletedColumnChart"
+                uiConfig="{applicationSet:'fiori'}"
+                class="sapUiSmallMargin"
+                width="100%"
+                vizType='column'
+                vizProperties="{
+                    interaction: {
+                        zoom: { enablement: 'enabled' },
+                        selectability: { mode: 'single' }
+                    },
+                    plotArea: {
+                        dataLabel: { visible: true },
+                        isScrollable: true,
+                        colorPalette: ['#E78C07','#2B7C2B']
+                    },
+                    categoryAxis: {
+                        title: { visible: true },
+                        layout: {
+                        maxVisibleCount: 50
+                        }
+                    },
+                    valueAxis: {
+                        title: { visible: true }
+                    },
+                    legend: {
+                        visible: true
+                    },
+                    title: {
+                        visible: true
+                    }
+                }"
+            >
+                <viz:dataset>
+                    <viz.data:FlattenedDataset
+                        data="{
+                            path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
+                            parameters : {
+                                $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
+                                $filter: 'ActualAgent ne \'Unassigned\''
+                            }
+                        }"
+                    >
+                        <viz.data:dimensions>
+                            <viz.data:DimensionDefinition
+                                name="Agent"
+                                value="{ActualAgent}"
+                            />
+                        </viz.data:dimensions>
+                        <viz.data:measures>
+                            <viz.data:MeasureDefinition
+                                name="Open"
+                                value="{IsOpenCount}"
+                            />
+                            <viz.data:MeasureDefinition
+                                name="Completed"
+                                value="{IsCompletedCount}"
+                            />
+                        </viz.data:measures>
+                    </viz.data:FlattenedDataset>
+                </viz:dataset>
 
-            <viz:feeds>
-                <viz.feeds:FeedItem
-                    id='valueAxisFeed'
-                    uid="valueAxis"
-                    type="Measure"
-                    values="Open,Completed"
-                />
-                <viz.feeds:FeedItem
-                    id='categoryAxisFeed'
-                    uid="categoryAxis"
-                    type="Dimension"
-                    values="Agent"
-                />
-            </viz:feeds>
-            <viz:dependents>
-                <viz:Popover id="idPopOver" />
-            </viz:dependents>
-        </viz:VizFrame>
+                <viz:feeds>
+                    <viz.feeds:FeedItem
+                        id='valueAxisFeed'
+                        uid="valueAxis"
+                        type="Measure"
+                        values="Open,Completed"
+                    />
+                    <viz.feeds:FeedItem
+                        id='categoryAxisFeed'
+                        uid="categoryAxis"
+                        type="Dimension"
+                        values="Agent"
+                    />
+                </viz:feeds>
+                <viz:dependents>
+                    <viz:Popover id="OpenCompletedPopover" />
+                </viz:dependents>
+            </viz:VizFrame>
+
+            <!-- Scatter Plot -->
+            <viz:VizFrame
+                id="CycleTimeScatterChart"
+                uiConfig="{applicationSet:'fiori'}"
+                class="sapUiSmallMargin"
+                width="100%"
+                vizType='scatter'
+                vizProperties="{
+                    plotArea: {
+                        dataLabel: {
+                            visible: true,
+                            type: 'value',
+                            hideWhenOverlap: true
+                        },
+                        colorPalette: ['#5899DA','#E8743B','#19A979','#ED4A7B','#945ECF','#13A4B4','#525DF4','#BF399E','#6C8893','#EE6868','#2F6497'],
+                        isScrollable: true
+                    },
+                    interaction: {
+                        zoom: { enablement: 'enabled' },
+                        selectability: { mode: 'multiple' }
+                    },
+                    legend: {
+                        visible: true
+                    },
+                    title: {
+                        visible: true
+                    }
+                }"
+            >
+                <viz:dataset>
+                    <viz.data:FlattenedDataset
+                        data="{
+                            path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
+                            parameters : {
+                                $select: 'ActualAgent,IsCompletedCount,CycleTimeDays',
+                                $filter: 'ActualAgent ne \'Unassigned\''
+                            }
+                        }"
+                    >
+                        <viz.data:dimensions>
+                            <viz.data:DimensionDefinition
+                                name="Agent"
+                                value="{ActualAgent}"
+                            />
+                        </viz.data:dimensions>
+                        <viz.data:measures>
+                            <viz.data:MeasureDefinition
+                                name="Completed"
+                                value="{IsCompletedCount}"
+                            />
+                            <viz.data:MeasureDefinition
+                                name="Days"
+                                value="{CycleTimeDays}"
+                            />
+                        </viz.data:measures>
+                    </viz.data:FlattenedDataset>
+                </viz:dataset>
+
+                <viz:feeds>
+                    <viz.feeds:FeedItem
+                        uid="valueAxis"
+                        type="Measure"
+                        values="Completed"
+                    />
+                    <viz.feeds:FeedItem
+                        uid="valueAxis2"
+                        type="Measure"
+                        values="Days"
+                    />
+                    <viz.feeds:FeedItem
+                        uid="color"
+                        type="Dimension"
+                        values="Agent"
+                    />
+                </viz:feeds>
+                <viz:dependents>
+                    <viz:Popover id="CycleTimePopover" />
+                </viz:dependents>
+            </viz:VizFrame>
+        </FlexBox>
     </Panel>
 </core:FragmentDefinition>

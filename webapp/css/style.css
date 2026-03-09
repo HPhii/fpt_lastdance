@@ -70,10 +70,10 @@ img.sapMSelectListItemIcon {
 }
 
 /* ========== Analytics Stats Panel ========== */
-.statsPanel .sapMPanelContent {
+/* .statsPanel .sapMPanelContent {
   padding: 0.75rem 1rem !important;
   margin-right: 2rem !important;
-}
+} */
 
 .statsCardsRow {
   gap: 1rem;

@@ -26,8 +26,8 @@ sap.ui.define(
       /* ROUTE MATCHED                 */
       _onObjectMatched: function (oEvent)
       {
-        this._callUserWorkloadOData();
         this._loadPerformanceChart();
+        this._connectPopovers();
 
         var oView = this.getView();
         var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
@@ -138,26 +138,37 @@ sap.ui.define(
         });
       },
 
-      /* WORKLOAD                     */
-      _callUserWorkloadOData: function ()
+
+      /* CONNECT POPOVERS TO VIZFRAMES */
+      _connectPopovers: function ()
       {
-        var oView = this.getView();
-        var oWorkloadAnalyticsModel = oView.getModel("workloadAnalytics");
+        var oBundle = this.getView().getModel("i18n").getResourceBundle();
 
-        oView.setModel(new JSONModel({ result: [] }), "workloadAnalyticsData");
+        var oColumnChart = this.byId("OpenCompletedColumnChart");
+        var oColumnPopover = this.byId("OpenCompletedPopover");
+        if (oColumnChart)
+        {
+          oColumnChart.setVizProperties({
+            title: { text: oBundle.getText("userWorkloadColumnChartTitle") }
+          });
+          if (oColumnPopover)
+          {
+            oColumnPopover.connect(oColumnChart.getVizUid());
+          }
+        }
 
-        oWorkloadAnalyticsModel.read("/ZC_GSP26SAP02_WF_AGT", {
-          success: function (oData)
+        var oScatterChart = this.byId("CycleTimeScatterChart");
+        var oScatterPopover = this.byId("CycleTimePopover");
+        if (oScatterChart)
+        {
+          oScatterChart.setVizProperties({
+            title: { text: oBundle.getText("userWorkloadScatterChartTitle") }
+          });
+          if (oScatterPopover)
           {
-            oView
-              .getModel("workloadAnalyticsData")
-              .setProperty("/result", oData.results);
-          },
-          error: function (oError)
-          {
-            console.error("Failed to fetch user workload data:", oError);
-          },
-        });
+            oScatterPopover.connect(oScatterChart.getVizUid());
+          }
+        }
       },
 
       onNavBackToDashboard: function ()

@@ -10,98 +10,101 @@
     xmlns:viz.data="sap.viz.ui5.data"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
-    <Shell>
-        <Page
-            title="{i18n>analyticsTitle}"
-            showNavButton="true"
-            navButtonPress=".onNavBackToDashboard"
-        >
-            <headerContent>
-                <core:Fragment
-                    fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
-                    type="XML"
-                />
-            </headerContent>
-            <!-- Volume & Status Panel -->
+    <Page
+        title="{i18n>analyticsTitle}"
+        showNavButton="true"
+        navButtonPress=".onNavBackToDashboard"
+    >
+        <headerContent>
             <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
+                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
                 type="XML"
             />
+        </headerContent>
+        <!-- Volume & Status Panel -->
+        <core:Fragment
+            fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
+            type="XML"
+        />
 
-            <!-- <Panel>
+        <core:Fragment
+            fragmentName="z.wf.zwfmanagement.view.fragments.analytics.UserWorkloadPanel"
+            type="XML"
+        />
+
+        <!-- <Panel>
                 <card:Card
                     manifest="./cards/calendarCard/manifest.json"
                     width="400px"
                     height="auto"
                 />
             </Panel> -->
-            <Panel>
-                <card:Card
-                    manifest="/cards/statusChart/manifest.json"
-                    width="400px"
-                    height="400px"
-                />
-                <card:Card
-                    class="sapUiMediumMarginBegin"
-                    manifest="/cards/barPriorityChart/manifest.json"
-                    width="780px"
-                    height="400px"
-                />
-            </Panel>
-            <Panel class="sapUiMediumMarginTop">
-                <viz:VizFrame
-                    id="idPerfChart"
-                    vizType="dual_combination"
-                    height="450px"
-                    width="55%"
-                    vizProperties="{
+        <Panel>
+            <card:Card
+                manifest="/cards/statusChart/manifest.json"
+                width="400px"
+                height="400px"
+            />
+            <card:Card
+                class="sapUiMediumMarginBegin"
+                manifest="/cards/barPriorityChart/manifest.json"
+                width="780px"
+                height="400px"
+            />
+        </Panel>
+        <Panel class="sapUiMediumMarginTop">
+            <viz:VizFrame
+                id="idPerfChart"
+                vizType="dual_combination"
+                height="450px"
+                width="55%"
+                vizProperties="{
         title: {
             visible: true,
             text: 'Tasks Completed and Avg Cycle Time'
         }
         }"
-                >
-                    <viz:dataset>
-                        <viz.data:FlattenedDataset data="{/PerfData}">
-                            <viz.data:dimensions>
-                                <viz.data:DimensionDefinition
-                                    name="Month"
-                                    value="{Month}"
-                                />
-                            </viz.data:dimensions>
+            >
+                <viz:dataset>
+                    <viz.data:FlattenedDataset data="{/PerfData}">
+                        <viz.data:dimensions>
+                            <viz.data:DimensionDefinition
+                                name="Month"
+                                value="{Month}"
+                            />
+                        </viz.data:dimensions>
 
-                            <viz.data:measures>
-                                <viz.data:MeasureDefinition
-                                    name="Completed"
-                                    value="{Completed}"
-                                />
-                                <viz.data:MeasureDefinition
-                                    name="Avg Cycle (Days)"
-                                    value="{AvgCycle}"
-                                />
-                            </viz.data:measures>
-                        </viz.data:FlattenedDataset>
-                    </viz:dataset>
+                        <viz.data:measures>
+                            <viz.data:MeasureDefinition
+                                name="Completed"
+                                value="{Completed}"
+                            />
+                            <viz.data:MeasureDefinition
+                                name="Avg Cycle (Days)"
+                                value="{AvgCycle}"
+                            />
+                        </viz.data:measures>
+                    </viz.data:FlattenedDataset>
+                </viz:dataset>
 
-                    <viz:feeds>
-                        <viz.feeds:FeedItem
-                            uid="primaryValues"
-                            type="Measure"
-                            values="Completed"
-                        />
-                        <viz.feeds:FeedItem
-                            uid="secondaryValues"
-                            type="Measure"
-                            values="Avg Cycle (Days)"
-                        />
-                        <viz.feeds:FeedItem
-                            uid="axisLabels"
-                            type="Dimension"
-                            values="Month"
-                        />
-                    </viz:feeds>
-                </viz:VizFrame>
-            </Panel>
-        </Page>
-    </Shell>
+                <viz:feeds>
+                    <viz.feeds:FeedItem
+                        uid="primaryValues"
+                        type="Measure"
+                        values="Completed"
+                    />
+                    <viz.feeds:FeedItem
+                        uid="secondaryValues"
+                        type="Measure"
+                        values="Avg Cycle (Days)"
+                    />
+                    <viz.feeds:FeedItem
+                        uid="axisLabels"
+                        type="Dimension"
+                        values="Month"
+                    />
+                </viz:feeds>
+            </viz:VizFrame>
+        </Panel>
+    </Page>
 </mvc:View>

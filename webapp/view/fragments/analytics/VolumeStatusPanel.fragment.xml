@@ -5,17 +5,9 @@
     <Panel
         id="statsAnalyticsPanel"
         class="sapUiSmallMargin statsPanel"
-        width="100%"
+        headerText="{i18n>volumeStatusTitle}"
+        width="98.5%"
     >
-        <headerToolbar>
-            <Toolbar>
-                <Title
-                    text="{i18n>volumeStatusTitle}"
-                    level="H2"
-                    class="statsPanelTitle"
-                />
-            </Toolbar>
-        </headerToolbar>
         <HBox
             wrap="Wrap"
             width="100%"
