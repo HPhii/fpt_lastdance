@@ -401,8 +401,6 @@ sap.ui.define([
 
     _onMainViewMatched: function ()
     {
-      // Clear list selection when returning to one-column layout (e.g. browser back)
-      // so that clicking the same row again will fire onSelectionChange
       if (this._oList)
       {
         this._oList.removeSelections(true);

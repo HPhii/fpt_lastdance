@@ -6,6 +6,7 @@
         id="statsAnalyticsPanel"
         class="sapUiSmallMargin statsPanel"
         headerText="{i18n>volumeStatusTitle}"
+        visible="{userRole>/isAdmin}"
         width="98.5%"
     >
         <HBox

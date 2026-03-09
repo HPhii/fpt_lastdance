@@ -9,6 +9,7 @@
         class="sapUiSmallMargin statsPanel"
         headerText="{i18n>userWorkloadTitle}"
         width="98.5%"
+        visible="{userRole>/isAdmin}"
     >
         <FlexBox
             width="100%"
