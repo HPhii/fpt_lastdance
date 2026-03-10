@@ -41,7 +41,6 @@ sap.ui.define([
 
       // Model used to manipulate control states
       oViewModel = new JSONModel({
-        worklistTableTitle: "",
         tableBusyDelay: 0,
         detailVisible: false,
         detailBusy: false,
@@ -313,25 +312,22 @@ sap.ui.define([
 
     onFilterStatus: function (oEvent)
     {
-      let oViewModel = this.getView().getModel("worklistView"),
-        oBinding = this._oList.getBinding("items"),
-        sKey = oEvent.getParameter("selectedKey");
+      var oBinding = this._oList.getBinding("items"),
+        sKey = oEvent.getParameter("selectedKey"),
+        oItem = oEvent.getParameter("item");
 
-      // Get the count for the selected key
-      let iCount = oViewModel.getProperty("/" + sKey);
-
-      if (sKey === "all")
+      if (sKey === "more")
       {
-        oViewModel.setProperty("/worklistTableTitle", "");
+        oItem._expandButtonPress();
         return;
       }
 
-      // Update the table title with the count
-      oViewModel.setProperty(
-        "/worklistTableTitle",
-        "(" + (iCount || 0) + ")",
-      );
+      this._sPreviousFilterKey = sKey;
 
+      if (!this._mFilters[sKey])
+      {
+        return;
+      }
       oBinding.filter(this._mFilters[sKey]);
     },
 
@@ -401,8 +397,6 @@ sap.ui.define([
 
     _onMainViewMatched: function ()
     {
-      // Clear list selection when returning to one-column layout (e.g. browser back)
-      // so that clicking the same row again will fire onSelectionChange
       if (this._oList)
       {
         this._oList.removeSelections(true);

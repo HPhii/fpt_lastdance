@@ -26,6 +26,7 @@ sap.ui.define(
       },
 
       /* ROUTE MATCHED                 */
+
       _onObjectMatched: function (oEvent) {
         this._callUserWorkloadOData();
         this._loadStatusChart();
@@ -33,6 +34,9 @@ sap.ui.define(
         this._loadPerformanceChart();
         this._loadHeatmapChart();
         this._loadAgingChart();
+        this._connectPopovers();
+
+
         var oView = this.getView();
         var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
         var oStatsModel = oView.getModel("statsAnalyticsModel");
@@ -446,18 +450,36 @@ sap.ui.define(
         var oView = this.getView();
         var oWorkloadAnalyticsModel = oView.getModel("workloadAnalytics");
 
-        oView.setModel(new JSONModel({ result: [] }), "workloadAnalyticsData");
+      /* CONNECT POPOVERS TO VIZFRAMES */
+      _connectPopovers: function ()
+      {
+        var oBundle = this.getView().getModel("i18n").getResourceBundle();
 
-        oWorkloadAnalyticsModel.read("/ZC_GSP26SAP02_WF_AGT", {
-          success: function (oData) {
-            oView
-              .getModel("workloadAnalyticsData")
-              .setProperty("/result", oData.results);
-          },
-          error: function (oError) {
-            console.error("Failed to fetch user workload data:", oError);
-          },
-        });
+        var oColumnChart = this.byId("OpenCompletedColumnChart");
+        var oColumnPopover = this.byId("OpenCompletedPopover");
+        if (oColumnChart)
+        {
+          oColumnChart.setVizProperties({
+            title: { text: oBundle.getText("userWorkloadColumnChartTitle") }
+          });
+          if (oColumnPopover)
+          {
+            oColumnPopover.connect(oColumnChart.getVizUid());
+          }
+        }
+
+        var oScatterChart = this.byId("CycleTimeScatterChart");
+        var oScatterPopover = this.byId("CycleTimePopover");
+        if (oScatterChart)
+        {
+          oScatterChart.setVizProperties({
+            title: { text: oBundle.getText("userWorkloadScatterChartTitle") }
+          });
+          if (oScatterPopover)
+          {
+            oScatterPopover.connect(oScatterChart.getVizUid());
+          }
+        }
       },
 
       onNavBackToDashboard: function () {
