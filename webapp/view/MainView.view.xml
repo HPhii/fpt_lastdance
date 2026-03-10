@@ -41,6 +41,7 @@
                 expandable="false"
                 stretchContentHeight="true"
                 upperCase="true"
+                headerMode="Standard"
             >
                 <items>
                     <core:Fragment

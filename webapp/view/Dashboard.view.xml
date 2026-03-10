@@ -80,7 +80,10 @@
                 </HBox>
             </VBox>
 
-            <VBox class="sapUiMediumMargin">
+            <VBox
+                class="sapUiMediumMargin"
+                visible="{userRole>/isAdmin}"
+            >
                 <Title text="{i18n>dashboardAdminMenu}" />
 
                 <HBox

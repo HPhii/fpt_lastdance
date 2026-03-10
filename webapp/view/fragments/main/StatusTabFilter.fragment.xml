@@ -34,91 +34,6 @@
         }"
     />
     <IconTabFilter
-        key="started"
-        icon="sap-icon://begin"
-        iconColor="Critical"
-        text="{i18n>WorklistFilterTasksStarted}"
-        count="{
-            path: '/WfTasks/$count',
-            parameters: {
-                $filter: 'TechnicalStatus eq \'STARTED\''
-            }
-        }"
-    />
-    <IconTabFilter
-        key="committed"
-        icon="sap-icon://org-chart"
-        iconColor="Critical"
-        text="{i18n>WorklistFilterTasksCommitted}"
-        count="{
-            path: '/WfTasks/$count',
-            parameters: {
-                $filter: 'TechnicalStatus eq \'COMMITTED\''
-            }
-        }"
-    />
-    <IconTabFilter
-        key="waiting"
-        icon="sap-icon://pending"
-        iconColor="Critical"
-        text="{i18n>WorklistFilterTasksWaiting}"
-        count="{
-            path: '/WfTasks/$count',
-            parameters: {
-                $filter: 'TechnicalStatus eq \'WAITING\''
-            }
-        }"
-    />
-    <!-- <IconTabFilter
-        key="checked"
-        icon="sap-icon://inspection"
-        iconColor="Positive"
-        text="{i18n>WorklistFilterTasksChecked}"
-        count="{
-            path: '/WfTasks/$count',
-            parameters: {
-                $filter: 'TechnicalStatus eq \'CHECKED\''
-            }
-        }"
-    />
-    <IconTabFilter
-        key="completed"
-        icon="sap-icon://complete"
-        iconColor="Positive"
-        text="{i18n>WorklistFilterTasksCompleted}"
-        count="{
-            path: '/WfTasks/$count',
-            parameters: {
-                $filter: 'TechnicalStatus eq \'COMPLETED\''
-            }
-        }"
-    /> -->
-    <IconTabFilter
-        key="cancelled"
-        icon="sap-icon://decline"
-        iconColor="Negative"
-        text="{i18n>WorklistFilterTasksCancelled}"
-        count="{
-            path: '/WfTasks/$count',
-            parameters: {
-                $filter: 'TechnicalStatus eq \'CANCELLED\''
-            }
-        }"
-    />
-    <IconTabFilter
-        key="error"
-        icon="sap-icon://error"
-        iconColor="Negative"
-        text="{i18n>WorklistFilterTasksError}"
-        count="{
-            path: '/WfTasks/$count',
-            parameters: {
-                $filter: 'TechnicalStatus eq \'ERROR\''
-            }
-        }"
-    />
-    <IconTabSeparator />
-    <IconTabFilter
         key="ondue"
         icon="sap-icon://away"
         iconColor="Critical"
@@ -142,4 +57,97 @@
             }
         }"
     />
+    <IconTabSeparator />
+    <IconTabFilter
+        key="more"
+        icon="sap-icon://overflow"
+        text="{i18n>WorklistFilterTasksMore}"
+    >
+        <items>
+            <IconTabFilter
+                key="started"
+                icon="sap-icon://begin"
+                iconColor="Critical"
+                text="{i18n>WorklistFilterTasksStarted}"
+                count="{
+                    path: '/WfTasks/$count',
+                    parameters: {
+                        $filter: 'TechnicalStatus eq \'STARTED\''
+                    }
+                }"
+            />
+            <IconTabFilter
+                key="committed"
+                icon="sap-icon://org-chart"
+                iconColor="Critical"
+                text="{i18n>WorklistFilterTasksCommitted}"
+                count="{
+                    path: '/WfTasks/$count',
+                    parameters: {
+                        $filter: 'TechnicalStatus eq \'COMMITTED\''
+                    }
+                }"
+            />
+            <IconTabFilter
+                key="waiting"
+                icon="sap-icon://pending"
+                iconColor="Critical"
+                text="{i18n>WorklistFilterTasksWaiting}"
+                count="{
+                    path: '/WfTasks/$count',
+                    parameters: {
+                        $filter: 'TechnicalStatus eq \'WAITING\''
+                    }
+                }"
+            />
+            <IconTabFilter
+                key="checked"
+                icon="sap-icon://inspection"
+                iconColor="Positive"
+                text="{i18n>WorklistFilterTasksChecked}"
+                count="{
+                    path: '/WfTasks/$count',
+                    parameters: {
+                        $filter: 'TechnicalStatus eq \'CHECKED\''
+                    }
+                }"
+            />
+            <IconTabFilter
+                key="completed"
+                icon="sap-icon://complete"
+                iconColor="Positive"
+                text="{i18n>WorklistFilterTasksCompleted}"
+                count="{
+                    path: '/WfTasks/$count',
+                    parameters: {
+                        $filter: 'TechnicalStatus eq \'COMPLETED\''
+                    }
+                }"
+            />
+            <IconTabFilter
+                key="cancelled"
+                icon="sap-icon://decline"
+                iconColor="Negative"
+                text="{i18n>WorklistFilterTasksCancelled}"
+                count="{
+                    path: '/WfTasks/$count',
+                    parameters: {
+                        $filter: 'TechnicalStatus eq \'CANCELLED\''
+                    }
+                }"
+            />
+            <IconTabFilter
+                key="error"
+                icon="sap-icon://error"
+                iconColor="Negative"
+                text="{i18n>WorklistFilterTasksError}"
+                count="{
+                    path: '/WfTasks/$count',
+                    parameters: {
+                        $filter: 'TechnicalStatus eq \'ERROR\''
+                    }
+                }"
+            />
+        </items>
+    </IconTabFilter>
 </core:FragmentDefinition>
