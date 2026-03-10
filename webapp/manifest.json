@@ -24,6 +24,86 @@
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "4.0"
         }
+      },
+      "taskProcessingService": {
+        "uri": "/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/taskProcessingService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "statsAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_WF_ANALYTICS_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/statsAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "performanceAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_WF_PERF_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/performanceAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "bottleneckAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_WF_AGIG_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/bottleneckAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "reportAnalyticsService": {
+        "uri": "/sap/opu/odata4/sap/zui_gsp26sap02_wf_task_o4/srvd/sap/zc_gsp26sap02_wf_tag/0001/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/reportAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "workloadAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_WF_AGT_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/workloadAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "userKPIAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_MYKPIACT_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/userKPIAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
+      },
+      "userProductivityAnalyticsService": {
+        "uri": "/sap/opu/odata/sap/ZC_GSP26SAP02_MYPERF_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/userProductivityAnalyticsService/metadata.xml",
+          "odataVersion": "2.0",
+          "defaultBindingMode": "OneWay"
+        }
       }
     },
     "crossNavigation": {
@@ -58,9 +138,13 @@
   },
   "sap.ui5": {
     "flexEnabled": false,
+    "config": {
+      "fullWidth": true
+    },
     "dependencies": {
       "minUI5Version": "1.108.0",
       "libs": {
+        "sap.viz": {},
         "sap.m": {},
         "sap.ui.core": {},
         "sap.f": {},
@@ -76,7 +160,10 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "z.wf.zwfmanagement.i18n.i18n",
-          "supportedLocales": ["en", "de"],
+          "supportedLocales": [
+            "en",
+            "de"
+          ],
           "fallbackLocale": "en"
         }
       },
@@ -88,6 +175,86 @@
           "operationMode": "Server",
           "autoExpandSelect": true,
           "earlyRequests": true
+        }
+      },
+      "taskProcessing": {
+        "dataSource": "taskProcessingService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "statsAnalytics": {
+        "dataSource": "statsAnalyticsService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "performanceAnalytics": {
+        "dataSource": "performanceAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "bottleneckAnalytics": {
+        "dataSource": "bottleneckAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "reportAnalytics": {
+        "dataSource": "reportAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "workloadAnalytics": {
+        "dataSource": "workloadAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "userKPIAnalytics": {
+        "dataSource": "userKPIAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
+      },
+      "userProductivityAnalytics": {
+        "dataSource": "userProductivityAnalyticsService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
         }
       }
     },
@@ -121,7 +288,10 @@
         {
           "pattern": "tasks/{propertyPath}/{layout}",
           "name": "RouteDetail",
-          "target": ["TargetMainView", "TargetDetail"]
+          "target": [
+            "TargetMainView",
+            "TargetDetail"
+          ]
         },
         {
           "pattern": "analytics",

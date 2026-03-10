@@ -1,0 +1,86 @@
+<core:FragmentDefinition
+    xmlns="sap.uxap"
+    xmlns:m="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <m:List
+        items="{
+            path: '_Attachments',
+            sorter: [
+                {
+                    path: 'DateCreated',
+                    descending: true
+                },
+                {
+                    path: 'CreatedAt',
+                    descending: true
+                }
+            ]
+        }"
+    >
+        <m:headerToolbar>
+            <m:OverflowToolbar width="100%">
+                <m:ToolbarSpacer />
+                <m:Button
+                    icon="sap-icon://upload"
+                    text="{i18n>attachmentUpload}"
+                    press=".onUploadAttachment"
+                />
+            </m:OverflowToolbar>
+        </m:headerToolbar>
+        <m:items>
+            <m:CustomListItem type="Inactive">
+                <m:HBox
+                    alignItems="Start"
+                    justifyContent="SpaceBetween"
+                    class="sapUiSmallMarginTopBottom sapUiSmallMarginBeginEnd"
+                    renderType="Bare"
+                >
+                    <m:HBox
+                        justifyContent="Start"
+                        alignItems="Center"
+                        width="calc(100% - 3rem)"
+                        renderType="Bare"
+                    >
+                        <core:Icon
+                            src="{
+                                path: 'FileExtension',
+                                formatter: '.formatter.formatAttachmentIcon'
+                            }"
+                            size="2rem"
+                            color="#91c8f6"
+                            class="sapUiSmallMarginEnd"
+                        />
+                        <m:VBox width="100%">
+                            <m:Link
+                                text="{DocumentTitle}.{FileExtension}"
+                                width="auto"
+                                wrapping="false"
+                                press=".onDownloadAttachment"
+                            />
+                            <m:HBox class="sapUiTinyMarginTop">
+                                <m:Text text="{DateCreated}, {CreatedAt}" />
+
+                                <m:Text
+                                    text="{CreatedBy}"
+                                    class="sapUiSmallMarginBeginEnd"
+                                />
+                                <m:Text
+                                    text="{
+                                        path: 'DocumentSize',
+                                        formatter: '.formatter.formatFileSize'
+                                    }"
+                                />
+                            </m:HBox>
+                        </m:VBox>
+                    </m:HBox>
+                    <m:Button
+                        icon="sap-icon://decline"
+                        press=".onRemoveAttachment"
+                        type="Transparent"
+                    />
+                </m:HBox>
+            </m:CustomListItem>
+        </m:items>
+    </m:List>
+</core:FragmentDefinition>

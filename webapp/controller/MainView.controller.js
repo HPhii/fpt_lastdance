@@ -3,25 +3,33 @@ sap.ui.define([
   "sap/ui/model/json/JSONModel",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "sap/m/MessageBox",
   "sap/m/ViewSettingsDialog",
   "sap/m/ViewSettingsItem",
   "sap/ui/model/Sorter",
-  "sap/m/MessageToast",
-  "../model/formatter",
-  "sap/ui/model/odata/v2/ODataModel"
-], function (BaseController, JSONModel, Filter, FilterOperator, MessageBox, ViewSettingsDialog, ViewSettingsItem, Sorter, MessageToast, formatter, ODataV2Model)
+  "../utils/ColumnSettingsDialog",
+], function (
+  BaseController,
+  JSONModel,
+  Filter,
+  FilterOperator,
+  ViewSettingsDialog,
+  ViewSettingsItem,
+  Sorter,
+  ColumnSettingsDialogHelper
+)
 {
   "use strict";
 
   return BaseController.extend("z.wf.zwfmanagement.controller.MainView", {
-    formatter: formatter,
     onInit: function ()
     {
       BaseController.prototype.onInit.apply(this, arguments);
 
       // Initialize router
       this.oRouter = this.getOwnerComponent().getRouter();
+
+      // Clear selection when navigating back to main view (e.g. browser back button)
+      this.oRouter.getRoute("RouteMainView").attachPatternMatched(this._onMainViewMatched, this);
 
       let oViewModel,
         oList = this.byId("idTasksList");
@@ -38,6 +46,18 @@ sap.ui.define([
         detailVisible: false,
         detailBusy: false,
         listMode: "SingleSelectMaster",
+        columns: {
+          taskName: true,
+          taskID: false,
+          workItemID: false,
+          creationDate: true,
+          endDate: false,
+          daysToDeadline: true,
+          status: true,
+          priority: true,
+          assignedUser: false,
+          assignedUserName: false
+        }
       });
 
       this.getView().setModel(oViewModel, "worklistView");
@@ -46,28 +66,16 @@ sap.ui.define([
       this._mFilters = {
         all: [],
         ready: [new Filter("TechnicalStatus", FilterOperator.EQ, "READY")],
-        selected: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "SELECTED"),
-        ],
-        started: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "STARTED"),
-        ],
-        committed: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "COMMITTED"),
-        ],
-        waiting: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "WAITING"),
-        ],
-        checked: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "CHECKED"),
-        ],
-        completed: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "COMPLETED"),
-        ],
-        cancelled: [
-          new Filter("TechnicalStatus", FilterOperator.EQ, "CANCELLED"),
-        ],
+        selected: [new Filter("TechnicalStatus", FilterOperator.EQ, "SELECTED")],
+        started: [new Filter("TechnicalStatus", FilterOperator.EQ, "STARTED")],
+        committed: [new Filter("TechnicalStatus", FilterOperator.EQ, "COMMITTED")],
+        waiting: [new Filter("TechnicalStatus", FilterOperator.EQ, "WAITING")],
+        checked: [new Filter("TechnicalStatus", FilterOperator.EQ, "CHECKED")],
+        completed: [new Filter("TechnicalStatus", FilterOperator.EQ, "COMPLETED")],
+        cancelled: [new Filter("TechnicalStatus", FilterOperator.EQ, "CANCELLED")],
         error: [new Filter("TechnicalStatus", FilterOperator.EQ, "ERROR")],
+        overdue: [new Filter("IsOverdue", FilterOperator.EQ, "X")],
+        ondue: [new Filter("IsDueOn", FilterOperator.EQ, "X")]
       };
     },
 
@@ -232,27 +240,16 @@ sap.ui.define([
       this._oGroupDialog.open();
     },
 
-    onCloseDetail: function ()
-    {
-      var oViewModel = this.getView().getModel("worklistView");
-      oViewModel.setProperty("/detailVisible", false);
-      this._oList.removeSelections(true);
-    },
-
     onSelectionChange: function (oEvent)
     {
       var oSelectedItem = oEvent.getParameter("listItem");
       var oContext = oSelectedItem ? oSelectedItem.getBindingContext() : null;
       var oViewModel = this.getView().getModel("worklistView");
-      console.log("Hello");
 
       if (!oContext)
       {
-
         return;
       }
-
-      console.log(oSelectedItem, oContext.getPath().split("'")[1]);
 
       var oHelper = this.getOwnerComponent().getHelper();
 
@@ -261,12 +258,6 @@ sap.ui.define([
         console.error("FlexibleColumnLayout helper not available");
         return;
       }
-
-      // var oItem = oEvent.getSource();
-      // // oItem.setNavigated(true);
-      // var oParent = oItem.getParent();
-      // // store index of the item clicked, which can be used later in the columnResize event
-      // this.iIndex = oParent.indexOfItem(oItem);
 
       // Check if in multi-select mode
       var sMode = oViewModel.getProperty("/listMode");
@@ -284,117 +275,6 @@ sap.ui.define([
       this.oRouter.navTo("RouteDetail", {
         layout: oNextUIState.layout,
         propertyPath: id
-      });
-
-      // if (oContext)
-      // {
-      //   let that = this;
-      //   var oDetailPanel = this.byId("detailPanel");
-
-      //   // Show loading indicator
-      //   oViewModel.setProperty("/detailBusy", true);
-      //   oViewModel.setProperty("/detailVisible", true);
-
-
-      //   // Bind the detail panel to the selected item with expanded decision options
-      //   oDetailPanel.bindElement({
-      //     path: oContext.getPath(),
-      //     parameters: {
-      //       $select: "*,__OperationControl",
-      //       $expand: "_DecisionOptions",
-      //     },
-      //     events: {
-      //       dataReceived: function ()
-      //       {
-      //         // Hide loading indicator when data is received
-      //         oViewModel.setProperty("/detailBusy", false);
-
-      //         // Get the bound context of the detail panel
-      //         var oBoundContext = oDetailPanel.getBindingContext();
-
-      //         if (oBoundContext)
-      //         {
-      //           var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
-      //           var sEntitySet = oBoundContext.getProperty("TargetEntitySet");
-      //           var sKey = oBoundContext.getProperty("PurchaseOrderKey");
-      //           var sExpand = oBoundContext.getProperty("TargetExpandParams");
-
-      //           if (sServiceUrl && sEntitySet && sKey)
-      //           {
-      //             that._callODataService(sServiceUrl, sEntitySet, sKey, sExpand);
-      //           }
-      //         }
-      //       },
-      //       dataRequested: function ()
-      //       {
-      //         var oCurrentModel = that.getView().getModel("businessModel");
-      //         if (oCurrentModel)
-      //         {
-      //           oCurrentModel.refresh(true);
-      //         }
-      //         // Show loading indicator when data is requested
-      //         oViewModel.setProperty("/detailBusy", true);
-      //       },
-      //     },
-      //   });
-      // }
-    },
-
-    _callODataService: function (sServiceUrl, sEntitySet, sKey, sExpand)
-    {
-      var oModel = new JSONModel({
-        isLoading: true
-      });
-
-      this.getView().setModel(oModel, "purchaseOrderItem");
-
-      var oBusinessContainer = this.byId("businessObjectContainer");
-      if (!oBusinessContainer)
-      {
-        oBusinessContainer = this.byId("detailPanel");
-      }
-
-      // Get existing model
-      var oCurrentModel = this.getView().getModel("businessModel");
-
-      if (!oCurrentModel || oCurrentModel.sServiceUrl !== sServiceUrl)
-      {
-        // Create new OData V2 Model
-        var oNewModel = new ODataV2Model(sServiceUrl, {
-          json: true,
-          useBatch: false, // Turn off batch
-          defaultBindingMode: "OneWay",
-        });
-
-        this.getView().setModel(oNewModel, "businessModel");
-      }
-
-      // Create binding path
-      var sPath = "/" + sEntitySet + "('" + sKey + "')";
-
-      // 4. Bind Element
-      oBusinessContainer.bindElement({
-        path: sPath,
-        model: "businessModel",
-        parameters: {
-          expand: sExpand
-        },
-        events: {
-          dataReceived: function ()
-          {
-            console.log("Business Object Loaded: " + sPath);
-            oModel.setProperty("/isLoading", false);
-          },
-          change: function ()
-          {
-            // Todo: Handle data change if needed
-
-          },
-          dataRequested: function ()
-          {
-            console.log("Requesting Business Object Data: " + sPath);
-          }
-        }
       });
     },
 
@@ -422,14 +302,13 @@ sap.ui.define([
       {
         // Switch to single select
         oViewModel.setProperty("/listMode", "SingleSelectMaster");
-        this._oList.removeSelections(true);
       } else
       {
         // Switch to multi select and hide detail
         oViewModel.setProperty("/listMode", "MultiSelect");
         oViewModel.setProperty("/detailVisible", false);
-        this._oList.removeSelections(true);
       }
+      this._oList.removeSelections(true);
     },
 
     onFilterStatus: function (oEvent)
@@ -464,14 +343,21 @@ sap.ui.define([
 
       if (sQuery)
       {
+        var aInnerFilters = [
+          new Filter("TaskText", FilterOperator.Contains, sQuery),
+          new Filter("WorkItemText", FilterOperator.Contains, sQuery),
+        ];
+
+        // Only filter on short fields if query fits within their MaxLength (12)
+        if (sQuery.length <= 12)
+        {
+          aInnerFilters.push(new Filter("WorkItemID", FilterOperator.Contains, sQuery));
+          aInnerFilters.push(new Filter("AssignedUser", FilterOperator.Contains, sQuery));
+        }
+
         var aFilters = [
           new Filter({
-            filters: [
-              new Filter("TaskText", FilterOperator.Contains, sQuery),
-              new Filter("WorkItemText", FilterOperator.Contains, sQuery),
-              new Filter("WorkItemID", FilterOperator.Contains, sQuery),
-              new Filter("AssignedUser", FilterOperator.Contains, sQuery),
-            ],
+            filters: aInnerFilters,
             and: false,
           }),
         ];
@@ -499,58 +385,28 @@ sap.ui.define([
       oList.removeSelections(true);
     },
 
-    _callODataV4Action: function (sWorkItemID, sDecisionKey)
-    {
-      var oModel = this.getView().getModel();
-      var oDetailPanel = this.byId("detailPanel");
-      var oContext = oDetailPanel.getBindingContext();
-      var oViewModel = this.getView().getModel("worklistView");
-
-      if (!oContext)
-      {
-        MessageBox.error("Context not found.");
-        return;
-      }
-
-      // Show busy indicator
-      oViewModel.setProperty("/detailBusy", true);
-
-      var oOperation = oModel.bindContext(
-        "com.sap.gateway.srvd.zsd_gsp26sap02_wf_task.v0001.executionDecision(...)",
-        oContext,
-      );
-
-      oOperation.setParameter("DecisionKey", sDecisionKey);
-      oOperation.setParameter("WorkItemID", sWorkItemID);
-      oOperation.setParameter("DecisionComment", "");
-
-      oOperation
-        .execute()
-        .then(
-          function ()
-          {
-            MessageBox.success("Action executed successfully!");
-
-            // Refresh the list and counts
-            this._oList.getBinding("items").refresh();
-            this._updateCounts();
-
-            // Hide detail panel and clear selection
-            oViewModel.setProperty("/detailVisible", false);
-            oViewModel.setProperty("/detailBusy", false);
-            this._oList.removeSelections(true);
-          }.bind(this),
-        )
-        .catch(function (oError)
-        {
-          oViewModel.setProperty("/detailBusy", false);
-          MessageBox.error("Error executing action: " + oError.message);
-        });
-    },
-
     onNavBackToDashboard: function ()
     {
+      this.byId("searchTaskField").setValue("");
+      this._oList.getBinding("items").filter([]);
       this.getOwnerComponent().getRouter().navTo("RouteDashboard");
+    },
+
+    onCustomColumn: function ()
+    {
+      var oView = this.getView();
+
+      ColumnSettingsDialogHelper.onCustomColumnOpen(oView);
+    },
+
+    _onMainViewMatched: function ()
+    {
+      // Clear list selection when returning to one-column layout (e.g. browser back)
+      // so that clicking the same row again will fire onSelectionChange
+      if (this._oList)
+      {
+        this._oList.removeSelections(true);
+      }
     },
 
   });

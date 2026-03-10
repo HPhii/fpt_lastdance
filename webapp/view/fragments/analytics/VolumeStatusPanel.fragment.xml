@@ -1,0 +1,107 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Panel
+        id="statsAnalyticsPanel"
+        class="sapUiSmallMargin statsPanel"
+        width="100%"
+    >
+        <headerToolbar>
+            <Toolbar>
+                <Title
+                    text="{i18n>volumeStatusTitle}"
+                    level="H2"
+                    class="statsPanelTitle"
+                />
+            </Toolbar>
+        </headerToolbar>
+        <HBox
+            wrap="Wrap"
+            width="100%"
+            justifyContent="SpaceBetween"
+            class="statsCardsRow"
+        >
+            <!-- Total Open Tasks -->
+            <HBox
+                class="statsCard statsCardBlue"
+                busy="{statsAnalyticsModel>/busy}"
+            >
+                <core:Icon
+                    src="sap-icon://paste"
+                    class="statsCardIcon statsCardIconBlue"
+                />
+                <VBox class="statsCardContent">
+                    <Text
+                        text="{statsAnalyticsModel>/result/IsOpenCount}"
+                        class="statsCardValue statsCardValueBlue"
+                    />
+                    <Text
+                        text="{i18n>totalOpenTasksText}"
+                        class="statsCardLabelGreen"
+                    />
+                </VBox>
+            </HBox>
+
+            <!-- Completed This Month -->
+            <HBox
+                class="statsCard statsCardGreen"
+                busy="{statsAnalyticsModel>/busy}"
+            >
+                <core:Icon
+                    src="sap-icon://task"
+                    class="statsCardIcon statsCardIconGreen"
+                />
+                <VBox class="statsCardContent">
+                    <Text
+                        text="{statsAnalyticsModel>/result/IsCompletedThisMonth}"
+                        class="statsCardValue statsCardValueGreen"
+                    />
+                    <Text text="{i18n>CompletedTasksThisMonthText}" />
+                </VBox>
+            </HBox>
+
+            <!-- Overdue Tasks -->
+            <HBox
+                class="statsCard statsCardRed"
+                busy="{statsAnalyticsModel>/busy}"
+            >
+                <core:Icon
+                    src="sap-icon://alert"
+                    class="statsCardIcon statsCardIconRed"
+                />
+                <VBox class="statsCardContent">
+                    <Text
+                        text="{statsAnalyticsModel>/result/IsOverdueCount}"
+                        class="statsCardValue statsCardValueRed"
+                    />
+                    <Text text="{i18n>OverdueTasksText}" />
+                </VBox>
+            </HBox>
+
+            <!-- Completion Rate -->
+            <HBox
+                class="statsCard statsCardYellow"
+                busy="{statsAnalyticsModel>/busy}"
+            >
+                <core:Icon
+                    src="sap-icon://pie-chart"
+                    class="statsCardIcon statsCardIconYellow"
+                />
+                <VBox class="statsCardContent">
+                    <Text
+                        text="{
+                            parts: [
+                                {path: 'statsAnalyticsModel>/result/IsCompletedCount'},
+                                {path: 'statsAnalyticsModel>/result/TaskCounter'}
+                            ],
+                            formatter: '.formatter.formatCompletionRate'
+                        }%"
+                        class="statsCardValue statsCardValueYellow"
+                    />
+                    <Text text="{i18n>CompletionRateText}" />
+                </VBox>
+            </HBox>
+        </HBox>
+    </Panel>
+</core:FragmentDefinition>
