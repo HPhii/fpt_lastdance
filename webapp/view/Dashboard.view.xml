@@ -1,4 +1,5 @@
 <mvc:View
+    xmlns:networkgraph="sap.suite.ui.commons.networkgraph"
     controllerName="z.wf.zwfmanagement.controller.Dashboard"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
@@ -16,17 +17,15 @@
         </headerContent>
         <content>
             <VBox class="sapUiMediumMargin">
-                <Title
-                    text="{i18n>dashboardMenu}"
-                    class="sapUiSmallMarginBottom"
-                />
+                <Title text="{i18n>dashboardMenu}" />
 
                 <HBox
                     wrap="Wrap"
                     renderType="Bare"
+                    class="sapUiTinyMarginTop"
                 >
                     <GenericTile
-                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        class="sapUiTinyMarginEnd"
                         header="{i18n>dashboardTaskManagement}"
                         subheader="{i18n>dashboardTaskSubheader}"
                         press=".onNavToTask"
@@ -47,7 +46,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        class="sapUiTinyMarginEnd"
                         header="{i18n>dashboardReports}"
                         subheader="{i18n>dashboardReportsSubheader}"
                         press=".onNavToAnalytics"
@@ -58,7 +57,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        class="sapUiTinyMarginEnd"
                         header="{i18n>dashboardHelp}"
                         subheader="{i18n>dashboardHelpSubheader}"
                         press=".onNavToHelp"
@@ -69,13 +68,36 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                        class="sapUiTinyMarginEnd"
                         header="{i18n>dashboardSubstitution}"
                         subheader="{i18n>dashboardSubstitutionSubheader}"
                         press=".onNavToSubstitution"
                     >
                         <TileContent>
                             <ImageContent src="sap-icon://collaborate" />
+                        </TileContent>
+                    </GenericTile>
+                </HBox>
+            </VBox>
+
+            <VBox
+                class="sapUiMediumMargin"
+                visible="{userRole>/isAdmin}"
+            >
+                <Title text="{i18n>dashboardAdminMenu}" />
+
+                <HBox
+                    wrap="Wrap"
+                    renderType="Bare"
+                    class="sapUiTinyMarginTop"
+                >
+                    <GenericTile
+                        header="{i18n>dashboardRoleManagement}"
+                        subheader="{i18n>dashboardRoleManagementSubheader}"
+                        press=".onNavToRoleManagement"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://manager" />
                         </TileContent>
                     </GenericTile>
                 </HBox>

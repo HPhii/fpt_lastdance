@@ -255,7 +255,6 @@ sap.ui.define([
       var fTotal = parseFloat(sTotal);
 
       var fRate = (fCompleted / fTotal) * 100;
-      console.log(fRate);
 
       return fRate.toFixed(2);
     }

@@ -24,7 +24,7 @@
         <headerToolbar>
             <Toolbar width="100%">
                 <Title
-                    text="{i18n>tableHeaderTitle} {worklistView>/worklistTableTitle}"
+                    text="{i18n>tableHeaderTitle}"
                     level="H2"
                 />
                 <ToolbarSpacer />

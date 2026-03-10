@@ -19,7 +19,59 @@ sap.ui.define([
             let oViewModel = new JSONModel({
                 selectedLanguage: sLanguageKey
             });
+
             this.getView().setModel(oViewModel, "viewModel");
+
+            let oUserRolesModel = new JSONModel({
+                roles: [],
+                highestRole: 0,
+                isAdmin: false,
+                userName: ""
+            });
+
+            this.getView().setModel(oUserRolesModel, "userRole");
+
+            this._fetchUserRoles();
+        },
+
+        _fetchUserRoles: function ()
+        {
+            var oView = this.getView();
+            var oModel = this.getOwnerComponent().getModel();
+            var oUserRolesModel = oView.getModel("userRole");
+
+            var oContextBinding = oModel.bindContext("/CurrentUserRole");
+
+            oContextBinding.getBoundContext().requestObject("value").then(function (oData)
+            {
+
+                var aRoles = oData || [];
+                var sUserName = oData[0] ? oData[0].UserName : "";
+                var iHighestRole = 0;
+                var bIsAdmin = false;
+
+                aRoles.forEach(function (oRole)
+                {
+                    if (oRole.RoleID === "ZGSP26_WF_ADMIN" || oRole.RoleName === "Admin")
+                    {
+                        bIsAdmin = true;
+                    }
+                    if (iHighestRole === 0 || parseInt(oRole.RoleLevel) < iHighestRole)
+                    {
+                        iHighestRole = parseInt(oRole.RoleLevel);
+                    }
+                });
+                oUserRolesModel.setData({
+                    roles: aRoles,
+                    highestRole: iHighestRole,
+                    isAdmin: bIsAdmin,
+                    userName: sUserName
+                });
+            }).catch(function (oError)
+            {
+                console.error("Failed to fetch user roles:", oError);
+            });
+
         },
 
         onLanguageChange: function (oEvent)
