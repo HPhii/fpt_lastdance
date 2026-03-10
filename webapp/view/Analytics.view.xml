@@ -39,26 +39,94 @@
                     height="auto"
                 />
             </Panel> -->
-        <Panel>
-            <card:Card
-                manifest="/cards/statusChart/manifest.json"
-                width="400px"
-                height="400px"
-            />
-            <card:Card
-                class="sapUiMediumMarginBegin"
-                manifest="/cards/barPriorityChart/manifest.json"
-                width="780px"
-                height="400px"
-            />
-        </Panel>
-        <Panel class="sapUiMediumMarginTop">
-            <viz:VizFrame
-                id="idPerfChart"
-                vizType="dual_combination"
-                height="450px"
-                width="55%"
-                vizProperties="{
+            <!-- Task Status &amp; Priority Charts -->
+            <Panel>
+                <VBox>
+                    <HBox>
+                        <Panel class="chartContainerPanel sapUiMediumMarginEnd">
+                            <viz:VizFrame
+                                id="idStatusChart"
+                                vizType="donut"
+                                width="400px"
+                                height="400px"
+                            >
+                                <viz:dataset>
+                                    <viz.data:FlattenedDataset data="{statusModel>/StatusData}">
+                                        <viz.data:dimensions>
+                                            <viz.data:DimensionDefinition
+                                                name="StatusCategory"
+                                                value="{StatusCategory}"
+                                            />
+                                        </viz.data:dimensions>
+                                        <viz.data:measures>
+                                            <viz.data:MeasureDefinition
+                                                name="TaskCounter"
+                                                value="{TaskCounter}"
+                                            />
+                                        </viz.data:measures>
+                                    </viz.data:FlattenedDataset>
+                                </viz:dataset>
+                                <viz:feeds>
+                                    <viz.feeds:FeedItem
+                                        uid="color"
+                                        type="Dimension"
+                                        values="StatusCategory"
+                                    />
+                                    <viz.feeds:FeedItem
+                                        uid="size"
+                                        type="Measure"
+                                        values="TaskCounter"
+                                    />
+                                </viz:feeds>
+                            </viz:VizFrame>
+                        </Panel>
+                        <Panel class="chartContainerPanel sapUiMediumMarginEnd">
+                            <viz:VizFrame
+                                id="idPriorityChart"
+                                vizType="bar"
+                                height="400px"
+                            >
+                                <viz:dataset>
+                                    <viz.data:FlattenedDataset data="{priorityModel>/PriorityData}">
+                                        <viz.data:dimensions>
+                                            <viz.data:DimensionDefinition
+                                                name="PriorityLevel"
+                                                value="{PriorityLevel}"
+                                            />
+                                        </viz.data:dimensions>
+                                        <viz.data:measures>
+                                            <viz.data:MeasureDefinition
+                                                name="TaskCounter"
+                                                value="{TaskCounter}"
+                                            />
+                                        </viz.data:measures>
+                                    </viz.data:FlattenedDataset>
+                            </viz:dataset>
+                            <viz:feeds>
+                                <viz.feeds:FeedItem
+                                    uid="valueAxis"
+                                    type="Measure"
+                                    values="TaskCounter"
+                                />
+                                <viz.feeds:FeedItem
+                                    uid="categoryAxis"
+                                    type="Dimension"
+                                    values="PriorityLevel"
+                                />
+                            </viz:feeds>
+                        </viz:VizFrame>
+                        </Panel>
+                    </HBox>
+                </VBox>
+            </Panel>
+            
+            <Panel class="sapUiMediumMarginTop">
+                <viz:VizFrame
+                    id="idPerfChart"
+                    vizType="dual_combination"
+                    height="450px"
+                    width="55%"
+                    vizProperties="{
         title: {
             visible: true,
             text: 'Tasks Completed and Avg Cycle Time'
@@ -87,24 +155,146 @@
                     </viz.data:FlattenedDataset>
                 </viz:dataset>
 
+                    <viz:feeds>
+                        <viz.feeds:FeedItem
+                            uid="primaryValues"
+                            type="Measure"
+                            values="Completed"
+                        />
+                        <viz.feeds:FeedItem
+                            uid="secondaryValues"
+                            type="Measure"
+                            values="Avg Cycle (Days)"
+                        />
+                        <viz.feeds:FeedItem
+                            uid="axisLabels"
+                            type="Dimension"
+                            values="Month"
+                        />
+                    </viz:feeds>
+                </viz:VizFrame>
+
+               <ScrollContainer
+                width="100%"
+                height="450px"
+                horizontal="true"
+                vertical="false"
+                fitWidth="false">
+
+                <viz:VizFrame
+                    id="idHeatmapChart"
+                    vizType="column"
+                    width="1400px"
+                    height="400px">
+
+                <viz:dataset>
+                    <viz.data:FlattenedDataset
+                        data="{heatmapModel>/HeatData}">
+
+                        <viz.data:dimensions>
+
+                            <viz.data:DimensionDefinition
+                                name="Month"
+                                value="{heatmapModel>Month}" />
+
+                            <viz.data:DimensionDefinition
+                                name="Task"
+                                value="{heatmapModel>Task}" />
+
+                        </viz.data:dimensions>
+
+                        <viz.data:measures>
+
+                            <viz.data:MeasureDefinition
+                                name="AvgCycle"
+                                value="{heatmapModel>AvgCycle}" />
+
+                        </viz.data:measures>
+
+                    </viz.data:FlattenedDataset>
+                </viz:dataset>
+
                 <viz:feeds>
+
                     <viz.feeds:FeedItem
-                        uid="primaryValues"
+                        uid="valueAxis"
                         type="Measure"
-                        values="Completed"
-                    />
+                        values="AvgCycle"/>
+
                     <viz.feeds:FeedItem
-                        uid="secondaryValues"
-                        type="Measure"
-                        values="Avg Cycle (Days)"
-                    />
-                    <viz.feeds:FeedItem
-                        uid="axisLabels"
+                        uid="categoryAxis"
                         type="Dimension"
-                        values="Month"
-                    />
+                        values="Month"/>
+
+                    <viz.feeds:FeedItem
+                        uid="color"
+                        type="Dimension"
+                        values="Task"/>
+
                 </viz:feeds>
+
             </viz:VizFrame>
-        </Panel>
-    </Page>
+</ScrollContainer>
+
+            </Panel>
+
+
+            <Panel>
+                <viz:VizFrame
+    id="agingChart"
+    vizType="stacked_bar"
+    width="100%"
+    height="400px">
+
+    <viz:dataset>
+
+        <viz.data:FlattenedDataset
+            data="{agingModel>/AgingData}">
+
+            <viz.data:dimensions>
+
+                <viz.data:DimensionDefinition
+                    name="BusinessObject"
+                    value="{agingModel>BusinessObject}" />
+
+            </viz.data:dimensions>
+
+            <viz.data:measures>
+
+                <viz.data:MeasureDefinition
+                    name="0-2 Days"
+                    value="{agingModel>0-2 Days}" />
+
+                <viz.data:MeasureDefinition
+                    name="3-7 Days"
+                    value="{agingModel>3-7 Days}" />
+
+                <viz.data:MeasureDefinition
+                    name=">7 Days"
+                    value="{agingModel>>7 Days}" />
+
+            </viz.data:measures>
+
+        </viz.data:FlattenedDataset>
+
+    </viz:dataset>
+
+    <viz:feeds>
+
+        <viz.feeds:FeedItem
+            uid="valueAxis"
+            type="Measure"
+            values="0-2 Days,3-7 Days,>7 Days"/>
+
+        <viz.feeds:FeedItem
+            uid="categoryAxis"
+            type="Dimension"
+            values="BusinessObject"/>
+
+    </viz:feeds>
+
+</viz:VizFrame>
+            </Panel>
+        </Page>
+    </Shell>
 </mvc:View>
