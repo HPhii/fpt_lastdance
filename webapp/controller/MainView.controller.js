@@ -43,6 +43,7 @@ sap.ui.define([
 
       // Model used to manipulate control states
       oViewModel = new JSONModel({
+        tableTitle: "",
         tableBusyDelay: 0,
         detailVisible: false,
         detailBusy: false,
@@ -57,7 +58,9 @@ sap.ui.define([
           status: true,
           priority: true,
           assignedUser: false,
-          assignedUserName: false
+          assignedUserName: false,
+          actualDeadlineDate: false,
+          technicalStatusText: false,
         }
       });
 
@@ -264,9 +267,6 @@ sap.ui.define([
       var sMode = oViewModel.getProperty("/listMode");
       if (sMode === "MultiSelect")
       {
-        // Don't show detail in multi-select mode
-        console.log("Multi");
-
         return;
       }
 
@@ -281,14 +281,17 @@ sap.ui.define([
 
     onTaskPress: function (oEvent)
     {
-      var oList = this.byId("idTasksList");
-      var oListItem = oEvent.getSource();
-      var oViewModel = this.getView().getModel("worklistView");
-      var sCurrentMode = oViewModel.getProperty("/listMode");
+      var oView = this.getView(),
+        oList = this.byId("idTasksList"),
+        oListItem = oEvent.getSource(),
+        oViewModel = oView.getModel("worklistView"),
+        oResourceBundle = oView.getModel("i18n").getResourceBundle(),
+        sCurrentMode = oViewModel.getProperty("/listMode");
 
       if (sCurrentMode === "MultiSelect")
       {
         oList.setSelectedItem(oListItem, !oListItem.getSelected());
+        oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [oList.getSelectedItems().length]));
       }
 
       return;
@@ -296,18 +299,22 @@ sap.ui.define([
 
     onToggleMultiSelect: function ()
     {
-      var oViewModel = this.getView().getModel("worklistView");
-      var sCurrentMode = oViewModel.getProperty("/listMode");
+      var oView = this.getView(),
+        oViewModel = oView.getModel("worklistView"),
+        oResourceBundle = oView.getModel("i18n").getResourceBundle(),
+        sCurrentMode = oViewModel.getProperty("/listMode");
 
       if (sCurrentMode === "MultiSelect")
       {
         // Switch to single select
         oViewModel.setProperty("/listMode", "SingleSelectMaster");
+        oViewModel.setProperty("/tableTitle", "");
       } else
       {
         // Switch to multi select and hide detail
         oViewModel.setProperty("/listMode", "MultiSelect");
         oViewModel.setProperty("/detailVisible", false);
+        oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [0]));
       }
       this._oList.removeSelections(true);
     },
@@ -368,18 +375,29 @@ sap.ui.define([
 
     onSelectAll: function ()
     {
-      var oList = this.byId("idTasksList");
-      var aItems = oList.getItems();
+      var oView = this.getView(),
+        oList = this.byId("idTasksList"),
+        aItems = oList.getItems(),
+        oResourceBundle = oView.getModel("i18n").getResourceBundle(),
+        oViewModel = oView.getModel("worklistView");
 
       aItems.forEach(function (oItem)
       {
-        oList.setSelectedItem(oItem, true);
+        oList.setSelectedItem(oItem, true)
       });
+
+      oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [oList.getSelectedItems().length]));
     },
 
     onDeselectAll: function ()
     {
-      var oList = this.byId("idTasksList");
+      var oView = this.getView(),
+        oList = this.byId("idTasksList"),
+        oViewModel = oView.getModel("worklistView"),
+        oResourceBundle = oView.getModel("i18n").getResourceBundle();
+
+      oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [0]));
+
       oList.removeSelections(true);
     },
 
