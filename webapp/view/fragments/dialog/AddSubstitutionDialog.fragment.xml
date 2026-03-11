@@ -46,7 +46,7 @@
                     <Input
                         id="substituteUserInput"
                         value="{newRule>/substituteId}"
-                        placeholder="e.g. DEV-111"
+                        placeholder="{i18n>userInputPlaceholder}"
                         valueHelpRequest=".onOpenUserSearchHelp"
                         showValueHelp="true"
                     />

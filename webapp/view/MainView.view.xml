@@ -70,6 +70,7 @@
                 <Button
                     type="Default"
                     text="{i18n>buttonFooterDelegate}"
+                    press=".onBulkDelegatePress"
                 >
                     <layoutData>
                         <OverflowToolbarLayoutData priority="NeverOverflow" />
@@ -78,6 +79,7 @@
                 <Button
                     type="Emphasized"
                     text="{i18n>buttonFooterSubtitute}"
+                    press=".onSubstitutePress"
                 >
                     <layoutData>
                         <OverflowToolbarLayoutData priority="NeverOverflow" />

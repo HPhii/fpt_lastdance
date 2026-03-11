@@ -37,7 +37,7 @@
         </beginButton>
         <endButton>
             <Button
-                text="{i18n>buttonCancel}"
+                text="{i18n>btnCancel}"
                 press=".onClosePriorityDialog"
             />
         </endButton>
