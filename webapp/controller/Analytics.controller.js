@@ -1,9 +1,5 @@
 sap.ui.define(
-  [
-    "./BaseController",
-    "sap/ui/model/json/JSONModel",
-    "sap/viz/ui5/controls/VizFrame",
-  ],
+  ["./BaseController", "sap/ui/model/json/JSONModel"],
   function (BaseController, JSONModel) {
     "use strict";
 
@@ -26,6 +22,7 @@ sap.ui.define(
       },
 
       /* ROUTE MATCHED                 */
+
       _onObjectMatched: function (oEvent) {
         this._loadStatusChart();
         this._loadPriorityChart();
@@ -33,6 +30,8 @@ sap.ui.define(
         this._connectPopovers();
         this._loadHeatmapChart();
         this._loadAgingChart();
+        this._connectPopovers();
+
         var oView = this.getView();
         var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
         var oStatsModel = oView.getModel("statsAnalyticsModel");

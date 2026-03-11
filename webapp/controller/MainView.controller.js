@@ -7,6 +7,7 @@ sap.ui.define([
   "sap/m/ViewSettingsItem",
   "sap/ui/model/Sorter",
   "../utils/ColumnSettingsDialog",
+  "../utils/BulkDelegateDialog"
 ], function (
   BaseController,
   JSONModel,
@@ -15,7 +16,8 @@ sap.ui.define([
   ViewSettingsDialog,
   ViewSettingsItem,
   Sorter,
-  ColumnSettingsDialogHelper
+  ColumnSettingsDialogHelper,
+  BulkDelegateDialogHelper
 )
 {
   "use strict";
@@ -403,6 +405,17 @@ sap.ui.define([
       }
     },
 
+    onSubstitutePress: function ()
+    {
+      this.getOwnerComponent().getRouter().navTo("RouteSubstitution");
+    },
+
+    onBulkDelegatePress: function ()
+    {
+      var oView = this.getView();
+
+      BulkDelegateDialogHelper.onOpen(oView);
+    },
   });
 },
 );

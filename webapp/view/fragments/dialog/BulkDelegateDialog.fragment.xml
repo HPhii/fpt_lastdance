@@ -1,0 +1,75 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        title="{i18n>bulkDelegateDialogTitle}"
+        contentWidth="400px"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label
+                    labelFor="delegateUserInput"
+                    text="{i18n>bulkDelegateUserLabel}"
+                    required="true"
+                />
+                <Input
+                    required="true"
+                    id="delegateUserInput"
+                    value=""
+                    placeholder="{i18n>userInputPlaceholder}"
+                    valueHelpRequest=".onOpenUserSearchHelp"
+                    showValueHelp="true"
+                    class="sapUiSmallMarginBottom"
+                />
+
+                <Label
+                    labelFor="multiInput"
+                    text="{i18n>bulkDelegateTasksLabel}"
+                    required="true"
+                />
+                <MultiInput
+                    required="true"
+                    width="100%"
+                    id="multiTaskInput"
+                    showValueHelp="true"
+                    suggestionItems="{ 
+                        path: '/WfTasks',
+                        parameters: {
+                            $select: 'WorkItemID,WorkItemText,Priority,PriorityText'
+                        },
+                        sorter: [
+                            { 
+                                path: 'PriorityText',
+                                group: true,
+                                descending: false 
+                            }
+                        ]
+                    }"
+                    placeholder="{i18n>tasksMultiInputPlaceholder}"
+                    valueHelpRequest=".onOpenTaskSearchHelp"
+                >
+                    <suggestionItems>
+                        <core:Item
+                            key="{WorkItemID}"
+                            text="{WorkItemText}"
+                        />
+                    </suggestionItems>
+                </MultiInput>
+            </VBox>
+        </content>
+
+        <buttons>
+            <Button
+                text="{i18n>bulkDelegateButton}"
+                type="Emphasized"
+                press=".onConfirmDelegate"
+            />
+            <Button
+                text="{i18n>btnCancel}"
+                press=".onCloseDelegateDialog"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
