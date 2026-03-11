@@ -25,15 +25,7 @@
         <content>
             <VBox visible="{userRole>/isAdmin}">
                 <!-- Volume & Status Panel -->
-                <core:Fragment
-                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
-                    type="XML"
-                />
-
-                <core:Fragment
-                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.UserWorkloadPanel"
-                    type="XML"
-                />
+              
 
                 <!-- <Panel>
                 <card:Card
@@ -44,6 +36,11 @@
                 </Panel> -->
 
                 <!-- Task Status &amp; Priority Charts -->
+
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
+                    type="XML"
+                />
                 <Panel>
                     <VBox>
                         <HBox>
@@ -53,7 +50,7 @@
                                 <viz:VizFrame
                                     id="idStatusChart"
                                     vizType="donut"
-                                    width="400px"
+                                    width="800px"
                                     height="400px"
                                 >
                                     <viz:dataset>
@@ -94,6 +91,7 @@
                                 <viz:VizFrame
                                     id="idPriorityChart"
                                     vizType="bar"
+                                    width="1200px"
                                     height="400px"
                                 >
                                     <viz:dataset>
@@ -297,7 +295,20 @@
                             />
                         </viz:feeds>
                     </viz:VizFrame>
+
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.BottleneckHeatmap"
+                    type="XML"
+                />
+                        
                 </Panel>
+
+                  
+
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.UserWorkloadPanel"
+                    type="XML"
+                />
             </VBox>
         </content>
     </Page>

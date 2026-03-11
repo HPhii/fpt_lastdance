@@ -28,6 +28,7 @@ sap.ui.define(
         this._loadPriorityChart();
         this._loadPerformanceChart();
         this._connectPopovers();
+        this._loadBottleneckHeatmap();
         this._loadHeatmapChart();
         this._loadAgingChart();
         this._connectPopovers();
@@ -437,6 +438,84 @@ sap.ui.define(
           error: function (oError) {
             console.error("OData ERROR - Status:", oError.statusCode);
           }.bind(this),
+        });
+      },
+
+      /* BOTTLENECK HEATMAP */
+      _loadBottleneckHeatmap: function () {
+        var oView = this.getView();
+        var oModel = oView.getModel("bottleneckAnalytics");
+
+        if (!oModel) {
+          console.error("bottleneckAnalytics model not found");
+          return;
+        }
+
+        oModel.read("/ZC_GSP26SAP02_WF_AGIG", {
+          urlParameters: {
+            $select: "PriorityLevel,AgingBucket,IsOpenCount",
+          },
+
+          success: function (oData) {
+            var aRaw = oData.results || [];
+
+            var aPriority = ["Low", "Medium", "High"];
+            var aAging = [
+              "0. N/A",
+              "1. 0-2 Days (Normal)",
+              "2. 3-7 Days (Warning)",
+              "3. >7 Days (Critical)",
+            ];
+
+            // convert data
+            var mData = {};
+            aRaw.forEach(function (item) {
+              var key = item.PriorityLevel + "|" + item.AgingBucket;
+              mData[key] = Number(item.IsOpenCount);
+            });
+
+            var aFinal = [];
+
+            aAging.forEach(function (aging) {
+              aPriority.forEach(function (priority) {
+                var key = priority + "|" + aging;
+
+                aFinal.push({
+                  PriorityLevel: priority,
+                  AgingBucket: aging,
+                  IsOpenCount: mData[key] || 0,
+                });
+              });
+            });
+
+            var oJSON = new sap.ui.model.json.JSONModel({
+              HeatData: aFinal,
+            });
+
+            oView.setModel(oJSON, "agingModel");
+
+            var oChart = this.byId("bottleneckHeatmap");
+
+            if (oChart) {
+              oChart.setVizProperties({
+                title: {
+                  text: "Workflow Task Aging by Priority",
+                  visible: true,
+                },
+                plotArea: {
+                  dataLabel: {
+                    visible: true,
+                  },
+                },
+                legend: {
+                  visible: false,
+                },
+              });
+            }
+          }.bind(this),
+          error: function (oError) {
+            console.error("Heatmap load error:", oError);
+          },
         });
       },
 
