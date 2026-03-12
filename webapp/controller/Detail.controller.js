@@ -37,6 +37,7 @@ sap.ui.define(
         var oViewModel = new JSONModel({
           headerBusy: false,
           bodyBusy: false,
+          footerBusy: false,
           today: new Date(),
           headerSubtitle: "",
           snappedTitle: ""
@@ -76,6 +77,7 @@ sap.ui.define(
             {
               // Hide loading indicator when data is received
               oViewModel.setProperty("/headerBusy", false);
+              oViewModel.setProperty("/footerBusy", false);
 
               // Get the bound context of the detail panel
               var oBoundContext = oDetailPanel.getBindingContext();
@@ -111,6 +113,7 @@ sap.ui.define(
             dataRequested: function ()
             {
               oViewModel.setProperty("/headerBusy", true);
+              oViewModel.setProperty("/footerBusy", true);
             },
           },
         });
@@ -163,6 +166,25 @@ sap.ui.define(
             if (oAction === MessageBox.Action.OK)
             {
               that.callBoundAction("claim", oContext);
+            }
+          },
+        });
+      },
+
+      onReSubmissionAction: function ()
+      {
+        var that = this,
+          oView = this.getView(),
+          oContext = oView.getBindingContext(),
+          oResourceBundle = oView.getModel("i18n").getResourceBundle(),
+          sConfirmMessage = oResourceBundle.getText("confirmReSubmission");
+
+        MessageBox.confirm(sConfirmMessage, {
+          onClose: function (oAction)
+          {
+            if (oAction === MessageBox.Action.OK)
+            {
+              that.callBoundAction("reSubmission", oContext);
             }
           },
         });

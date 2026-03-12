@@ -52,6 +52,7 @@ sap.ui.define([
                 assignedUserName: false,
                 actualDeadlineDate: false,
                 technicalStatusText: false,
+                userSubstitutedBy: true
             });
             MessageToast.show("Columns reset to default");
         },

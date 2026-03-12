@@ -1,6 +1,10 @@
-/* Enter your custom styles here */
 .sapUiTextBold {
   font-weight: bold;
+}
+
+.sapUiTextItalic {
+  font-style: italic;
+  color: var(--sapNeutralColor);
 }
 
 img.sapMSelectListItemIcon {

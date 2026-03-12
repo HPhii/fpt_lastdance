@@ -85,11 +85,6 @@
                         <OverflowToolbarLayoutData priority="NeverOverflow" />
                     </layoutData>
                 </Button>
-                <OverflowToolbarButton
-                    tooltip="Share"
-                    text="Share"
-                    icon="sap-icon://action"
-                />
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>

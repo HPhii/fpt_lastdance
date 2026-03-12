@@ -49,7 +49,16 @@
                         placeholder="{i18n>userInputPlaceholder}"
                         valueHelpRequest=".onOpenUserSearchHelp"
                         showValueHelp="true"
-                    />
+                        showSuggestion="true"
+                        suggestionItems="{defaultUser>/users}"
+                    >
+                        <suggestionItems>
+                            <core:Item
+                                key="{defaultUser>userID}"
+                                text="{defaultUser>userID}"
+                            />
+                        </suggestionItems>
+                    </Input>
 
                     <Label
                         text="{i18n>labelProfile}"

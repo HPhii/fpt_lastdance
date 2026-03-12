@@ -80,6 +80,11 @@
                             type="Active"
                             selected="{worklistView>/columns/assignedUserName}"
                         />
+                        <StandardListItem
+                            title="{i18n>columnTaskUserSubstitutedBy}"
+                            type="Active"
+                            selected="{worklistView>/columns/userSubstitutedBy}"
+                        />
                     </items>
                 </List>
             </VBox>
