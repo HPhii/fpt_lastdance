@@ -25,7 +25,7 @@
                     class="sapUiTinyMarginTop"
                 >
                     <GenericTile
-                        class="sapUiTinyMarginEnd"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="{i18n>dashboardTaskManagement}"
                         subheader="{i18n>dashboardTaskSubheader}"
                         press=".onNavToTask"

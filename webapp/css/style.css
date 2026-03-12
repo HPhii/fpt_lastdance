@@ -49,6 +49,14 @@ img.sapMSelectListItemIcon {
   border-left: 2px solid var(--sapList_BorderColor);
 }
 
+/* Chart Container Styling */
+.chartContainerPanel {
+  border: 1px solid #d0d0d0 !important;
+  background-color: #fafafa !important;
+  border-radius: 4px;
+  padding: 1rem !important;
+}
+
 .commentBubble {
   border-radius: 0.75rem;
   padding: 0.625rem 0.875rem;

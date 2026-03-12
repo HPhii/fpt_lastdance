@@ -40,10 +40,15 @@
                             type="Active"
                             selected="{worklistView>/columns/creationDate}"
                         />
-                        <StandardListItem
+                        <!-- <StandardListItem
                             title="{i18n>columnTaskEndDate}"
                             type="Active"
                             selected="{worklistView>/columns/endDate}"
+                        /> -->
+                        <StandardListItem
+                            title="{i18n>columnTaskEndDate}"
+                            type="Active"
+                            selected="{worklistView>/columns/actualDeadlineDate}"
                         />
                         <StandardListItem
                             title="{i18n>columnTaskDaysToDeadline}"
@@ -54,6 +59,11 @@
                             title="{i18n>columnTaskStatus}"
                             type="Active"
                             selected="{worklistView>/columns/status}"
+                        />
+                        <StandardListItem
+                            title="{i18n>columnTaskProcessStatus}"
+                            type="Active"
+                            selected="{worklistView>/columns/technicalStatusText}"
                         />
                         <StandardListItem
                             title="{i18n>columnTaskPriority}"

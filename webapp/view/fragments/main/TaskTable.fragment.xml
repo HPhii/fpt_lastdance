@@ -24,7 +24,7 @@
         <headerToolbar>
             <Toolbar width="100%">
                 <Title
-                    text="{i18n>tableHeaderTitle}"
+                    text="{= !${worklistView>/tableTitle} ? ${i18n>tableHeaderTitle} : ${worklistView>/tableTitle} }"
                     level="H2"
                 />
                 <ToolbarSpacer />
@@ -110,7 +110,7 @@
                 id="colEndDate"
                 minScreenWidth="Tablet"
                 demandPopin="true"
-                visible="{worklistView>/columns/endDate}"
+                visible="{worklistView>/columns/actualDeadlineDate}"
             >
                 <Text text="{i18n>columnTaskEndDate}" />
             </Column>
@@ -121,6 +121,14 @@
                 visible="{worklistView>/columns/daysToDeadline}"
             >
                 <Text text="{i18n>columnTaskDaysToDeadline}" />
+            </Column>
+            <Column
+                id="colProcessStatus"
+                minScreenWidth="Desktop"
+                demandPopin="true"
+                visible="{worklistView>/columns/technicalStatusText}"
+            >
+                <Text text="{i18n>columnTaskProcessStatus}" />
             </Column>
             <Column
                 id="colStatus"
@@ -170,7 +178,7 @@
                     <Text text="{TaskID}" />
                     <Text text="{WorkItemID}" />
                     <ObjectIdentifier text="{CreationDate}" />
-                    <Text text="{= ${EndDate} || 'N/A' }" />
+                    <Text text="{= ${ActualDeadlineDate} || 'N/A' }" />
                     <HBox alignItems="Center">
                         <VBox justifyContent="Center">
                             <Text
@@ -198,6 +206,7 @@
                             state="{= ${IsOverdue} ? 'Error' : ${IsDueOn} ? 'Warning' : 'None'}"
                         />
                     </HBox>
+                    <Text text="{TechnicalStatusText}" />
                     <ObjectStatus
                         class="sapUiTextBold"
                         text="{TechnicalStatus}"
