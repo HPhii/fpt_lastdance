@@ -77,6 +77,17 @@
                             <ImageContent src="sap-icon://collaborate" />
                         </TileContent>
                     </GenericTile>
+
+                    <GenericTile
+                        class="sapUiTinyMarginEnd"
+                        header="My KPIs"
+                        subheader="Personal task statistics"
+                        press=".onNavToUserDashboard"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://kpi-managing-my-area" />
+                        </TileContent>
+                    </GenericTile>
                 </HBox>
             </VBox>
 

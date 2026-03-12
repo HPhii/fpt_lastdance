@@ -1,0 +1,161 @@
+<mvc:View
+    controllerName="z.wf.zwfmanagement.controller.UserDashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    xmlns:micro="sap.suite.ui.microchart"
+    displayBlock="true"
+>
+    <Page title="My KPI Dashboard">
+        <headerContent>
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                type="XML"
+            />
+        </headerContent>
+        <content>
+            <!-- Section 1: Task KPIs -->
+            <VBox class="sapUiMediumMargin">
+                <Title text="My Task KPIs" class="sapUiSmallMarginBottom" />
+
+                <HBox
+                    wrap="Wrap"
+                    renderType="Bare"
+                    class="sapUiTinyMarginTop"
+                >
+                    <!-- Card 1: My Open Tasks (Neutral) -->
+                    <GenericTile
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        header="My Open Tasks"
+                        subheader="Total tasks assigned to me"
+                        frameType="OneByOne"
+                        state="{= ${kpiModel>/MyOpenTasksCount} !== undefined ? 'Loaded' : 'Loading'}"
+                    >
+                        <TileContent unit="Tasks">
+                            <NumericContent
+                                value="{kpiModel>/MyOpenTasksCount}"
+                                icon="sap-icon://task"
+                                valueColor="Neutral"
+                                withMargin="false"
+                            />
+                        </TileContent>
+                    </GenericTile>
+
+                    <!-- Card 2: Due Today (Warning) -->
+                    <GenericTile
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        header="Due Today"
+                        subheader="Tasks due today"
+                        frameType="OneByOne"
+                        state="{= ${kpiModel>/DueTodayCount} !== undefined ? 'Loaded' : 'Loading'}"
+                    >
+                        <TileContent unit="Tasks">
+                            <NumericContent
+                                value="{kpiModel>/DueTodayCount}"
+                                icon="sap-icon://appointment"
+                                valueColor="Critical"
+                                withMargin="false"
+                            />
+                        </TileContent>
+                    </GenericTile>
+
+                    <!-- Card 3: Overdue Tasks (Error) -->
+                    <GenericTile
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        header="Overdue Tasks"
+                        subheader="Tasks past their due date"
+                        frameType="OneByOne"
+                        state="{= ${kpiModel>/MyOverdueCount} !== undefined ? 'Loaded' : 'Loading'}"
+                    >
+                        <TileContent unit="Tasks">
+                            <NumericContent
+                                value="{kpiModel>/MyOverdueCount}"
+                                icon="sap-icon://alert"
+                                valueColor="Error"
+                                withMargin="false"
+                            />
+                        </TileContent>
+                    </GenericTile>
+                </HBox>
+            </VBox>
+
+            <!-- Section 2: Performance Overview -->
+            <VBox class="sapUiMediumMargin">
+                <Title text="Performance Overview" class="sapUiSmallMarginBottom" />
+
+                <HBox
+                    wrap="Wrap"
+                    renderType="Bare"
+                    class="sapUiTinyMarginTop"
+                >
+                    <!-- Card: My Avg Processing Time -->
+                    <GenericTile
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        header="My Avg Processing Time"
+                        subheader="Average time to complete a task"
+                        frameType="OneByOne"
+                        state="{= ${kpiAggregateModel>/loading} ? 'Loading' : 'Loaded'}"
+                    >
+                        <TileContent unit="Days per task">
+                            <NumericContent
+                                value="{kpiAggregateModel>/avgProcessingTime}"
+                                icon="sap-icon://history"
+                                valueColor="Neutral"
+                                withMargin="false"
+                            />
+                        </TileContent>
+                    </GenericTile>
+
+                    <!-- Card: SLA Hit Rate Gauge -->
+                    <VBox class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
+                        <Panel
+                            headerText="SLA Hit Rate"
+                            class="sapUiNoContentPadding"
+                            width="11rem"
+                        >
+                            <VBox alignItems="Center" class="sapUiSmallMargin">
+                                <micro:RadialMicroChart
+                                    percentage="{kpiAggregateModel>/slaHitRate}"
+                                    valueColor="{kpiAggregateModel>/slaColor}"
+                                    size="Responsive"
+                                />
+                                <ObjectStatus
+                                    text="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
+                                    state="{kpiAggregateModel>/slaState}"
+                                    class="sapUiSmallMarginTop"
+                                />
+                            </VBox>
+                        </Panel>
+
+                        <!-- Legend -->
+                        <VBox class="sapUiTinyMarginTop" width="11rem">
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <core:Icon src="sap-icon://circle-task-2" color="#2b7c2b" class="sapUiTinyMarginEnd" />
+                                <Text text="≥ 95% – Excellent" />
+                            </HBox>
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <core:Icon src="sap-icon://circle-task-2" color="#e78c07" class="sapUiTinyMarginEnd" />
+                                <Text text="80–94% – Moderate" />
+                            </HBox>
+                            <HBox alignItems="Center">
+                                <core:Icon src="sap-icon://circle-task-2" color="#bb0000" class="sapUiTinyMarginEnd" />
+                                <Text text="&lt; 80% – Low" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </content>
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button
+                    text="Back to Dashboard"
+                    icon="sap-icon://nav-back"
+                    press=".onNavBack"
+                />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>
