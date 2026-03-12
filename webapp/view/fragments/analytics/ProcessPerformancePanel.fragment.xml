@@ -1,0 +1,201 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+>
+<Panel
+    class="sapUiMediumMarginTop"
+    headerText="Process Performance"
+>
+
+<VBox>
+
+<!-- PERFORMANCE CHART -->
+
+<viz:VizFrame
+    id="perfChartPanel"
+    vizType="dual_combination"
+    height="450px"
+    width="100%"
+    vizProperties="{
+        plotArea:{
+            dataLabel:{
+                visible:true,
+                type:'value',
+                hideWhenOverlap:true
+            },
+            colorPalette:['#5899DA','#E8743B','#19A979','#ED4A7B','#945ECF','#13A4B4','#525DF4','#BF399E','#6C8893','#EE6868','#2F6497'],
+            isScrollable:true
+        },
+        interaction:{
+            zoom:{enablement:'enabled'},
+            selectability:{mode:'multiple'}
+        },
+        legend:{
+            visible:true,
+            position:'bottom'
+        },
+        title:{
+            visible:true,
+            text:'Tasks Completed and Avg Cycle Time'
+        }
+    }"
+>
+
+<viz:dataset>
+
+<viz.data:FlattenedDataset
+    data="{
+        path: 'performanceAnalytics>/ZC_GSP26SAP02_WF_PERF',
+        parameters: {
+            $select: 'CreationYearMonth,IsCompletedCount,CycleTimeDays',
+            $filter: &quot;StatusCategory eq 'Completed'&quot;
+        }
+    }"
+>
+
+<viz.data:dimensions>
+
+<viz.data:DimensionDefinition
+    name="Month"
+    value="{performanceAnalytics>CreationYearMonth}"
+/>
+
+</viz.data:dimensions>
+
+<viz.data:measures>
+
+<viz.data:MeasureDefinition
+    name="Completed"
+    value="{performanceAnalytics>IsCompletedCount}"
+/>
+
+<viz.data:MeasureDefinition
+    name="Avg Cycle (Days)"
+    value="{performanceAnalytics>CycleTimeDays}"
+/>
+
+</viz.data:measures>
+
+</viz.data:FlattenedDataset>
+
+</viz:dataset>
+
+<viz:feeds>
+
+<viz.feeds:FeedItem
+    uid="primaryValues"
+    type="Measure"
+    values="Completed"
+/>
+
+<viz.feeds:FeedItem
+    uid="secondaryValues"
+    type="Measure"
+    values="Avg Cycle (Days)"
+/>
+
+<viz.feeds:FeedItem
+    uid="categoryAxis"
+    type="Dimension"
+    values="Month"
+/>
+
+</viz:feeds>
+
+</viz:VizFrame>
+
+<!-- HEATMAP CHART -->
+
+<ScrollContainer
+    width="100%"
+    height="450px"
+    horizontal="true"
+    vertical="false"
+>
+
+<viz:VizFrame
+    id="idHeatmapChart"
+    vizType="column"
+    width="1600px"
+    height="400px"
+    vizProperties="{
+        title:{
+            visible:true,
+            text:'Heatmap - Task Cycle Time by Business Object'
+        }
+    }"
+>
+
+<viz:dataset>
+
+<viz.data:FlattenedDataset
+    data="{
+        path:'performanceAnalytics>/ZC_GSP26SAP02_WF_PERF',
+        parameters:{
+            $select:'BusinessObjectType,TaskID,IsCompletedCount,CycleTimeDays',
+            $filter:&quot;StatusCategory eq 'Completed'&quot;
+        }
+    }"
+>
+
+<viz.data:dimensions>
+
+<viz.data:DimensionDefinition
+    name="Month"
+    value="{performanceAnalytics>BusinessObjectType}"
+/>
+
+<viz.data:DimensionDefinition
+    name="Task"
+    value="{performanceAnalytics>TaskID}"
+/>
+
+</viz.data:dimensions>
+
+<viz.data:measures>
+
+<viz.data:MeasureDefinition
+    name="AvgCycle"
+    value="{performanceAnalytics>CycleTimeDays}"
+/>
+
+</viz.data:measures>
+
+</viz.data:FlattenedDataset>
+
+</viz:dataset>
+
+<viz:feeds>
+
+<viz.feeds:FeedItem
+    uid="valueAxis"
+    type="Measure"
+    values="AvgCycle"
+/>
+
+<viz.feeds:FeedItem
+    uid="categoryAxis"
+    type="Dimension"
+    values="Month"
+/>
+
+<viz.feeds:FeedItem
+    uid="color"
+    type="Dimension"
+    values="Task"
+/>
+
+</viz:feeds>
+
+</viz:VizFrame>
+
+</ScrollContainer>
+
+</VBox>
+
+</Panel>
+
+</core:FragmentDefinition>

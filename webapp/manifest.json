@@ -216,7 +216,7 @@
       },
       "reportAnalytics": {
         "dataSource": "reportAnalyticsService",
-        "preload": false,
+        "preload": true,
         "settings": {
           "synchronizationMode": "None",
           "operationMode": "Server",

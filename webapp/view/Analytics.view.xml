@@ -1,315 +1,66 @@
-<mvc:View
-    controllerName="z.wf.zwfmanagement.controller.Analytics"
-    xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m"
-    xmlns:core="sap.ui.core"
-    xmlns:microchart="sap.suite.ui.microchart"
-    xmlns:layout="sap.ui.layout"
-    xmlns:card="sap.ui.integration.widgets"
-    xmlns:viz="sap.viz.ui5.controls"
-    xmlns:viz.data="sap.viz.ui5.data"
-    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
->
+    <mvc:View
+        controllerName="z.wf.zwfmanagement.controller.Analytics"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns="sap.m"
+        xmlns:core="sap.ui.core"
+        xmlns:microchart="sap.suite.ui.microchart"
+        xmlns:layout="sap.ui.layout"
+        xmlns:card="sap.ui.integration.widgets"
+        xmlns:viz="sap.viz.ui5.controls"
+        xmlns:viz.data="sap.viz.ui5.data"
+        xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    >
+
     <Page
         title="{i18n>analyticsTitle}"
         showNavButton="true"
         navButtonPress=".onNavBackToDashboard"
     >
-        <headerContent>
-            <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
-                type="XML"
-            />
-        </headerContent>
 
-        <content>
-            <VBox visible="{userRole>/isAdmin}">
-                <!-- Volume & Status Panel -->
-              
+    <headerContent>
+        <core:Fragment
+            fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+            type="XML"
+        />
+    </headerContent>
 
-                <!-- <Panel>
-                <card:Card
-                    manifest="./cards/calendarCard/manifest.json"
-                    width="400px"
-                    height="auto"
-                />
-                </Panel> -->
+    <content>
 
-                <!-- Task Status &amp; Priority Charts -->
+    <VBox visible="{userRole>/isAdmin}">
 
-                <core:Fragment
-                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
-                    type="XML"
-                />
-                <Panel>
-                    <VBox>
-                        <HBox>
-                            <Panel
-                                class="chartContainerPanel sapUiMediumMarginEnd"
-                            >
-                                <viz:VizFrame
-                                    id="idStatusChart"
-                                    vizType="donut"
-                                    width="800px"
-                                    height="400px"
-                                >
-                                    <viz:dataset>
-                                        <viz.data:FlattenedDataset
-                                            data="{statusModel>/StatusData}"
-                                        >
-                                            <viz.data:dimensions>
-                                                <viz.data:DimensionDefinition
-                                                    name="StatusCategory"
-                                                    value="{StatusCategory}"
-                                                />
-                                            </viz.data:dimensions>
-                                            <viz.data:measures>
-                                                <viz.data:MeasureDefinition
-                                                    name="TaskCounter"
-                                                    value="{TaskCounter}"
-                                                />
-                                            </viz.data:measures>
-                                        </viz.data:FlattenedDataset>
-                                    </viz:dataset>
-                                    <viz:feeds>
-                                        <viz.feeds:FeedItem
-                                            uid="color"
-                                            type="Dimension"
-                                            values="StatusCategory"
-                                        />
-                                        <viz.feeds:FeedItem
-                                            uid="size"
-                                            type="Measure"
-                                            values="TaskCounter"
-                                        />
-                                    </viz:feeds>
-                                </viz:VizFrame>
-                            </Panel>
-                            <Panel
-                                class="chartContainerPanel sapUiMediumMarginEnd"
-                            >
-                                <viz:VizFrame
-                                    id="idPriorityChart"
-                                    vizType="bar"
-                                    width="1200px"
-                                    height="400px"
-                                >
-                                    <viz:dataset>
-                                        <viz.data:FlattenedDataset
-                                            data="{priorityModel>/PriorityData}"
-                                        >
-                                            <viz.data:dimensions>
-                                                <viz.data:DimensionDefinition
-                                                    name="PriorityLevel"
-                                                    value="{PriorityLevel}"
-                                                />
-                                            </viz.data:dimensions>
-                                            <viz.data:measures>
-                                                <viz.data:MeasureDefinition
-                                                    name="TaskCounter"
-                                                    value="{TaskCounter}"
-                                                />
-                                            </viz.data:measures>
-                                        </viz.data:FlattenedDataset>
-                                    </viz:dataset>
-                                    <viz:feeds>
-                                        <viz.feeds:FeedItem
-                                            uid="valueAxis"
-                                            type="Measure"
-                                            values="TaskCounter"
-                                        />
-                                        <viz.feeds:FeedItem
-                                            uid="categoryAxis"
-                                            type="Dimension"
-                                            values="PriorityLevel"
-                                        />
-                                    </viz:feeds>
-                                </viz:VizFrame>
-                            </Panel>
-                        </HBox>
-                    </VBox>
-                </Panel>
+    <!-- STATUS + VOLUME PANEL  PERFORMANCE + HEATMAP -->
+    <core:Fragment
+        fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
+        type="XML"
+    />
 
-                <Panel class="sapUiMediumMarginTop">
-                    <viz:VizFrame
-                        id="idPerfChart"
-                        vizType="dual_combination"
-                        height="450px"
-                        width="55%"
-                        vizProperties="{
-                            title: {
-                                visible: true,
-                                text: 'Tasks Completed and Avg Cycle Time'
-                            }
-                        }"
-                    >
-                        <viz:dataset>
-                            <viz.data:FlattenedDataset data="{/PerfData}">
-                                <viz.data:dimensions>
-                                    <viz.data:DimensionDefinition
-                                        name="Month"
-                                        value="{Month}"
-                                    />
-                                </viz.data:dimensions>
+       <!-- PROCESS PERFORMANCE PANEL -->
+     <core:Fragment
+        fragmentName="z.wf.zwfmanagement.view.fragments.analytics.ProcessPerformancePanel"
+        type="XML"/>
 
-                                <viz.data:measures>
-                                    <viz.data:MeasureDefinition
-                                        name="Completed"
-                                        value="{Completed}"
-                                    />
-                                    <viz.data:MeasureDefinition
-                                        name="Avg Cycle (Days)"
-                                        value="{AvgCycle}"
-                                    />
-                                </viz.data:measures>
-                            </viz.data:FlattenedDataset>
-                        </viz:dataset>
+    <!-- AGING BOTTLENECK PANEL -->
+    <core:Fragment
+        fragmentName="z.wf.zwfmanagement.view.fragments.analytics.AgingBottleneckPanel"
+        type="XML"
+    />
 
-                        <viz:feeds>
-                            <viz.feeds:FeedItem
-                                uid="primaryValues"
-                                type="Measure"
-                                values="Completed"
-                            />
-                            <viz.feeds:FeedItem
-                                uid="secondaryValues"
-                                type="Measure"
-                                values="Avg Cycle (Days)"
-                            />
-                            <viz.feeds:FeedItem
-                                uid="axisLabels"
-                                type="Dimension"
-                                values="Month"
-                            />
-                        </viz:feeds>
-                    </viz:VizFrame>
+    <!-- TOP LONGEST USER -->
+    <core:Fragment
+        fragmentName="z.wf.zwfmanagement.view.fragments.analytics.TopLongestUser"
+        type="XML"
+    />
 
-                    <ScrollContainer
-                        width="100%"
-                        height="450px"
-                        horizontal="true"
-                        vertical="false"
-                    >
-                        <viz:VizFrame
-                            id="idHeatmapChart"
-                            vizType="column"
-                            width="1400px"
-                            height="400px"
-                        >
-                            <viz:dataset>
-                                <viz.data:FlattenedDataset
-                                    data="{heatmapModel>/HeatData}"
-                                >
-                                    <viz.data:dimensions>
-                                        <viz.data:DimensionDefinition
-                                            name="Month"
-                                            value="{heatmapModel>Month}"
-                                        />
+    <!-- USER WORKLOAD -->
+    <core:Fragment
+        fragmentName="z.wf.zwfmanagement.view.fragments.analytics.UserWorkloadPanel"
+        type="XML"
+    />
 
-                                        <viz.data:DimensionDefinition
-                                            name="Task"
-                                            value="{heatmapModel>Task}"
-                                        />
-                                    </viz.data:dimensions>
+    </VBox>
 
-                                    <viz.data:measures>
-                                        <viz.data:MeasureDefinition
-                                            name="AvgCycle"
-                                            value="{heatmapModel>AvgCycle}"
-                                        />
-                                    </viz.data:measures>
-                                </viz.data:FlattenedDataset>
-                            </viz:dataset>
+    </content>
 
-                            <viz:feeds>
-                                <viz.feeds:FeedItem
-                                    uid="valueAxis"
-                                    type="Measure"
-                                    values="AvgCycle"
-                                />
-
-                                <viz.feeds:FeedItem
-                                    uid="categoryAxis"
-                                    type="Dimension"
-                                    values="Month"
-                                />
-
-                                <viz.feeds:FeedItem
-                                    uid="color"
-                                    type="Dimension"
-                                    values="Task"
-                                />
-                            </viz:feeds>
-                        </viz:VizFrame>
-                    </ScrollContainer>
-                </Panel>
-
-                <Panel>
-                    <viz:VizFrame
-                        id="agingChart"
-                        vizType="stacked_bar"
-                        width="100%"
-                        height="400px"
-                    >
-                        <viz:dataset>
-                            <viz.data:FlattenedDataset
-                                data="{agingModel>/AgingData}"
-                            >
-                                <viz.data:dimensions>
-                                    <viz.data:DimensionDefinition
-                                        name="BusinessObject"
-                                        value="{agingModel>BusinessObject}"
-                                    />
-                                </viz.data:dimensions>
-
-                                <viz.data:measures>
-                                    <viz.data:MeasureDefinition
-                                        name="0-2 Days"
-                                        value="{agingModel>0-2 Days}"
-                                    />
-
-                                    <viz.data:MeasureDefinition
-                                        name="3-7 Days"
-                                        value="{agingModel>3-7 Days}"
-                                    />
-
-                                    <viz.data:MeasureDefinition
-                                        name=">7 Days"
-                                        value="{agingModel>>7 Days}"
-                                    />
-                                </viz.data:measures>
-                            </viz.data:FlattenedDataset>
-                        </viz:dataset>
-
-                        <viz:feeds>
-                            <viz.feeds:FeedItem
-                                uid="valueAxis"
-                                type="Measure"
-                                values="0-2 Days,3-7 Days,>7 Days"
-                            />
-
-                            <viz.feeds:FeedItem
-                                uid="categoryAxis"
-                                type="Dimension"
-                                values="BusinessObject"
-                            />
-                        </viz:feeds>
-                    </viz:VizFrame>
-
-                <core:Fragment
-                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.BottleneckHeatmap"
-                    type="XML"
-                />
-                        
-                </Panel>
-
-                  
-
-                <core:Fragment
-                    fragmentName="z.wf.zwfmanagement.view.fragments.analytics.UserWorkloadPanel"
-                    type="XML"
-                />
-            </VBox>
-        </content>
     </Page>
-</mvc:View>
+
+    </mvc:View>

@@ -11,13 +11,78 @@
         width="98.5%"
         visible="{userRole>/isAdmin}"
     >
+        <Panel>
+
+<viz:VizFrame
+    id="agingChart"
+    vizType="stacked_bar"
+    width="100%"
+    height="400px"
+>
+
+<viz:dataset>
+
+<viz.data:FlattenedDataset
+    data="{agingModel>/AgingData}"
+>
+
+<viz.data:dimensions>
+
+<viz.data:DimensionDefinition
+    name="BusinessObject"
+    value="{agingModel>BusinessObject}"
+/>
+
+</viz.data:dimensions>
+
+<viz.data:measures>
+
+<viz.data:MeasureDefinition
+    name="0-2 Days"
+    value="{agingModel>0-2Days}"
+/>
+
+<viz.data:MeasureDefinition
+    name="3-7 Days"
+    value="{agingModel>3-7Days}"
+/>
+
+<viz.data:MeasureDefinition
+    name=">7 Days"
+    value="{agingModel>Over7Days}"
+/>
+
+</viz.data:measures>
+
+</viz.data:FlattenedDataset>
+
+</viz:dataset>
+
+<viz:feeds>
+
+<viz.feeds:FeedItem
+    uid="valueAxis"
+    type="Measure"
+    values="0-2 Days,3-7 Days,>7 Days"
+/>
+
+<viz.feeds:FeedItem
+    uid="categoryAxis"
+    type="Dimension"
+    values="BusinessObject"
+/>
+
+</viz:feeds>
+
+</viz:VizFrame>
+
+</Panel>
 
         <FlexBox
             width="100%"
             direction="Column"
         >
 
-            <!-- Bottleneck Heatmap -->
             <viz:VizFrame
                 id="BottleneckHeatmapChart"
                 uiConfig="{applicationSet:'fiori'}"
@@ -41,16 +106,11 @@
             >
 
                 <viz:dataset>
-
-                    <viz.data:FlattenedDataset
-                        data="{
-                            path:'bottleneckAnalytics>/ZC_GSP26SAP02_WF_AGIG',
-                            parameters:{
-                                $select:'PriorityLevel,AgingBucket,IsOpenCount'
-                            }
-                        }"
-                    >
-
+                 <viz.data:FlattenedDataset
+                            data="{
+                                path:'agingModel>/HeatData'
+                            }"
+                        >
                         <viz.data:dimensions>
 
                             <viz.data:DimensionDefinition

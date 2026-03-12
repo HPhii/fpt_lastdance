@@ -1,0 +1,42 @@
+<core:FragmentDefinition
+ xmlns="sap.m"
+ xmlns:core="sap.ui.core">
+
+ <Panel headerText="Longest Outstanding Tasks">
+
+  <Table
+   items="{
+    path:'reportAnalytics>/TopAging'
+   }">
+
+   <columns>
+
+    <Column> 
+     <Text text="User"/>
+    </Column>
+
+    <Column>
+     <Text text="Days"/>
+    </Column>
+
+   </columns>
+
+   <items>
+    <ColumnListItem>
+
+     <cells>
+
+      <Text text="{reportAnalytics>CreatedByUser}"/>
+
+      <Text text="{reportAnalytics>DaysOpen}"/>
+
+     </cells>
+
+    </ColumnListItem>
+   </items>
+
+  </Table>
+
+ </Panel>
+
+</core:FragmentDefinition>

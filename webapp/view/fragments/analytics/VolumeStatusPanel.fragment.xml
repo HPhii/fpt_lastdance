@@ -1,100 +1,222 @@
 <core:FragmentDefinition
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
+
     <Panel
-        id="statsAnalyticsPanel"
         class="sapUiSmallMargin statsPanel"
         headerText="{i18n>volumeStatusTitle}"
         visible="{userRole>/isAdmin}"
         width="98.5%"
     >
-        <HBox
-            wrap="Wrap"
-            width="100%"
-            justifyContent="SpaceBetween"
-            class="statsCardsRow"
-        >
-            <!-- Total Open Tasks -->
+
+        <VBox width="100%">
+
+            <!-- ===== STATS CARDS ===== -->
             <HBox
-                class="statsCard statsCardBlue"
-                busy="{statsAnalyticsModel>/busy}"
+                wrap="Wrap"
+                width="100%"
+                justifyContent="SpaceBetween"
+                class="statsCardsRow"
             >
-                <core:Icon
-                    src="sap-icon://paste"
-                    class="statsCardIcon statsCardIconBlue"
-                />
-                <VBox class="statsCardContent">
-                    <Text
-                        text="{statsAnalyticsModel>/result/IsOpenCount}"
-                        class="statsCardValue statsCardValueBlue"
-                    />
-                    <Text
-                        text="{i18n>totalOpenTasksText}"
-                        class="statsCardLabelGreen"
-                    />
-                </VBox>
+
+                <!-- Total Open Tasks -->
+                <HBox class="statsCard statsCardBlue" busy="{statsAnalyticsModel>/busy}">
+                    <core:Icon src="sap-icon://paste" class="statsCardIcon statsCardIconBlue"/>
+                    <VBox class="statsCardContent">
+                        <Text text="{statsAnalyticsModel>/result/IsOpenCount}" class="statsCardValue statsCardValueBlue"/>
+                        <Text text="{i18n>totalOpenTasksText}" class="statsCardLabelGreen"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Completed This Month -->
+                <HBox class="statsCard statsCardGreen" busy="{statsAnalyticsModel>/busy}">
+                    <core:Icon src="sap-icon://task" class="statsCardIcon statsCardIconGreen"/>
+                    <VBox class="statsCardContent">
+                        <Text text="{statsAnalyticsModel>/result/IsCompletedThisMonth}" class="statsCardValue statsCardValueGreen"/>
+                        <Text text="{i18n>CompletedTasksThisMonthText}"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Overdue Tasks -->
+                <HBox class="statsCard statsCardRed" busy="{statsAnalyticsModel>/busy}">
+                    <core:Icon src="sap-icon://alert" class="statsCardIcon statsCardIconRed"/>
+                    <VBox class="statsCardContent">
+                        <Text text="{statsAnalyticsModel>/result/IsOverdueCount}" class="statsCardValue statsCardValueRed"/>
+                        <Text text="{i18n>OverdueTasksText}"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Completion Rate -->
+                <HBox class="statsCard statsCardYellow" busy="{statsAnalyticsModel>/busy}">
+                    <core:Icon src="sap-icon://pie-chart" class="statsCardIcon statsCardIconYellow"/>
+                    <VBox class="statsCardContent">
+                        <Text
+                            text="{
+                                parts:[
+                                    {path:'statsAnalyticsModel>/result/IsCompletedCount'},
+                                    {path:'statsAnalyticsModel>/result/TaskCounter'}
+                                ],
+                                formatter:'.formatter.formatCompletionRate'
+                            }%"
+                            class="statsCardValue statsCardValueYellow"
+                        />
+                        <Text text="{i18n>CompletionRateText}"/>
+                    </VBox>
+                </HBox>
+
             </HBox>
 
-            <!-- Completed This Month -->
-            <HBox
-                class="statsCard statsCardGreen"
-                busy="{statsAnalyticsModel>/busy}"
-            >
-                <core:Icon
-                    src="sap-icon://task"
-                    class="statsCardIcon statsCardIconGreen"
-                />
-                <VBox class="statsCardContent">
-                    <Text
-                        text="{statsAnalyticsModel>/result/IsCompletedThisMonth}"
-                        class="statsCardValue statsCardValueGreen"
-                    />
-                    <Text text="{i18n>CompletedTasksThisMonthText}" />
-                </VBox>
-            </HBox>
 
-            <!-- Overdue Tasks -->
+            <!-- ===== CHART AREA ===== -->
             <HBox
-                class="statsCard statsCardRed"
-                busy="{statsAnalyticsModel>/busy}"
+                width="100%"
+                justifyContent="Center"
+                class="sapUiMediumMarginTop"
             >
-                <core:Icon
-                    src="sap-icon://alert"
-                    class="statsCardIcon statsCardIconRed"
-                />
-                <VBox class="statsCardContent">
-                    <Text
-                        text="{statsAnalyticsModel>/result/IsOverdueCount}"
-                        class="statsCardValue statsCardValueRed"
-                    />
-                    <Text text="{i18n>OverdueTasksText}" />
-                </VBox>
-            </HBox>
 
-            <!-- Completion Rate -->
-            <HBox
-                class="statsCard statsCardYellow"
-                busy="{statsAnalyticsModel>/busy}"
-            >
-                <core:Icon
-                    src="sap-icon://pie-chart"
-                    class="statsCardIcon statsCardIconYellow"
-                />
-                <VBox class="statsCardContent">
-                    <Text
-                        text="{
-                            parts: [
-                                {path: 'statsAnalyticsModel>/result/IsCompletedCount'},
-                                {path: 'statsAnalyticsModel>/result/TaskCounter'}
-                            ],
-                            formatter: '.formatter.formatCompletionRate'
-                        }%"
-                        class="statsCardValue statsCardValueYellow"
-                    />
-                    <Text text="{i18n>CompletionRateText}" />
-                </VBox>
+                <!-- STATUS DONUT -->
+                <Panel class="chartContainerPanel sapUiMediumMarginEnd">
+
+                    <viz:VizFrame
+                        vizType="donut"
+                        width="600px"
+                        height="400px"
+                         vizProperties="{
+                            title:{
+                                visible:true,
+                                text:'Status Distribution'
+                            }
+                        }"
+                    >
+
+                        <viz:dataset>
+                            <viz.data:FlattenedDataset
+                                data="{
+                                    path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
+                                    parameters:{
+                                        $select:'StatusCategory,TaskCounter'
+                                    }
+                                }"
+                            >
+
+                                <viz.data:dimensions>
+                                    <viz.data:DimensionDefinition
+                                        name="Status"
+                                        value="{statsAnalytics>StatusCategory}"
+                                    />
+                                </viz.data:dimensions>
+
+                                <viz.data:measures>
+                                    <viz.data:MeasureDefinition
+                                        name="Tasks"
+                                        value="{statsAnalytics>TaskCounter}"
+                                    />
+                                </viz.data:measures>
+
+                            </viz.data:FlattenedDataset>
+                        </viz:dataset>
+
+                        <viz:feeds>
+                            <viz.feeds:FeedItem uid="color" type="Dimension" values="Status"/>
+                            <viz.feeds:FeedItem uid="size" type="Measure" values="Tasks"/>
+                        </viz:feeds>
+
+                    </viz:VizFrame>
+
+                </Panel>
+
+
+                <!-- PRIORITY BAR -->
+                <Panel class="chartContainerPanel">
+   <viz:VizFrame
+    vizType="bar"
+    width="900px"
+    height="400px"
+    vizProperties="{
+        title:{
+            visible:true,
+            text:'Tasks in Processing by Priority'
+        },
+        plotArea:{
+            dataLabel:{
+                visible:true,
+                type:'value',
+                hideWhenOverlap:true
+            },
+            colorPalette:['#e60000','#f2c200','#7ed321'],
+            isScrollable:true
+        },
+        legend:{
+            visible:true
+        }
+    }"
+>
+                        <viz:dataset>
+                            <viz.data:FlattenedDataset
+                                data="{
+                                    path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
+                                    parameters:{
+                                        $select:'PriorityLevel,TaskCounter'
+                                    }
+                                }"
+                            >
+                                <viz.data:dimensions>
+                                    <viz.data:DimensionDefinition
+                                        name="Priority"
+                                        value="{statsAnalytics>PriorityLevel}"
+                                    />
+                                </viz.data:dimensions>
+
+                                <viz.data:measures>
+                                    <viz.data:MeasureDefinition
+                                        name="Tasks"
+                                        value="{statsAnalytics>TaskCounter}"
+                                    />
+                                </viz.data:measures>
+
+                            </viz.data:FlattenedDataset>
+                        </viz:dataset>
+                        <viz:feeds>
+
+    <viz.feeds:FeedItem
+        uid="valueAxis"
+        type="Measure"
+        values="Tasks"
+    />
+
+    <viz.feeds:FeedItem
+        uid="categoryAxis"
+        type="Dimension"
+        values="Priority"
+    />
+
+    <viz.feeds:FeedItem
+        uid="color"
+        type="Dimension"
+        values="Priority"
+    />
+
+</viz:feeds>
+
+                    </viz:VizFrame>
+                </Panel>
             </HBox>
-        </HBox>
+        </VBox>
+
+
+        <Panel class="sapUiMediumMarginTop">
+
+<VBox>
+
+</VBox>
+
+</Panel>
+
+
     </Panel>
+
 </core:FragmentDefinition>
