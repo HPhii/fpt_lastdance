@@ -2,6 +2,7 @@ sap.ui.define(
   [
     "./BaseController",
     "sap/m/MessageBox",
+    "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel",
     "../utils/ForwardDialog",
     "../utils/SuspendDialog",
@@ -9,11 +10,12 @@ sap.ui.define(
     "../utils/SetPriorityDialog",
     "../utils/UserInfoPopover",
     "../utils/Attachments",
-    "sap/m/MessageToast"
+    "../utils/ActionDecisionDialog"
   ],
   function (
     BaseController,
     MessageBox,
+    MessageToast,
     JSONModel,
     ForwardDialogHelper,
     SuspendDialogHelper,
@@ -21,7 +23,7 @@ sap.ui.define(
     SetPriorityDialogHelper,
     UserInfoPopoverHelper,
     AttachmentsHelper,
-    MessageToast
+    ActionDecisionDialogHelper
   )
   {
     "use strict";
@@ -66,7 +68,7 @@ sap.ui.define(
         oView.bindElement({
           path: sPath,
           parameters: {
-            $select: "*,__OperationControl",
+            $select: "*",
             $expand: "_DecisionOptions,_TraceLogs,_Comments",
           },
           events: {
@@ -114,93 +116,36 @@ sap.ui.define(
         });
       },
 
-      onDecisionPress: function (oEvent)
+      onDecisionAction: function (oEvent)
       {
-        var oButton = oEvent.getSource();
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-        // get data attributes
-        var sDecisionKey = oButton.data("DecisionKey");
-        var sWorkItemID = oButton.data("WorkItemID");
-        var sText = oButton.getText();
+        var oView = this.getView(),
+          oButton = oEvent.getSource(),
+          oContext = oButton.getBindingContext(),
+          sDecisionKey = oContext.getProperty("DecisionKey"),
+          sText = oButton.getText();
 
         if (sDecisionKey)
-        {
           sDecisionKey = sDecisionKey.toString().padStart(4, "0");
-        }
 
-        var that = this;
-        var oContext = this.getView().getBindingContext();
-
-        var sConfirmMessage = oResourceBundle.getText("confirmDecision", [
-          sText,
-        ]);
-
-        const oPayload = {
-          DecisionKey: sDecisionKey,
-          WorkItemID: sWorkItemID,
-          DecisionComment: ""
-        };
-        MessageBox.confirm(sConfirmMessage, {
-          onClose: function (oAction)
-          {
-            if (oAction === MessageBox.Action.OK)
-            {
-              that.callBoundAction("executionDecision", oContext, oPayload);
-            }
-          },
-        });
+        ActionDecisionDialogHelper.onOpen(oView, sText, "executionDecision", sDecisionKey);
       },
 
       onApproveAction: function ()
       {
-        var oContext = this.getView().getBindingContext();
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-        var sConfirmMessage = oResourceBundle.getText("confirmApprove");
+        var oView = this.getView();
+        var oResourceBundle = oView.getModel("i18n").getResourceBundle();
+        var sText = oResourceBundle.getText("buttonApprove");
 
-        var that = this;
-        MessageBox.confirm(sConfirmMessage, {
-          onClose: function (oAction)
-          {
-            if (oAction === MessageBox.Action.OK)
-            {
-              // var oPayload = {
-              //   ELEMENT: "0001"
-              // };
-
-              that.callBoundAction("approve", oContext);
-              that.getOwnerComponent().getRouter().navTo("RouteMainView", {}, true);
-            }
-          },
-        });
+        ActionDecisionDialogHelper.onOpen(oView, sText, "approve");
       },
 
       onRejectAction: function ()
       {
-        var oContext = this.getView().getBindingContext();
-        var oResourceBundle = this.getView()
-          .getModel("i18n")
-          .getResourceBundle();
-        var sConfirmMessage = oResourceBundle.getText("confirmReject");
+        var oView = this.getView();
+        var oResourceBundle = oView.getModel("i18n").getResourceBundle();
+        var sText = oResourceBundle.getText("buttonReject");
 
-        var that = this;
-        MessageBox.confirm(sConfirmMessage, {
-          onClose: function (oAction)
-          {
-            if (oAction === MessageBox.Action.OK)
-            {
-              // var oPayload = {
-              //   ELEMENT: "0002"
-              // };
-
-              that.callBoundAction("reject", oContext);
-              that.getOwnerComponent().getRouter().navTo("RouteMainView", {}, true);
-            }
-          },
-        });
+        ActionDecisionDialogHelper.onOpen(oView, sText, "reject");
       },
 
       onClaimAction: function ()

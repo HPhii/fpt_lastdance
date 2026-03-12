@@ -224,18 +224,16 @@ sap.ui.define([
                     sBodyFragment = "z.wf.zwfmanagement.view.fragments.detail.RFQBody";
                     break;
                 default:
-                    break;
+                    return;
             }
 
-            sHeaderFragment
-                ? this._getFragment(oView, sHeaderFragment).then(function (oHeader)
+            Promise.all([
+                this._getFragment(oView, sHeaderFragment).then(function (oHeader)
                 {
                     oObjectPageLayout.addHeaderContent(oHeader);
-                })
-                : Promise.resolve();
+                }),
 
-            sBodyFragment
-                ? this._getFragment(oView, sBodyFragment).then(function (oBody)
+                this._getFragment(oView, sBodyFragment).then(function (oBody)
                 {
                     if (Array.isArray(oBody))
                     {
@@ -245,7 +243,10 @@ sap.ui.define([
                         oObjectPageLayout.addSection(oBody);
                     }
                 })
-                : Promise.resolve();
+            ]).catch(function (oError)
+            {
+                console.error("Error loading fragments for " + sEntitySet + ":", oError);
+            });
         },
 
         _getFragment: function (oView, sFragmentName)
