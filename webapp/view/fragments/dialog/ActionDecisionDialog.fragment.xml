@@ -1,0 +1,43 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:tnt="sap.tnt"
+>
+    <Dialog
+        title="{i18n>actionDecisionDialogTitle}"
+        contentWidth="400px"
+        contentHeight="auto"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Text
+                    class="sapUiSmallMarginBottom"
+                    id="textReason"
+                />
+                <Label
+                    labelFor="reasonInput"
+                    text="{i18n>actionDecisionReasonLabel}"
+                />
+
+                <TextArea
+                    id="reasonInput"
+                    width="100%"
+                    placeholder="{i18n>actionDecisionReasonPlaceholder}"
+                    growing="true"
+                />
+            </VBox>
+        </content>
+
+        <buttons>
+            <Button
+                text="{i18n>actionDecisionSubmitButton}"
+                press=".onConfirm"
+                type="Emphasized"
+            />
+            <Button
+                text="{i18n>btnCancel}"
+                press=".onCancel"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

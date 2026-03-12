@@ -4,6 +4,15 @@
 >
     <m:OverflowToolbar>
         <m:ToolbarSpacer />
+        <m:HBox items="{_DecisionOptions}">
+            <m:Button
+                class="sapUiTinyMarginEnd"
+                text="{DecisionText}"
+                type="Ghost"
+                press=".onDecisionAction"
+            />
+        </m:HBox>
+        <m:ToolbarSeparator visible="true" />
         <m:Button
             text="{i18n>buttonApprove}"
             type="Accept"
