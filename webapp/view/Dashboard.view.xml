@@ -46,10 +46,11 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="{i18n>dashboardReports}"
                         subheader="{i18n>dashboardReportsSubheader}"
                         press=".onNavToAnalytics"
+                        visible="{userRole>/isAdmin}"
                     >
                         <TileContent>
                             <ImageContent src="sap-icon://bar-chart" />
@@ -57,7 +58,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="{i18n>dashboardHelp}"
                         subheader="{i18n>dashboardHelpSubheader}"
                         press=".onNavToHelp"
@@ -68,7 +69,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="{i18n>dashboardSubstitution}"
                         subheader="{i18n>dashboardSubstitutionSubheader}"
                         press=".onNavToSubstitution"
@@ -79,13 +80,15 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="My KPIs"
                         subheader="Personal task statistics"
                         press=".onNavToUserDashboard"
                     >
                         <TileContent>
-                            <ImageContent src="sap-icon://kpi-managing-my-area" />
+                            <ImageContent
+                                src="sap-icon://kpi-managing-my-area"
+                            />
                         </TileContent>
                     </GenericTile>
                 </HBox>
