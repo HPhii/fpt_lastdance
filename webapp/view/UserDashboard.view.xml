@@ -16,69 +16,69 @@
         </headerContent>
         <content>
             <!-- Section 1: Task KPIs -->
-            <VBox class="sapUiMediumMargin">
-                <Title text="My Task KPIs" class="sapUiSmallMarginBottom" />
-
+            <Panel
+                class="sapUiMediumMargin statsPanel"
+                headerText="My Task KPIs"
+                width="98.5%"
+            >
                 <HBox
                     wrap="Wrap"
-                    renderType="Bare"
-                    class="sapUiTinyMarginTop"
+                    width="100%"
+                    justifyContent="SpaceBetween"
+                    class="statsCardsRow"
                 >
-                    <!-- Card 1: My Open Tasks (Neutral) -->
-                    <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        header="My Open Tasks"
-                        subheader="Total tasks assigned to me"
-                        frameType="OneByOne"
-                        state="{= ${kpiModel>/MyOpenTasksCount} !== undefined ? 'Loaded' : 'Loading'}"
+                    <HBox
+                        class="statsCard statsCardBlue"
+                        busy="{kpiModel>/busy}"
                     >
-                        <TileContent unit="Tasks">
-                            <NumericContent
-                                value="{kpiModel>/MyOpenTasksCount}"
-                                icon="sap-icon://task"
-                                valueColor="Neutral"
-                                withMargin="false"
+                        <core:Icon
+                            src="sap-icon://task"
+                            class="statsCardIcon statsCardIconBlue"
+                        />
+                        <VBox class="statsCardContent">
+                            <Text
+                                text="{kpiModel>/MyOpenTasksCount}"
+                                class="statsCardValue statsCardValueBlue"
                             />
-                        </TileContent>
-                    </GenericTile>
+                            <Text text="My Open Tasks" />
+                        </VBox>
+                    </HBox>
 
-                    <!-- Card 2: Due Today (Warning) -->
-                    <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        header="Due Today"
-                        subheader="Tasks due today"
-                        frameType="OneByOne"
-                        state="{= ${kpiModel>/DueTodayCount} !== undefined ? 'Loaded' : 'Loading'}"
+                    <HBox
+                        class="statsCard statsCardYellow"
+                        busy="{kpiModel>/busy}"
                     >
-                        <TileContent unit="Tasks">
-                            <NumericContent
-                                value="{kpiModel>/DueTodayCount}"
-                                icon="sap-icon://appointment"
-                                valueColor="Critical"
-                                withMargin="false"
+                        <core:Icon
+                            src="sap-icon://appointment"
+                            class="statsCardIcon statsCardIconYellow"
+                        />
+                        <VBox class="statsCardContent">
+                            <Text
+                                text="{kpiModel>/DueTodayCount}"
+                                class="statsCardValue statsCardValueYellow"
                             />
-                        </TileContent>
-                    </GenericTile>
+                            <Text text="Due Today" />
+                        </VBox>
+                    </HBox>
 
-                    <!-- Card 3: Overdue Tasks (Error) -->
-                    <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        header="Overdue Tasks"
-                        subheader="Tasks past their due date"
-                        frameType="OneByOne"
-                        state="{= ${kpiModel>/MyOverdueCount} !== undefined ? 'Loaded' : 'Loading'}"
+                    <HBox
+                        class="statsCard statsCardRed"
+                        busy="{kpiModel>/busy}"
                     >
-                        <TileContent unit="Tasks">
-                            <NumericContent
-                                value="{kpiModel>/MyOverdueCount}"
-                                icon="sap-icon://alert"
-                                valueColor="Error"
-                                withMargin="false"
+                        <core:Icon
+                            src="sap-icon://alert"
+                            class="statsCardIcon statsCardIconRed"
+                        />
+                        <VBox class="statsCardContent">
+                            <Text
+                                text="{kpiModel>/MyOverdueCount}"
+                                class="statsCardValue statsCardValueRed"
                             />
-                        </TileContent>
-                    </GenericTile>
+                            <Text text="Overdue Tasks" />
+                        </VBox>
+                    </HBox>
                 </HBox>
-            </VBox>
+            </Panel>
 
             <!-- Section 2: Performance Overview -->
             <VBox class="sapUiMediumMargin">
@@ -107,45 +107,120 @@
                         </TileContent>
                     </GenericTile>
 
-                    <!-- Card: SLA Hit Rate Gauge -->
-                    <VBox class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
+                    <!-- Card: SLA Hit Rate Bullet Chart -->
+                    <VBox class="sapUiTinyMarginEnd sapUiTinyMarginBottom" width="54rem">
                         <Panel
                             headerText="SLA Hit Rate"
-                            class="sapUiNoContentPadding"
-                            width="11rem"
+                            class="sapUiNoContentPadding slaPanel"
+                            width="100%"
                         >
-                            <VBox alignItems="Center" class="sapUiSmallMargin">
-                                <micro:RadialMicroChart
-                                    percentage="{kpiAggregateModel>/slaHitRate}"
-                                    valueColor="{kpiAggregateModel>/slaColor}"
-                                    size="Responsive"
-                                />
-                                <ObjectStatus
-                                    text="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
-                                    state="{kpiAggregateModel>/slaState}"
-                                    class="sapUiSmallMarginTop"
-                                />
+                            <VBox class="sapUiSmallMargin">
+                                <HBox
+                                    width="100%"
+                                    alignItems="Center"
+                                    justifyContent="SpaceBetween"
+                                    class="slaChartRow"
+                                >
+                                    <VBox width="70%" class="slaBulletWrap">
+                                        <VBox
+                                            id="slaChartHoverArea"
+                                            class="slaLineChartWrap"
+                                        >
+                                            <HBox class="slaProgressMain">
+                                                <HBox class="slaProgressTrack" width="100%">
+                                                    <HBox
+                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
+                                                        class="slaProgressFill slaProgressFillGood"
+                                                        visible="{= ${kpiAggregateModel>/slaState} === 'Success'}"
+                                                    />
+                                                    <HBox
+                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
+                                                        class="slaProgressFill slaProgressFillWarning"
+                                                        visible="{= ${kpiAggregateModel>/slaState} === 'Warning'}"
+                                                    />
+                                                    <HBox
+                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
+                                                        class="slaProgressFill slaProgressFillError"
+                                                        visible="{= ${kpiAggregateModel>/slaState} === 'Error'}"
+                                                    />
+                                                    <HBox
+                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
+                                                        class="slaProgressFill slaProgressFillNeutral"
+                                                        visible="{= ${kpiAggregateModel>/slaState} === 'None'}"
+                                                    />
+                                                </HBox>
+                                            </HBox>
+
+                                            <HBox width="100%" class="slaBaseLine sapUiTinyMarginTop">
+                                                <HBox width="65%" class="slaBaseSegment slaBaseRed" />
+                                                <HBox width="15%" class="slaBaseSegment slaBaseYellow" />
+                                                <HBox width="20%" class="slaBaseSegment slaBaseGreen" />
+                                            </HBox>
+                                        </VBox>
+
+                                        <HBox width="100%" class="slaTickRow sapUiTinyMarginTop">
+                                            <HBox width="65%" class="slaTickSegment" />
+                                            <HBox width="15%" class="slaTickSegment" />
+                                            <HBox width="20%" class="slaTickSegment slaTickSegmentNoEnd" />
+                                        </HBox>
+
+                                        <HBox
+                                            width="100%"
+                                            class="slaScaleRow sapUiTinyMarginTop"
+                                        >
+                                            <HBox width="65%" justifyContent="SpaceBetween">
+                                                <Text text="0%" wrapping="false" />
+                                                <Text text="65%" wrapping="false" />
+                                            </HBox>
+                                            <HBox width="15%" justifyContent="End">
+                                                <Text text="80%" wrapping="false" />
+                                            </HBox>
+                                            <HBox width="20%" justifyContent="End">
+                                                <Text text="100%" wrapping="false" />
+                                            </HBox>
+                                        </HBox>
+
+                                    </VBox>
+
+                                    <VBox class="slaSideLegend sapUiSmallMarginBegin" width="18rem">
+                                        <HBox class="slaSideLegendItem sapUiTinyMarginBottom" alignItems="Center">
+                                            <core:Icon
+                                                src="sap-icon://stop"
+                                                color="#3fae2a"
+                                                class="slaLegendSwatch sapUiTinyMarginEnd"
+                                            />
+                                            <VBox>
+                                                <Text text="(≥80%): Running smoothly." class="slaLegendTitle" />
+                                            </VBox>
+                                        </HBox>
+                                        <HBox class="slaSideLegendItem sapUiTinyMarginBottom" alignItems="Center">
+                                            <core:Icon
+                                                src="sap-icon://stop"
+                                                color="#f2c037"
+                                                class="slaLegendSwatch sapUiTinyMarginEnd"
+                                            />
+                                            <VBox>
+                                                <Text text="(65-79%): Slowing down." class="slaLegendTitle" />
+                                            </VBox>
+                                        </HBox>
+                                        <HBox class="slaSideLegendItem" alignItems="Center">
+                                            <core:Icon
+                                                src="sap-icon://stop"
+                                                color="#e64a45"
+                                                class="slaLegendSwatch sapUiTinyMarginEnd"
+                                            />
+                                            <VBox>
+                                                <Text text="(&lt;65%): Underperforming" class="slaLegendTitle" />
+                                            </VBox>
+                                        </HBox>
+                                    </VBox>
+                                </HBox>
                             </VBox>
                         </Panel>
-
-                        <!-- Legend -->
-                        <VBox class="sapUiTinyMarginTop" width="11rem">
-                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
-                                <core:Icon src="sap-icon://circle-task-2" color="#2b7c2b" class="sapUiTinyMarginEnd" />
-                                <Text text="≥ 95% – Excellent" />
-                            </HBox>
-                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
-                                <core:Icon src="sap-icon://circle-task-2" color="#e78c07" class="sapUiTinyMarginEnd" />
-                                <Text text="80–94% – Moderate" />
-                            </HBox>
-                            <HBox alignItems="Center">
-                                <core:Icon src="sap-icon://circle-task-2" color="#bb0000" class="sapUiTinyMarginEnd" />
-                                <Text text="&lt; 80% – Low" />
-                            </HBox>
-                        </VBox>
                     </VBox>
                 </HBox>
             </VBox>
+
         </content>
         <footer>
             <Toolbar>

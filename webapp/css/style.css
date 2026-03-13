@@ -163,3 +163,124 @@ img.sapMSelectListItemIcon {
 .statsCardLabelGreen>span {
   color: var(--sapPositiveTextColor) !important;
 }
+
+/* ========== User Dashboard SLA Panel ========== */
+.slaPanel .sapMPanelContent {
+  padding: 1.25rem 1.5rem !important;
+}
+
+.slaScaleRow .sapMText {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.slaTickRow {
+  height: 0.5rem;
+}
+
+.slaTickSegment {
+  border-right: 1px solid var(--sapContent_ForegroundBorderColor);
+}
+
+.slaTickSegmentNoEnd {
+  border-right: 0;
+}
+
+.slaTickSegment:first-child {
+  border-left: 1px solid var(--sapContent_ForegroundBorderColor);
+}
+
+.slaLineChartWrap {
+  width: 100%;
+}
+
+.slaBaseLine {
+  height: 0.12rem;
+  border-radius: 0.08rem;
+  overflow: hidden;
+}
+
+.slaBaseSegment {
+  height: 100%;
+}
+
+.slaBaseRed {
+  background-color: #e64a45;
+}
+
+.slaBaseYellow {
+  background-color: #f2c037;
+}
+
+.slaBaseGreen {
+  background-color: #3fae2a;
+}
+
+.slaProgressMain {
+  width: 100%;
+}
+
+.slaProgressTrack {
+  height: 0.78rem;
+  background: var(--sapField_Background);
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+.slaProgressFill {
+  height: 100%;
+  border-radius: 0.3rem;
+}
+
+.slaProgressFillGood {
+  background: var(--sapPositiveElementColor);
+}
+
+.slaProgressFillWarning {
+  background: var(--sapCriticalElementColor);
+}
+
+.slaProgressFillError {
+  background: var(--sapNegativeElementColor);
+}
+
+.slaProgressFillNeutral {
+  background: var(--sapInformativeColor);
+}
+
+.slaLegend {
+  border-top: 1px solid var(--sapList_BorderColor);
+  padding-top: 1rem;
+}
+
+.slaLegendItem .sapMText {
+  font-size: 1.125rem;
+}
+
+.slaSideLegend {
+  justify-content: center;
+}
+
+.slaSideLegendItem {
+  min-height: 2rem;
+}
+
+.slaLegendSwatch {
+  font-size: 1.1rem !important;
+}
+
+.slaLegendTitle {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 1200px) {
+  .slaScaleRow .sapMText {
+    font-size: 0.875rem;
+  }
+
+  .slaLegendItem .sapMText,
+  .slaLegendTitle {
+    font-size: 1rem;
+  }
+}
