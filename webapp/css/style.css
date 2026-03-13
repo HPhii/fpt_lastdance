@@ -167,3 +167,261 @@ img.sapMSelectListItemIcon {
 .statsCardLabelGreen>span {
   color: var(--sapPositiveTextColor) !important;
 }
+
+/* ========== User Dashboard SLA Panel ========== */
+.slaPanel .sapMPanelContent {
+  padding: 1.25rem 1.5rem !important;
+}
+
+.slaScaleRow .sapMText {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.slaTickRow {
+  height: 0.5rem;
+}
+
+.slaTickSegment {
+  border-right: 1px solid var(--sapContent_ForegroundBorderColor);
+}
+
+.slaTickSegmentNoEnd {
+  border-right: 0;
+}
+
+.slaTickSegment:first-child {
+  border-left: 1px solid var(--sapContent_ForegroundBorderColor);
+}
+
+.slaLineChartWrap {
+  width: 100%;
+}
+
+.slaBaseLine {
+  height: 0.12rem;
+  border-radius: 0.08rem;
+  overflow: hidden;
+}
+
+.slaBaseSegment {
+  height: 100%;
+}
+
+.slaBaseRed {
+  background-color: #e64a45;
+}
+
+.slaBaseYellow {
+  background-color: #f2c037;
+}
+
+.slaBaseGreen {
+  background-color: #3fae2a;
+}
+
+.slaProgressMain {
+  width: 100%;
+}
+
+.slaProgressTrack {
+  height: 0.78rem;
+  background: var(--sapField_Background);
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+.slaProgressFill {
+  height: 100%;
+  border-radius: 0.3rem;
+}
+
+.slaProgressFillGood {
+  background: var(--sapPositiveElementColor);
+}
+
+.slaProgressFillWarning {
+  background: var(--sapCriticalElementColor);
+}
+
+.slaProgressFillError {
+  background: var(--sapNegativeElementColor);
+}
+
+.slaProgressFillNeutral {
+  background: var(--sapInformativeColor);
+}
+
+.slaLegend {
+  border-top: 1px solid var(--sapList_BorderColor);
+  padding-top: 1rem;
+}
+
+.slaLegendItem .sapMText {
+  font-size: 1.125rem;
+}
+
+.slaSideLegend {
+  justify-content: center;
+}
+
+.slaSideLegendItem {
+  min-height: 2rem;
+}
+
+.slaLegendSwatch {
+  font-size: 1.1rem !important;
+}
+
+.slaLegendTitle {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 1200px) {
+  .slaScaleRow .sapMText {
+    font-size: 0.875rem;
+  }
+
+  .slaLegendItem .sapMText,
+  .slaLegendTitle {
+    font-size: 1rem;
+  }
+}
+
+/* ========== Avg Processing Time Card ========== */
+.avgTimeCard {
+  border: 1px solid var(--sapList_BorderColor);
+  border-radius: 0.5rem;
+  background: var(--sapBaseColor);
+  padding: 1rem 1.25rem;
+  min-width: 17rem;
+  width: 17rem;
+  box-sizing: border-box;
+}
+
+.avgTimeCardHeader {
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.avgTimeHeaderIcon {
+  font-size: 1.125rem !important;
+  color: var(--sapInformativeColor) !important;
+}
+
+.avgTimeHeaderTitle > span {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: var(--sapTitleColor) !important;
+}
+
+.avgTimeValueWrap {
+  margin-bottom: 1rem;
+}
+
+.avgTimeValueText > span {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  color: var(--sapTitleColor) !important;
+  line-height: 1 !important;
+}
+
+.avgTimeUnitText > span {
+  font-size: 1rem !important;
+  color: var(--sapContent_LabelColor) !important;
+  padding-left: 0.25rem;
+}
+
+.avgTimeSublabel > span {
+  font-size: 0.75rem !important;
+  color: var(--sapContent_LabelColor) !important;
+  margin-top: 0.125rem;
+}
+
+.avgTimeGaugeWrap {
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.avgTimeProgressTrack {
+  height: 0.78rem;
+  background: var(--sapField_Background);
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+.avgTimeProgressFill {
+  height: 100%;
+  border-radius: 0.3rem;
+}
+
+.avgTimeProgressFillGood {
+  background: var(--sapPositiveElementColor);
+}
+
+.avgTimeProgressFillWarn {
+  background: var(--sapCriticalElementColor);
+}
+
+.avgTimeProgressFillBad {
+  background: var(--sapNegativeElementColor);
+}
+
+.avgTimeBaseLine {
+  height: 0.12rem;
+  border-radius: 0.08rem;
+  overflow: hidden;
+}
+
+.avgTimeBaseSegment {
+  height: 100%;
+}
+
+.avgTimeBaseGreen  { background-color: #3fae2a; }
+.avgTimeBaseYellow { background-color: #f2c037; }
+.avgTimeBaseRed    { background-color: #e64a45; }
+
+.avgTimeScaleRow .sapMText {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: var(--sapContent_LabelColor) !important;
+}
+
+.avgTimeStatusRow {
+  margin-top: 0.25rem;
+}
+
+.avgTimeStatusBadge {
+  gap: 0.3rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 1rem;
+}
+
+.avgTimeStatusBadgeGood { background: var(--sapSuccessBackground); }
+.avgTimeStatusBadgeWarn { background: var(--sapWarningBackground); }
+.avgTimeStatusBadgeBad  { background: var(--sapErrorBackground); }
+
+.avgTimeStatusBadgeGood .sapUiIcon,
+.avgTimeStatusBadgeGood .sapMText > span {
+  color: var(--sapPositiveTextColor) !important;
+}
+
+.avgTimeStatusBadgeWarn .sapUiIcon,
+.avgTimeStatusBadgeWarn .sapMText > span {
+  color: var(--sapCriticalTextColor) !important;
+}
+
+.avgTimeStatusBadgeBad .sapUiIcon,
+.avgTimeStatusBadgeBad .sapMText > span {
+  color: var(--sapNegativeTextColor) !important;
+}
+
+.avgTimeStatusIcon {
+  font-size: 0.8rem !important;
+}
+
+.avgTimeStatusText > span {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+}
