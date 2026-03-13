@@ -5,6 +5,9 @@
     xmlns:f="sap.f"
     xmlns:core="sap.ui.core"
     xmlns:micro="sap.suite.ui.microchart"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:vizData="sap.viz.ui5.data"
+    xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds"
     displayBlock="true"
 >
     <Page title="My KPI Dashboard">
@@ -81,31 +84,107 @@
             </Panel>
 
             <!-- Section 2: Performance Overview -->
-            <VBox class="sapUiMediumMargin">
-                <Title text="Performance Overview" class="sapUiSmallMarginBottom" />
-
+            <Panel
+                class="sapUiMediumMargin"
+                headerText="Performance Overview"
+                width="98.5%"
+            >
                 <HBox
                     wrap="Wrap"
                     renderType="Bare"
-                    class="sapUiTinyMarginTop"
+                    class="sapUiSmallMargin sapUiTinyMarginTop"
                 >
-                    <!-- Card: My Avg Processing Time -->
-                    <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        header="My Avg Processing Time"
-                        subheader="Average time to complete a task"
-                        frameType="OneByOne"
-                        state="{= ${kpiAggregateModel>/loading} ? 'Loading' : 'Loaded'}"
+                    <!-- Card: My Avg Processing Time (redesigned) -->
+                    <VBox
+                        class="avgTimeCard sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        busy="{kpiAggregateModel>/loading}"
                     >
-                        <TileContent unit="Days per task">
-                            <NumericContent
-                                value="{kpiAggregateModel>/avgProcessingTime}"
-                                icon="sap-icon://history"
-                                valueColor="Neutral"
-                                withMargin="false"
-                            />
-                        </TileContent>
-                    </GenericTile>
+                        <!-- Header -->
+                        <HBox class="avgTimeCardHeader" alignItems="Center">
+                            <core:Icon src="sap-icon://history" class="avgTimeHeaderIcon" />
+                            <Text text="My Avg Processing Time" class="avgTimeHeaderTitle" />
+                        </HBox>
+
+                        <!-- Value -->
+                        <VBox class="avgTimeValueWrap" alignItems="Center">
+                            <HBox alignItems="Baseline" justifyContent="Center">
+                                <Text text="{kpiAggregateModel>/avgProcessingTime}" class="avgTimeValueText" />
+                                <Text text=" days" class="avgTimeUnitText" />
+                            </HBox>
+                            <Text text="per task completed" class="avgTimeSublabel" />
+                        </VBox>
+
+                        <!-- Gauge -->
+                        <VBox class="avgTimeGaugeWrap">
+                            <!-- Progress fill (state-coloured) -->
+                            <HBox class="avgTimeProgressTrack" width="100%">
+                                <HBox
+                                    width="{kpiAggregateModel>/avgTimeMeterPct}"
+                                    class="avgTimeProgressFill avgTimeProgressFillGood"
+                                    visible="{= ${kpiAggregateModel>/avgTimeState} === 'good'}"
+                                />
+                                <HBox
+                                    width="{kpiAggregateModel>/avgTimeMeterPct}"
+                                    class="avgTimeProgressFill avgTimeProgressFillWarn"
+                                    visible="{= ${kpiAggregateModel>/avgTimeState} === 'warn'}"
+                                />
+                                <HBox
+                                    width="{kpiAggregateModel>/avgTimeMeterPct}"
+                                    class="avgTimeProgressFill avgTimeProgressFillBad"
+                                    visible="{= ${kpiAggregateModel>/avgTimeState} === 'bad'}"
+                                />
+                            </HBox>
+
+                            <!-- Zone reference bar -->
+                            <HBox width="100%" class="avgTimeBaseLine sapUiTinyMarginTop">
+                                <HBox width="33%" class="avgTimeBaseSegment avgTimeBaseGreen" />
+                                <HBox width="34%" class="avgTimeBaseSegment avgTimeBaseYellow" />
+                                <HBox width="33%" class="avgTimeBaseSegment avgTimeBaseRed" />
+                            </HBox>
+
+                            <!-- Scale labels -->
+                            <HBox width="100%" class="avgTimeScaleRow sapUiTinyMarginTop">
+                                <HBox width="33%" justifyContent="SpaceBetween">
+                                    <Text text="0d" wrapping="false" />
+                                    <Text text="5d" wrapping="false" />
+                                </HBox>
+                                <HBox width="34%" justifyContent="End">
+                                    <Text text="10d" wrapping="false" />
+                                </HBox>
+                                <HBox width="33%" justifyContent="End">
+                                    <Text text="15d" wrapping="false" />
+                                </HBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Status badge -->
+                        <HBox class="avgTimeStatusRow" alignItems="Center" justifyContent="Center">
+                            <HBox
+                                visible="{= ${kpiAggregateModel>/avgTimeState} === 'good'}"
+                                alignItems="Center"
+                                class="avgTimeStatusBadge avgTimeStatusBadgeGood"
+                            >
+                                <core:Icon src="sap-icon://accept" class="avgTimeStatusIcon" />
+                                <Text text="Within target (≤ 5 days)" class="avgTimeStatusText" />
+                            </HBox>
+                            <HBox
+                                visible="{= ${kpiAggregateModel>/avgTimeState} === 'warn'}"
+                                alignItems="Center"
+                                class="avgTimeStatusBadge avgTimeStatusBadgeWarn"
+                            >
+                                <core:Icon src="sap-icon://alert" class="avgTimeStatusIcon" />
+                                <Text text="Moderate (5–10 days)" class="avgTimeStatusText" />
+                            </HBox>
+                            <HBox
+                                visible="{= ${kpiAggregateModel>/avgTimeState} === 'bad'}"
+                                alignItems="Center"
+                                class="avgTimeStatusBadge avgTimeStatusBadgeBad"
+                            >
+                                <core:Icon src="sap-icon://status-negative" class="avgTimeStatusIcon" />
+                                <Text text="Needs attention (&gt; 10 days)" class="avgTimeStatusText" />
+                            </HBox>
+                        </HBox>
+                    </VBox>
 
                     <!-- Card: SLA Hit Rate Bullet Chart -->
                     <VBox class="sapUiTinyMarginEnd sapUiTinyMarginBottom" width="54rem">
@@ -219,7 +298,118 @@
                         </Panel>
                     </VBox>
                 </HBox>
-            </VBox>
+            </Panel>
+
+            <!-- Section 3: Productivity Trend -->
+            <Panel
+                class="sapUiMediumMargin productivityPanel"
+                headerText="Productivity Trend"
+                width="98.5%"
+            >
+                <VBox class="sapUiSmallMargin">
+                    <viz:VizFrame
+                        id="productivityVizFrame"
+                        vizType="timeseries_line"
+                        width="100%"
+                        height="380px"
+                        busy="{productivityModel>/loading}"
+                    >
+                        <viz:dataset>
+                            <vizData:FlattenedDataset data="{productivityModel>/data}">
+                                <vizData:dimensions>
+                                    <vizData:DimensionDefinition
+                                        name="Completion Date"
+                                        value="{CompletionDate}"
+                                        dataType="date"
+                                    />
+                                </vizData:dimensions>
+                                <vizData:measures>
+                                    <vizData:MeasureDefinition
+                                        name="Completed Tasks"
+                                        value="{CompletedCount}"
+                                    />
+                                    <vizData:MeasureDefinition
+                                        name="Avg Processing Time"
+                                        value="{AvgProcessingTime}"
+                                    />
+                                </vizData:measures>
+                            </vizData:FlattenedDataset>
+                        </viz:dataset>
+                        <viz:feeds>
+                            <vizFeeds:FeedItem
+                                uid="timeAxis"
+                                type="Dimension"
+                                values="Completion Date"
+                            />
+                            <vizFeeds:FeedItem
+                                uid="valueAxis"
+                                type="Measure"
+                                values="Completed Tasks"
+                            />
+                            <vizFeeds:FeedItem
+                                uid="valueAxis2"
+                                type="Measure"
+                                values="Avg Processing Time"
+                            />
+                        </viz:feeds>
+                    </viz:VizFrame>
+                </VBox>
+            </Panel>
+
+            <!-- Section 4: Workflow Workload Distribution -->
+            <Panel
+                class="sapUiMediumMargin workflowTypePanel"
+                headerText="Workflow Workload Distribution"
+                width="98.5%"
+            >
+                <VBox class="sapUiSmallMargin">
+                    <viz:VizFrame
+                        id="workflowTypeVizFrame"
+                        vizType="heatmap"
+                        width="100%"
+                        height="300px"
+                        busy="{workflowTypeModel>/loading}"
+                    >
+                        <viz:dataset>
+                            <vizData:FlattenedDataset data="{workflowTypeModel>/data}">
+                                <vizData:dimensions>
+                                    <vizData:DimensionDefinition
+                                        name="Document Type"
+                                        value="{Type}"
+                                    />
+                                    <vizData:DimensionDefinition
+                                        name="Category"
+                                        value="{Category}"
+                                    />
+                                </vizData:dimensions>
+                                <vizData:measures>
+                                    <vizData:MeasureDefinition
+                                        name="Completed Tasks"
+                                        value="{Count}"
+                                    />
+                                </vizData:measures>
+                            </vizData:FlattenedDataset>
+                        </viz:dataset>
+                        <viz:feeds>
+                            <vizFeeds:FeedItem
+                                uid="categoryAxis"
+                                type="Dimension"
+                                values="Document Type"
+                            />
+                            <vizFeeds:FeedItem
+                                uid="categoryAxis2"
+                                type="Dimension"
+                                values="Category"
+                            />
+                            <vizFeeds:FeedItem
+                                uid="color"
+                                type="Measure"
+                                values="Completed Tasks"
+                            />
+                        </viz:feeds>
+                    </viz:VizFrame>
+                </VBox>
+            </Panel>
 
         </content>
         <footer>
