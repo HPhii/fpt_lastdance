@@ -71,7 +71,7 @@
         "settings": {
           "annotations": [],
           "localUri": "localService/reportAnalyticsService/metadata.xml",
-          "odataVersion": "2.0",
+          "odataVersion": "4.0",
           "defaultBindingMode": "OneWay"
         }
       },

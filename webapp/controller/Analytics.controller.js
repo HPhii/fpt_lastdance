@@ -87,22 +87,22 @@ sap.ui.define(
               if (!mGrouped[obj]) {
                 mGrouped[obj] = {
                   BusinessObject: obj,
-                  "0-2 Days": 0,
-                  "3-7 Days": 0,
-                  ">7 Days": 0,
+                  ZeroToTwoDays: 0,
+                  ThreeToSevenDays: 0,
+                  OverSevenDays: 0,
                 };
               }
 
               if (bucket && bucket.includes("0-2")) {
-                mGrouped[obj]["0-2 Days"] = count;
+                mGrouped[obj]["ZeroToTwoDays"] = count;
               }
 
               if (bucket && bucket.includes("3-7")) {
-                mGrouped[obj]["3-7 Days"] = count;
+                mGrouped[obj]["ThreeToSevenDays"] = count;
               }
 
               if (bucket && bucket.includes(">7")) {
-                mGrouped[obj][">7 Days"] = count;
+                mGrouped[obj]["OverSevenDays"] = count;
               }
             });
 
@@ -133,8 +133,43 @@ sap.ui.define(
           success: function (oData) {
             var aRaw = oData.results || [];
 
+            // Thu thập các giá trị hợp lệ để loại trừ "N/A" và tạo đủ các điểm giao cắt, tránh lỗi "No value"
+            var aPriorities = [];
+            var aBuckets = [];
+            var mData = {};
+
+            aRaw.forEach(function (item) {
+              var p = item.PriorityLevel || "";
+              var b = item.AgingBucket || "";
+              var c = Number(item.IsOpenCount) || 0;
+
+              // Bỏ qua các dòng có nội dung N/A
+              if (b.indexOf("N/A") !== -1 || p.indexOf("N/A") !== -1 || b === "" || p === "") {
+                return;
+              }
+
+              if (aPriorities.indexOf(p) === -1) aPriorities.push(p);
+              if (aBuckets.indexOf(b) === -1) aBuckets.push(b);
+
+              var key = p + "|||" + b;
+              mData[key] = (mData[key] || 0) + c;
+            });
+
+            // Tạo list data hoàn chỉnh cho tất cả các trục (nếu không có data thì mặc định là 0)
+            var aHeatData = [];
+            aPriorities.forEach(function (p) {
+              aBuckets.forEach(function (b) {
+                var key = p + "|||" + b;
+                aHeatData.push({
+                  PriorityLevel: p,
+                  AgingBucket: b,
+                  IsOpenCount: mData[key] || 0
+                });
+              });
+            });
+
             var oJSON = new JSONModel({
-              HeatData: aRaw,
+              HeatData: aHeatData,
             });
 
             oView.setModel(oJSON, "bottleneckModel");

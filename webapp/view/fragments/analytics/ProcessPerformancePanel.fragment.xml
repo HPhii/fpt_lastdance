@@ -124,7 +124,7 @@
     vizProperties="{
         title:{
             visible:true,
-            text:'Heatmap - Task Cycle Time by Business Object'
+            text:'Task Cycle Time by Business Object'
         }
     }"
 >
