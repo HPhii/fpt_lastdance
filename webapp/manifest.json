@@ -301,6 +301,11 @@
           "pattern": "substitution",
           "name": "RouteSubstitution",
           "target": "TargetSubstitution"
+        },
+        {
+          "pattern": "userdashboard",
+          "name": "RouteUserDashboard",
+          "target": "TargetUserDashboard"
         }
       ],
       "targets": {
@@ -332,6 +337,11 @@
         "TargetSubstitution": {
           "viewId": "Substitution",
           "viewName": "Substitution",
+          "controlAggregation": "beginColumnPages"
+        },
+        "TargetUserDashboard": {
+          "viewId": "UserDashboard",
+          "viewName": "UserDashboard",
           "controlAggregation": "beginColumnPages"
         }
       }

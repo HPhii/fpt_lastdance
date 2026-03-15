@@ -29,7 +29,33 @@ sap.ui.define([
                 userName: ""
             });
 
+            let oUserIDModel = new JSONModel({
+                users: [
+                    {
+                        userID: "DEV-137",
+                        username: "Huynh Van Nghia"
+                    },
+                    {
+                        userID: "DEV-138",
+                        username: "Trinh Hieu Phi"
+                    },
+                    {
+                        userID: "DEV-123",
+                        username: "Tang Dinh Khoi"
+                    },
+                    {
+                        userID: "DEV-107",
+                        username: "Nguyen Huu An"
+                    },
+                    {
+                        userID: "DEV-111",
+                        username: "Tran Phu Khang"
+                    }
+                ]
+            });
+
             this.getView().setModel(oUserRolesModel, "userRole");
+            this.getView().setModel(oUserIDModel, "defaultUser");
 
             this._fetchUserRoles();
         },

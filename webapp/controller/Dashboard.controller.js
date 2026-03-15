@@ -47,6 +47,11 @@ sap.ui.define([
       this.getOwnerComponent().getRouter().navTo("RouteSubstitution");
     },
 
+    onNavToUserDashboard: function ()
+    {
+      this.getOwnerComponent().getRouter().navTo("RouteUserDashboard");
+    },
+
     onNavToRoleManagement: function ()
     {
       var oView = this.getView();

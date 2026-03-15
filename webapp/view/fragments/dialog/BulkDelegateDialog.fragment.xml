@@ -21,8 +21,17 @@
                     placeholder="{i18n>userInputPlaceholder}"
                     valueHelpRequest=".onOpenUserSearchHelp"
                     showValueHelp="true"
+                    showSuggestion="true"
                     class="sapUiSmallMarginBottom"
-                />
+                    suggestionItems="{defaultUser>/users}"
+                >
+                    <suggestionItems>
+                        <core:Item
+                            key="{defaultUser>userID}"
+                            text="{defaultUser>userID}"
+                        />
+                    </suggestionItems>
+                </Input>
 
                 <Label
                     labelFor="multiInput"

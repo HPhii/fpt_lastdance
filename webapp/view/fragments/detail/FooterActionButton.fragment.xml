@@ -2,11 +2,14 @@
     xmlns:m="sap.m"
     xmlns:core="sap.ui.core"
 >
-    <m:OverflowToolbar>
+    <m:OverflowToolbar busy="{detailView>/footerBusy}">
         <m:ToolbarSpacer />
-        <m:HBox items="{_DecisionOptions}">
+        <m:HBox
+            items="{_DecisionOptions}"
+            visible="{= %{TechnicalStatus} === 'READY' ? false : true}"
+        >
             <m:Button
-                class="sapUiTinyMarginEnd"
+                class="sapUiTinyMarginBegin"
                 text="{DecisionText}"
                 type="Ghost"
                 press=".onDecisionAction"

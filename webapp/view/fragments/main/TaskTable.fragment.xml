@@ -22,45 +22,45 @@
         }"
     >
         <headerToolbar>
-            <Toolbar width="100%">
+            <OverflowToolbar width="100%">
                 <Title
                     text="{= !${worklistView>/tableTitle} ? ${i18n>tableHeaderTitle} : ${worklistView>/tableTitle} }"
                     level="H2"
                 />
                 <ToolbarSpacer />
-                <Button
+                <OverflowToolbarButton
                     icon="sap-icon://sort"
                     press=".onSort"
                     tooltip="{i18n>tooltipHeaderSort}"
                 />
-                <Button
+                <OverflowToolbarButton
                     icon="sap-icon://filter"
                     press=".onFilter"
                     tooltip="{i18n>tooltipHeaderFilter}"
                 />
-                <Button
+                <OverflowToolbarButton
                     icon="sap-icon://group-2"
                     press=".onGroup"
                     tooltip="{i18n>tooltipHeaderGroup}"
                 />
-                <Button
+                <OverflowToolbarButton
                     icon="sap-icon://action-settings"
                     press=".onCustomColumn"
                     tooltip="Settings"
                 />
-                <Button
+                <OverflowToolbarButton
                     text="{i18n>tableHeaderSelectAll}"
                     press=".onSelectAll"
                     icon="sap-icon://multiselect-all"
                     visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
                 />
-                <Button
+                <OverflowToolbarButton
                     text="{i18n>tableHeaderDeselectAll}"
                     press=".onDeselectAll"
                     icon="sap-icon://multiselect-none"
                     visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
                 />
-                <Button
+                <OverflowToolbarButton
                     icon="sap-icon://multi-select"
                     press=".onToggleMultiSelect"
                     tooltip="Toggle Multi-Select Mode"
@@ -72,8 +72,16 @@
                     placeholder="{i18n>tableHeaderSearchPlaceholder}"
                     class="sapUiSmallMargin"
                     search=".onSearch"
-                />
-            </Toolbar>
+                >
+                    <layoutData>
+                        <OverflowToolbarLayoutData
+                            maxWidth="300px"
+                            shrinkable="true"
+                            priority="NeverOverflow"
+                        />
+                    </layoutData>
+                </SearchField>
+            </OverflowToolbar>
         </headerToolbar>
         <columns>
             <Column
@@ -171,10 +179,17 @@
                 vAlign="Middle"
             >
                 <cells>
-                    <ObjectIdentifier
-                        title="{WorkItemText}"
-                        text="{TaskText}"
-                    />
+                    <VBox>
+                        <ObjectIdentifier
+                            title="{WorkItemText}"
+                            text="{TaskText}"
+                        />
+                        <Text
+                            class="sapUiTextItalic"
+                            visible="{worklistView>/columns/userSubstitutedBy}"
+                            text="{= ${i18n>columnTaskUserSubstitutedBy} + ' ' + (%{AssignedUserName} || %{UserSubstitutedBy})}"
+                        />
+                    </VBox>
                     <Text text="{TaskID}" />
                     <Text text="{WorkItemID}" />
                     <ObjectIdentifier text="{CreationDate}" />

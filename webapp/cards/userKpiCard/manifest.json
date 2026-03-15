@@ -1,0 +1,7 @@
+"libs": {
+  "sap.viz": {},
+  "sap.m": {},
+  "sap.ui.core": {},
+  "sap.f": {},
+  "sap.ui.integration": {}
+}
