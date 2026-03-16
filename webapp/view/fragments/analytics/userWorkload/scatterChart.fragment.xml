@@ -1,0 +1,172 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
+>
+    <VBox>
+        <OverflowToolbar style="Clear">
+            <ToolbarSpacer />
+            <Button
+                icon="sap-icon://zoom-in"
+                tooltip="Zoom In"
+                type="Transparent"
+                press="onChartZoomIn"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="CycleTimeScatterChart"
+                    />
+                </customData>
+            </Button>
+            <Button
+                icon="sap-icon://zoom-out"
+                tooltip="Zoom Out"
+                type="Transparent"
+                press="onChartZoomOut"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="CycleTimeScatterChart"
+                    />
+                </customData>
+            </Button>
+            <ToolbarSeparator />
+            <Button
+                icon="sap-icon://filter"
+                tooltip="Filter"
+                type="Transparent"
+                press="onChartOpenFilter"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="CycleTimeScatterChart"
+                    />
+                </customData>
+            </Button>
+            <Button
+                icon="sap-icon://full-screen"
+                tooltip="Toggle Full Screen"
+                type="Transparent"
+                press="onChartToggleFullScreen"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="CycleTimeScatterChart"
+                    />
+                </customData>
+            </Button>
+            <!-- <ToolbarSeparator />
+                    <ToggleButton
+                        id="CycleTimeRangeBtn"
+                        icon="sap-icon://multiselect-all"
+                        tooltip="Select Range"
+                        type="Transparent"
+                        press="onChartSelectRange"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="CycleTimeScatterChart"
+                            />
+                        </customData>
+                    </ToggleButton>
+                    <Button
+                        icon="sap-icon://clear-filter"
+                        tooltip="Clear Filter"
+                        type="Transparent"
+                        press="onChartClearFilter"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="CycleTimeScatterChart"
+                            />
+                        </customData>
+                    </Button> -->
+        </OverflowToolbar>
+        <viz:VizFrame
+            id="CycleTimeScatterChart"
+            uiConfig="{applicationSet:'fiori'}"
+            class="sapUiSmallMargin"
+            width="100%"
+            vizType='scatter'
+            vizProperties="{
+                plotArea: {
+                    dataLabel: {
+                        visible: true,
+                        type: 'value',
+                        hideWhenOverlap: true
+                    },
+                    colorPalette: ['#5899DA','#E8743B','#19A979','#ED4A7B','#945ECF','#13A4B4','#525DF4','#BF399E','#6C8893','#EE6868','#2F6497'],
+                    isScrollable: true
+                },
+                interaction: {
+                    zoom: { enablement: 'enabled' },
+                    selectability: { mode: 'multiple' }
+                },
+                legend: {
+                    visible: true
+                },
+                title: {
+                    visible: true
+                }
+            }"
+        >
+            <viz:dataset>
+                <viz.data:FlattenedDataset
+                    data="{
+                        path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
+                        parameters : {
+                            $select: 'ActualAgent,IsCompletedCount,CycleTimeDays',
+                            $filter: 'ActualAgent ne \'Unassigned\''
+                        }
+                    }"
+                >
+                    <viz.data:dimensions>
+                        <viz.data:DimensionDefinition
+                            name="Agent"
+                            value="{ActualAgent}"
+                        />
+                    </viz.data:dimensions>
+                    <viz.data:measures>
+                        <viz.data:MeasureDefinition
+                            name="Completed"
+                            value="{IsCompletedCount}"
+                        />
+                        <viz.data:MeasureDefinition
+                            name="Days"
+                            value="{CycleTimeDays}"
+                        />
+                    </viz.data:measures>
+                </viz.data:FlattenedDataset>
+            </viz:dataset>
+
+            <viz:feeds>
+                <viz.feeds:FeedItem
+                    uid="valueAxis"
+                    type="Measure"
+                    values="Completed"
+                />
+                <viz.feeds:FeedItem
+                    uid="valueAxis2"
+                    type="Measure"
+                    values="Days"
+                />
+                <viz.feeds:FeedItem
+                    uid="color"
+                    type="Dimension"
+                    values="Agent"
+                />
+            </viz:feeds>
+            <viz:dependents>
+                <viz:Popover id="CycleTimePopover" />
+            </viz:dependents>
+        </viz:VizFrame>
+    </VBox>
+</core:FragmentDefinition>

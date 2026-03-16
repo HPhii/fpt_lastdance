@@ -1,0 +1,75 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog
+        id="chartFilterDialog"
+        title="Filter Data"
+        contentHeight="auto"
+        contentWidth="20rem"
+        draggable="true"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <items>
+                    <Label
+                        text="Agent"
+                        labelFor="chartFilterAgentInput"
+                    />
+                    <MultiInput
+                        width="100%"
+                        id="chartFilterAgentInput"
+                        suggestionItems="{ 
+                        path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
+                            parameters : {
+                                $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
+                                $filter: 'ActualAgent ne \'Unassigned\''
+                            }
+                        }"
+                        placeholder="{i18n>tasksMultiInputPlaceholder}"
+                    >
+                        <suggestionItems>
+                            <core:Item
+                                key="{workloadAnalytics>ActualAgent}"
+                                text="{workloadAnalytics>ActualAgent}"
+                            />
+                        </suggestionItems>
+                    </MultiInput>
+
+                    <Label
+                        text="Open tasks (&gt;=)"
+                        labelFor="chartFilterOpenInput"
+                    />
+                    <Input
+                        id="chartFilterOpenInput"
+                        placeholder="Min open tasks"
+                        type="Number"
+                    />
+
+                    <Label
+                        text="Completed tasks (&gt;=)"
+                        labelFor="chartFilterCompletedInput"
+                    />
+                    <Input
+                        id="chartFilterCompletedInput"
+                        placeholder="Min completed tasks"
+                        type="Number"
+                    />
+                </items>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button
+                text="Apply"
+                type="Emphasized"
+                press=".onApplyChartFilter"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                text="Cancel"
+                press=".onCancelChartFilter"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

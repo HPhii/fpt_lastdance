@@ -34,14 +34,6 @@
                 type="XML"
             />
 
-            <!-- <Panel>
-                <card:Card
-                    manifest="./cards/calendarCard/manifest.json"
-                    width="400px"
-                    height="auto"
-                />
-                </Panel> -->
-
             <!-- Task Status &amp; Priority Charts -->
             <Panel>
                 <VBox>

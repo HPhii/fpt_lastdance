@@ -1,0 +1,201 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
+>
+    <VBox>
+        <!-- Chart Toolbar -->
+        <OverflowToolbar style="Clear">
+            <ToolbarSpacer />
+            <Button
+                icon="sap-icon://zoom-in"
+                tooltip="Zoom In"
+                type="Transparent"
+                press="onChartZoomIn"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="OpenCompletedColumnChart"
+                    />
+                </customData>
+            </Button>
+            <Button
+                icon="sap-icon://zoom-out"
+                tooltip="Zoom Out"
+                type="Transparent"
+                press="onChartZoomOut"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="OpenCompletedColumnChart"
+                    />
+                </customData>
+            </Button>
+            <ToolbarSeparator />
+            <Button
+                icon="sap-icon://filter"
+                tooltip="Filter"
+                type="Transparent"
+                press="onChartOpenFilter"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="OpenCompletedColumnChart"
+                    />
+                </customData>
+            </Button>
+            <Button
+                icon="sap-icon://full-screen"
+                tooltip="Toggle Full Screen"
+                type="Transparent"
+                press="onChartToggleFullScreen"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="OpenCompletedColumnChart"
+                    />
+                </customData>
+            </Button>
+        </OverflowToolbar>
+
+        <!-- VizFrame -->
+        <viz:VizFrame
+            id="OpenCompletedColumnChart"
+            uiConfig="{applicationSet:'fiori'}"
+            class="sapUiSmallMargin"
+            width="100%"
+            vizType='column'
+            vizProperties="{
+                interaction: {
+                    zoom: { enablement: 'enabled' },
+                    selectability: { mode: 'single' }
+                },
+                plotArea: {
+                    dataLabel: { visible: true },
+                    isScrollable: true,
+                    colorPalette: ['#E78C07','#2B7C2B']
+                },
+                categoryAxis: {
+                    title: { visible: true },
+                    layout: {
+                    maxVisibleCount: 50
+                    }
+                },
+                valueAxis: {
+                    title: { visible: true }
+                },
+                legend: {
+                    visible: true
+                },
+                title: {
+                    visible: true
+                }
+            }"
+        >
+            <viz:dataset>
+                <viz.data:FlattenedDataset
+                    data="{
+                        path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
+                        parameters : {
+                            $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
+                            $filter: 'ActualAgent ne \'Unassigned\''
+                        }
+                    }"
+                >
+                    <viz.data:dimensions>
+                        <viz.data:DimensionDefinition
+                            name="Agent"
+                            value="{ActualAgent}"
+                        />
+                    </viz.data:dimensions>
+                    <viz.data:measures>
+                        <viz.data:MeasureDefinition
+                            name="Open"
+                            value="{IsOpenCount}"
+                        />
+                        <viz.data:MeasureDefinition
+                            name="Completed"
+                            value="{IsCompletedCount}"
+                        />
+                    </viz.data:measures>
+                </viz.data:FlattenedDataset>
+            </viz:dataset>
+
+            <viz:feeds>
+                <viz.feeds:FeedItem
+                    id='valueAxisFeed'
+                    uid="valueAxis"
+                    type="Measure"
+                    values="Open,Completed"
+                />
+                <viz.feeds:FeedItem
+                    id='categoryAxisFeed'
+                    uid="categoryAxis"
+                    type="Dimension"
+                    values="Agent"
+                />
+            </viz:feeds>
+            <viz:dependents>
+                <viz:Popover id="OpenCompletedPopover" />
+            </viz:dependents>
+        </viz:VizFrame>
+
+        <!-- VizSlider -->
+        <viz:VizSlider
+            id="OpenCompletedSlider"
+            uiConfig="{applicationSet:'fiori'}"
+            height="70px"
+            width="100%"
+            vizType='column'
+        >
+            <viz:dataset>
+                <viz.data:FlattenedDataset
+                    data="{
+                        path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
+                        parameters : {
+                            $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
+                            $filter: 'ActualAgent ne \'Unassigned\''
+                        }
+                    }"
+                >
+                    <viz.data:dimensions>
+                        <viz.data:DimensionDefinition
+                            name="Agent"
+                            value="{ActualAgent}"
+                            dataType="string"
+                        />
+                    </viz.data:dimensions>
+                    <viz.data:measures>
+                        <viz.data:MeasureDefinition
+                            name="Open"
+                            value="{IsOpenCount}"
+                        />
+                        <viz.data:MeasureDefinition
+                            name="Completed"
+                            value="{IsCompletedCount}"
+                        />
+                    </viz.data:measures>
+                </viz.data:FlattenedDataset>
+            </viz:dataset>
+
+            <viz:feeds>
+                <viz.feeds:FeedItem
+                    uid="valueAxis"
+                    type="Measure"
+                    values="Open,Completed"
+                />
+                <viz.feeds:FeedItem
+                    uid="categoryAxis"
+                    type="Dimension"
+                    values="Agent"
+                />
+            </viz:feeds>
+        </viz:VizSlider>
+    </VBox>
+</core:FragmentDefinition>

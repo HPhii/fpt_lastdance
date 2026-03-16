@@ -310,7 +310,7 @@ img.sapMSelectListItemIcon {
   color: var(--sapInformativeColor) !important;
 }
 
-.avgTimeHeaderTitle > span {
+.avgTimeHeaderTitle>span {
   font-size: 0.875rem !important;
   font-weight: 600 !important;
   color: var(--sapTitleColor) !important;
@@ -320,20 +320,20 @@ img.sapMSelectListItemIcon {
   margin-bottom: 1rem;
 }
 
-.avgTimeValueText > span {
+.avgTimeValueText>span {
   font-size: 2.5rem !important;
   font-weight: 700 !important;
   color: var(--sapTitleColor) !important;
   line-height: 1 !important;
 }
 
-.avgTimeUnitText > span {
+.avgTimeUnitText>span {
   font-size: 1rem !important;
   color: var(--sapContent_LabelColor) !important;
   padding-left: 0.25rem;
 }
 
-.avgTimeSublabel > span {
+.avgTimeSublabel>span {
   font-size: 0.75rem !important;
   color: var(--sapContent_LabelColor) !important;
   margin-top: 0.125rem;
@@ -378,9 +378,17 @@ img.sapMSelectListItemIcon {
   height: 100%;
 }
 
-.avgTimeBaseGreen  { background-color: #3fae2a; }
-.avgTimeBaseYellow { background-color: #f2c037; }
-.avgTimeBaseRed    { background-color: #e64a45; }
+.avgTimeBaseGreen {
+  background-color: #3fae2a;
+}
+
+.avgTimeBaseYellow {
+  background-color: #f2c037;
+}
+
+.avgTimeBaseRed {
+  background-color: #e64a45;
+}
 
 .avgTimeScaleRow .sapMText {
   font-size: 0.75rem !important;
@@ -398,22 +406,30 @@ img.sapMSelectListItemIcon {
   border-radius: 1rem;
 }
 
-.avgTimeStatusBadgeGood { background: var(--sapSuccessBackground); }
-.avgTimeStatusBadgeWarn { background: var(--sapWarningBackground); }
-.avgTimeStatusBadgeBad  { background: var(--sapErrorBackground); }
+.avgTimeStatusBadgeGood {
+  background: var(--sapSuccessBackground);
+}
+
+.avgTimeStatusBadgeWarn {
+  background: var(--sapWarningBackground);
+}
+
+.avgTimeStatusBadgeBad {
+  background: var(--sapErrorBackground);
+}
 
 .avgTimeStatusBadgeGood .sapUiIcon,
-.avgTimeStatusBadgeGood .sapMText > span {
+.avgTimeStatusBadgeGood .sapMText>span {
   color: var(--sapPositiveTextColor) !important;
 }
 
 .avgTimeStatusBadgeWarn .sapUiIcon,
-.avgTimeStatusBadgeWarn .sapMText > span {
+.avgTimeStatusBadgeWarn .sapMText>span {
   color: var(--sapCriticalTextColor) !important;
 }
 
 .avgTimeStatusBadgeBad .sapUiIcon,
-.avgTimeStatusBadgeBad .sapMText > span {
+.avgTimeStatusBadgeBad .sapMText>span {
   color: var(--sapNegativeTextColor) !important;
 }
 
@@ -421,7 +437,7 @@ img.sapMSelectListItemIcon {
   font-size: 0.8rem !important;
 }
 
-.avgTimeStatusText > span {
+.avgTimeStatusText>span {
   font-size: 0.75rem !important;
   font-weight: 600 !important;
 }

@@ -2,8 +2,12 @@ sap.ui.define(
   [
     "./BaseController",
     "sap/ui/model/json/JSONModel",
+    'sap/m/FlexItemData',
+    'sap/ui/model/Filter',
+    'sap/ui/model/FilterOperator',
+    "../utils/ChartFilterDialog"
   ],
-  function (BaseController, JSONModel)
+  function (BaseController, JSONModel, FlexItemData, Filter, FilterOperator, ChartFilterDialogHelper)
   {
     "use strict";
 
@@ -27,9 +31,9 @@ sap.ui.define(
       },
 
       /* ROUTE MATCHED                 */
-
       _onObjectMatched: function (oEvent)
       {
+        this._loadOpenCompletedSlider(); //TODO
         this._loadStatusChart();
         this._loadPriorityChart();
         this._loadPerformanceChart();
@@ -66,6 +70,109 @@ sap.ui.define(
             console.error("Failed to fetch analytics data:", oError);
           }.bind(this),
         });
+      },
+
+      //TODO
+      _loadOpenCompletedSlider: function ()
+      {
+        var oVizFrame = this.byId("OpenCompletedColumnChart");
+        var oRangeSlider = this.byId("OpenCompletedSlider");
+        if (!oRangeSlider)
+        {
+          return;
+        }
+
+        oRangeSlider.setValueAxisVisible(false);
+        oRangeSlider.setShowPercentageLabel(false);
+        oRangeSlider.setShowStartEndLabel(false);
+        oRangeSlider.setLayoutData(new FlexItemData({
+          maxHeight: '7%',
+          baseSize: '100%',
+          order: 1,
+          styleClass: 'rangeSliderPadding'
+        }));
+
+        oRangeSlider.attachRangeChanged(function (e)
+        {
+          var data = e.getParameters().data;
+          console.log(">>>> ", data);
+
+          var oBinding = oVizFrame.getDataset().getBinding("data");
+          if (!oBinding) return;
+
+          var aOrder = oBinding.getContexts().map(function (ctx) { return ctx.getProperty("ActualAgent"); });
+
+          console.log("aOrder ", aOrder);
+
+          var iStart = 0;
+          var iEnd = aOrder.length - 1;
+
+          var iMin = Math.min(iStart, iEnd);
+          var iMax = Math.max(iStart, iEnd);
+
+          var aKeep = aOrder.filter(function (sAgent, idx) { return idx >= iMin && idx <= iMax; });
+
+          var oMultiFilter = new Filter({
+            filters: aKeep.map(function (sAgent)
+            {
+              return new Filter("ActualAgent", FilterOperator.EQ, sAgent);
+            }),
+            and: false,
+          });
+
+          oBinding.filter([oMultiFilter]);
+        });
+      },
+
+      //TODO
+      _getChartBinding: function (sChartId)
+      {
+        var oChart = this.byId(sChartId);
+        if (!oChart)
+        {
+          return null;
+        }
+        var oDataset = oChart.getDataset();
+        return oDataset && oDataset.getBinding("data");
+      },
+
+      //TODO
+      onChartToggleFullScreen: function (oEvent)
+      {
+        var sChartId = oEvent.getSource().data("chartId");
+        var oPanel = this.byId(sChartId);
+        if (!oPanel)
+        {
+          return;
+        }
+
+        var bFull = oPanel.data("fullScreen") === true;
+        if (bFull)
+        {
+          oPanel.removeStyleClass("fullScreenPanel");
+          oPanel.data("fullScreen", false);
+          oEvent.getSource().setIcon("sap-icon://full-screen");
+        }
+        else
+        {
+          oPanel.addStyleClass("fullScreenPanel");
+          oPanel.data("fullScreen", true);
+          oEvent.getSource().setIcon("sap-icon://exit-full-screen");
+        }
+      },
+
+      //TODO
+      onChartOpenFilter: function (oEvent)
+      {
+        var oView = this.getView(),
+          sChartId = oEvent.getSource().data("chartId"),
+          oChart = this.byId(sChartId);
+        if (!oChart)
+        {
+          return;
+        }
+
+        ChartFilterDialogHelper.onOpen(oView, sChartId);
       },
 
       /* STATUS CHART (DONUT)          */
@@ -513,6 +620,23 @@ sap.ui.define(
             oScatterPopover.connect(oScatterChart.getVizUid());
           }
         }
+      },
+
+      onChartZoomIn: function (oEvent)
+      {
+        var sChartId = oEvent.getSource().data("chartId");
+
+        console.log(sChartId);
+
+        var oChart = this.byId(sChartId);
+        if (oChart) { oChart.zoom({ direction: "in" }); }
+      },
+
+      onChartZoomOut: function (oEvent)
+      {
+        var sChartId = oEvent.getSource().data("chartId");
+        var oChart = this.byId(sChartId);
+        if (oChart) { oChart.zoom({ direction: "out" }); }
       },
 
       onNavBackToDashboard: function ()
