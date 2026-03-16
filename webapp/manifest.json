@@ -71,7 +71,7 @@
         "settings": {
           "annotations": [],
           "localUri": "localService/reportAnalyticsService/metadata.xml",
-          "odataVersion": "2.0",
+          "odataVersion": "4.0",
           "defaultBindingMode": "OneWay"
         }
       },
@@ -160,10 +160,7 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "z.wf.zwfmanagement.i18n.i18n",
-          "supportedLocales": [
-            "en",
-            "de"
-          ],
+          "supportedLocales": ["en", "de"],
           "fallbackLocale": "en"
         }
       },
@@ -219,7 +216,7 @@
       },
       "reportAnalytics": {
         "dataSource": "reportAnalyticsService",
-        "preload": false,
+        "preload": true,
         "settings": {
           "synchronizationMode": "None",
           "operationMode": "Server",
@@ -288,10 +285,7 @@
         {
           "pattern": "tasks/{propertyPath}/{layout}",
           "name": "RouteDetail",
-          "target": [
-            "TargetMainView",
-            "TargetDetail"
-          ]
+          "target": ["TargetMainView", "TargetDetail"]
         },
         {
           "pattern": "analytics",

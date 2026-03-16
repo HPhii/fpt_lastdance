@@ -1,10 +1,7 @@
 <mvc:View
-    xmlns:networkgraph="sap.suite.ui.commons.networkgraph"
     controllerName="z.wf.zwfmanagement.controller.Dashboard"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:f="sap.f"
-    xmlns:card="sap.f.cards"
     displayBlock="true"
     xmlns:core="sap.ui.core"
 >

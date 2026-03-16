@@ -1,0 +1,212 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+>
+    <Panel
+        class="sapUiSmallMargin statsPanel"
+        headerText="Workflow Bottleneck Heatmap"
+        width="98.5%"
+    >
+        <Panel>
+            <viz:VizFrame
+                id="agingChart"
+                vizType="stacked_bar"
+                width="100%"
+                height="400px"
+            >
+                <viz:dataset>
+                    <viz.data:FlattenedDataset data="{agingModel>/AgingData}">
+                        <viz.data:dimensions>
+                            <viz.data:DimensionDefinition
+                                name="BusinessObject"
+                                value="{agingModel>BusinessObject}"
+                            />
+                        </viz.data:dimensions>
+
+                        <viz.data:measures>
+                            <viz.data:MeasureDefinition
+                                name="0-2 Days"
+                                value="{agingModel>ZeroToTwoDays}"
+                            />
+
+                            <viz.data:MeasureDefinition
+                                name="3-7 Days"
+                                value="{agingModel>ThreeToSevenDays}"
+                            />
+
+                            <viz.data:MeasureDefinition
+                                name=">7 Days"
+                                value="{agingModel>OverSevenDays}"
+                            />
+                        </viz.data:measures>
+                    </viz.data:FlattenedDataset>
+                </viz:dataset>
+
+                <viz:feeds>
+                    <viz.feeds:FeedItem
+                        uid="valueAxis"
+                        type="Measure"
+                        values="0-2 Days,3-7 Days,>7 Days"
+                    />
+
+                    <viz.feeds:FeedItem
+                        uid="categoryAxis"
+                        type="Dimension"
+                        values="BusinessObject"
+                    />
+                </viz:feeds>
+            </viz:VizFrame>
+        </Panel>
+
+        <FlexBox
+            width="100%"
+            direction="Column"
+        >
+            <viz:VizFrame
+                id="BottleneckHeatmapChart"
+                uiConfig="{applicationSet:'fiori'}"
+                class="sapUiSmallMargin"
+                width="100%"
+                vizType="heatmap"
+                vizProperties="{
+                    plotArea:{
+                        isScrollable:true
+                    },
+                    legend:{
+                        visible:true
+                    },
+                    title:{
+                        visible:true
+                    },
+                    interaction:{
+                        selectability:{mode:'single'}
+                    }
+                }"
+            >
+                <viz:dataset>
+                    <viz.data:FlattenedDataset
+                        data="{
+                            path:'bottleneckModel>/HeatData'
+                        }"
+                    >
+                        <viz.data:dimensions>
+                            <viz.data:DimensionDefinition
+                                name="Priority"
+                                value="{bottleneckModel>PriorityLevel}"
+                            />
+
+                            <viz.data:DimensionDefinition
+                                name="Aging"
+                                value="{bottleneckModel>AgingBucket}"
+                            />
+                        </viz.data:dimensions>
+
+                        <viz.data:measures>
+                            <viz.data:MeasureDefinition
+                                name="OpenTasks"
+                                value="{bottleneckModel>IsOpenCount}"
+                            />
+                        </viz.data:measures>
+                    </viz.data:FlattenedDataset>
+                </viz:dataset>
+
+                <viz:feeds>
+                    <!-- X axis -->
+                    <viz.feeds:FeedItem
+                        uid="categoryAxis"
+                        type="Dimension"
+                        values="Priority"
+                    />
+
+                    <!-- Y axis -->
+                    <viz.feeds:FeedItem
+                        uid="categoryAxis2"
+                        type="Dimension"
+                        values="Aging"
+                    />
+
+                    <!-- Heat color -->
+                    <viz.feeds:FeedItem
+                        uid="color"
+                        type="Measure"
+                        values="OpenTasks"
+                    />
+                </viz:feeds>
+
+                <viz:dependents>
+                    <viz:Popover id="BottleneckPopover" />
+                </viz:dependents>
+            </viz:VizFrame>
+        </FlexBox>
+    </Panel>
+
+    <!-- Top Longest Outstanding Tasks -->
+    <Panel
+        headerText="Longest Outstanding Tasks"
+        class="sapUiSmallMargin statsPanel"
+        width="98.5%"
+        visible="{userRole>/isAdmin}"
+    >
+        <Table
+            growing="true"
+            growingThreshold="10"
+            items="{
+                path:'reportAnalytics>/TopAging',
+                parameters: {
+                    $orderby: 'DaysOpen desc',
+                    $select: 'CreatedByUser,DaysOpen,StatusCategory'
+                }
+            }"
+        >
+            <columns>
+                <Column>
+                    <Text text="User" />
+                </Column>
+
+                <Column
+                    hAlign="Center"
+                    width="200px"
+                >
+                    <Text text="Aging (Days)" />
+                </Column>
+
+                <Column hAlign="Center">
+                    <Text text="Status Category" />
+                </Column>
+            </columns>
+
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text text="{reportAnalytics>CreatedByUser}" />
+
+                        <HBox
+                            alignItems="Center"
+                            justifyContent="Center"
+                        >
+                            <Text
+                                text="{reportAnalytics>DaysOpen}"
+                                class="sapUiTinyMarginEnd"
+                                width="30px"
+                                textAlign="Right"
+                            />
+                            <ProgressIndicator
+                                percentValue="{= (${reportAnalytics>DaysOpen} / 150) * 100 }"
+                                displayValue=" "
+                                showValue="false"
+                                state="{= ${reportAnalytics>DaysOpen} > 60 ? 'Error' : (${reportAnalytics>DaysOpen} > 30 ? 'Warning' : 'Success') }"
+                                height="18px"
+                                width="80px"
+                            />
+                        </HBox>
+
+                        <Text text="{reportAnalytics>StatusCategory}" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </Panel>
+</core:FragmentDefinition>
