@@ -10,7 +10,10 @@
         headerText="{i18n>volumeStatusTitle}"
         width="98.5%"
     >
-        <VBox width="100%">
+        <VBox
+            width="100%"
+            busy="{statsAnalyticsModel>/busy}"
+        >
             <!-- ===== STATS CARDS ===== -->
             <HBox
                 wrap="Wrap"
@@ -19,85 +22,144 @@
                 class="statsCardsRow"
             >
                 <!-- Total Open Tasks -->
-                <HBox
-                    class="statsCard statsCardBlue"
-                    busy="{statsAnalyticsModel>/busy}"
+                <GenericTile
+                    header="{i18n>totalOpenTasksText}"
+                    frameType="OneByOne"
+                    width="100%"
                 >
-                    <core:Icon
-                        src="sap-icon://paste"
-                        class="statsCardIcon statsCardIconBlue"
-                    />
-                    <VBox class="statsCardContent">
-                        <Text
-                            text="{statsAnalyticsModel>/result/IsOpenCount}"
-                            class="statsCardValue statsCardValueBlue"
+                    <layoutData>
+                        <FlexItemData
+                            growFactor="1"
+                            shrinkFactor="1"
+                            minWidth="14rem"
                         />
-                        <Text
-                            text="{i18n>totalOpenTasksText}"
-                            class="statsCardLabelGreen"
-                        />
-                    </VBox>
-                </HBox>
+                    </layoutData>
+                    <tileContent>
+                        <TileContent
+                            footer="{i18n>totalOpenTasksText}"
+                            unit="{i18n>tableHeaderTitle}"
+                        >
+                            <content>
+                                <NumericContent
+                                    value="{statsAnalyticsModel>/result/IsOpenCount}"
+                                    icon="sap-icon://paste"
+                                    valueColor="Good"
+                                    indicator="None"
+                                    withMargin="false"
+                                    animateTextChange="true"
+                                />
+                            </content>
+                        </TileContent>
+                    </tileContent>
+                </GenericTile>
 
                 <!-- Completed This Month -->
-                <HBox
-                    class="statsCard statsCardGreen"
-                    busy="{statsAnalyticsModel>/busy}"
+                <GenericTile
+                    header="{i18n>CompletedTasksThisMonthText}"
+                    frameType="OneByOne"
+                    width="100%"
                 >
-                    <core:Icon
-                        src="sap-icon://task"
-                        class="statsCardIcon statsCardIconGreen"
-                    />
-                    <VBox class="statsCardContent">
-                        <Text
-                            text="{statsAnalyticsModel>/result/IsCompletedThisMonth}"
-                            class="statsCardValue statsCardValueGreen"
+                    <layoutData>
+                        <FlexItemData
+                            growFactor="1"
+                            shrinkFactor="1"
+                            minWidth="14rem"
                         />
-                        <Text text="{i18n>CompletedTasksThisMonthText}" />
-                    </VBox>
-                </HBox>
+                    </layoutData>
+                    <tileContent>
+                        <TileContent
+                            footer="{i18n>CompletedTasksThisMonthText}"
+                            unit="{i18n>tableHeaderTitle}"
+                        >
+                            <content>
+                                <NumericContent
+                                    value="{statsAnalyticsModel>/result/IsCompletedThisMonth}"
+                                    icon="sap-icon://task"
+                                    valueColor="Good"
+                                    indicator="None"
+                                    withMargin="false"
+                                    animateTextChange="true"
+                                />
+                            </content>
+                        </TileContent>
+                    </tileContent>
+                </GenericTile>
 
                 <!-- Overdue Tasks -->
-                <HBox
-                    class="statsCard statsCardRed"
-                    busy="{statsAnalyticsModel>/busy}"
+                <GenericTile
+                    header="{i18n>OverdueTasksText}"
+                    frameType="OneByOne"
+                    width="100%"
                 >
-                    <core:Icon
-                        src="sap-icon://alert"
-                        class="statsCardIcon statsCardIconRed"
-                    />
-                    <VBox class="statsCardContent">
-                        <Text
-                            text="{statsAnalyticsModel>/result/IsOverdueCount}"
-                            class="statsCardValue statsCardValueRed"
+                    <layoutData>
+                        <FlexItemData
+                            growFactor="1"
+                            shrinkFactor="1"
+                            minWidth="14rem"
                         />
-                        <Text text="{i18n>OverdueTasksText}" />
-                    </VBox>
-                </HBox>
+                    </layoutData>
+                    <tileContent>
+                        <TileContent
+                            footer="{i18n>OverdueTasksText}"
+                            unit="{i18n>tableHeaderTitle}"
+                        >
+                            <content>
+                                <NumericContent
+                                    value="{statsAnalyticsModel>/result/IsOverdueCount}"
+                                    icon="sap-icon://alert"
+                                    valueColor="Error"
+                                    indicator="Down"
+                                    withMargin="false"
+                                    animateTextChange="true"
+                                />
+                            </content>
+                        </TileContent>
+                    </tileContent>
+                </GenericTile>
 
                 <!-- Completion Rate -->
-                <HBox
-                    class="statsCard statsCardYellow"
-                    busy="{statsAnalyticsModel>/busy}"
+                <GenericTile
+                    header="{i18n>CompletionRateText}"
+                    frameType="OneByOne"
+                    width="100%"
                 >
-                    <core:Icon
-                        src="sap-icon://pie-chart"
-                        class="statsCardIcon statsCardIconYellow"
-                    />
-                    <VBox class="statsCardContent">
-                        <Text
-                            text="{
-                                parts:[
-                                    {path:'statsAnalyticsModel>/result/IsCompletedCount'},
-                                    {path:'statsAnalyticsModel>/result/TaskCounter'}
-                                ],
-                                formatter:'.formatter.formatCompletionRate'
-                            }%"
-                            class="statsCardValue statsCardValueYellow"
+                    <layoutData>
+                        <FlexItemData
+                            growFactor="1"
+                            shrinkFactor="1"
+                            minWidth="14rem"
                         />
-                        <Text text="{i18n>CompletionRateText}" />
-                    </VBox>
-                </HBox>
+                    </layoutData>
+                    <tileContent>
+                        <TileContent
+                            footer="{i18n>CompletionRateText}"
+                            unit="%"
+                        >
+                            <content>
+                                <NumericContent
+                                    icon="sap-icon://pie-chart"
+                                    value="{
+                                        parts:[
+                                            {path:'statsAnalyticsModel>/result/IsCompletedCount'},
+                                            {path:'statsAnalyticsModel>/result/TaskCounter'}
+                                        ],
+                                        formatter:'.formatter.formatCompletionRate'
+                                    }"
+                                    valueColor="{
+                                        parts:[
+                                            {path:'statsAnalyticsModel>/result/IsCompletedCount'},
+                                            {path:'statsAnalyticsModel>/result/TaskCounter'}
+                                        ],
+                                        formatter:'.formatter.formatCompletionRateColor'
+                                    }"
+                                    scale="%"
+                                    withMargin="false"
+                                    animateTextChange="true"
+                                />
+                            </content>
+                        </TileContent>
+                    </tileContent>
+                </GenericTile>
             </HBox>
 
             <!-- ===== CHART AREA ===== -->

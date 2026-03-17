@@ -78,11 +78,6 @@ sap.ui.define([
       });
     },
 
-    onNavBack: function ()
-    {
-      this.getOwnerComponent().getRouter().navTo("RouteDashboard");
-    },
-
     _attachSlaHoverEvents: function ()
     {
       var oChartArea = this.byId("slaChartHoverArea");

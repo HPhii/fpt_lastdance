@@ -249,14 +249,26 @@ sap.ui.define([
     {
       if (!sCompleted || !sTotal || parseInt(sTotal, 10) === 0)
       {
-        return "0.00";
+        return 0;
       }
       var fCompleted = parseFloat(sCompleted);
       var fTotal = parseFloat(sTotal);
 
       var fRate = (fCompleted / fTotal) * 100;
 
-      return fRate.toFixed(2);
+      return Math.round(fRate * 100) / 100;
+    },
+
+    formatCompletionRateColor: function (sCompleted, sTotal)
+    {
+      var total = parseFloat(sTotal) || 0;
+      var completed = parseFloat(sCompleted) || 0;
+
+      var pct = (completed / total) * 100;
+      if (pct >= 80) return "Good";
+      if (pct >= 50) return "Neutral";
+      if (pct >= 20) return "Critical";
+      if (pct >= 0) return "Error";
     }
   };
 });
