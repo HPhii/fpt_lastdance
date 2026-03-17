@@ -3,7 +3,7 @@
     xmlns:core="sap.ui.core"
 >
     <Panel
-        class="sapUiSmallMargin statsPanel"
+        class="sapUiSmallMargin "
         headerText="{i18n>userWorkloadTitle}"
         width="98.5%"
     >

@@ -100,6 +100,11 @@ sap.ui.define([
 
         },
 
+        onNavBackToDashboard: function ()
+        {
+            this.getOwnerComponent().getRouter().navTo("RouteDashboard");
+        },
+
         onLanguageChange: function (oEvent)
         {
             var sSelectedKey = oEvent.getSource().getSelectedKey();

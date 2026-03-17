@@ -6,7 +6,7 @@
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
     <Panel
-        class="sapUiSmallMargin statsPanel"
+        class="sapUiSmallMargin "
         headerText="{i18n>volumeStatusTitle}"
         width="98.5%"
     >
@@ -103,137 +103,151 @@
             <!-- ===== CHART AREA ===== -->
             <HBox
                 width="100%"
-                justifyContent="Center"
-                class="sapUiMediumMarginTop"
+                wrap="Wrap"
+                justifyContent="SpaceBetween"
+                class="sapUiTinyMarginTop"
             >
                 <!-- STATUS DONUT -->
-                <Panel class="chartContainerPanel sapUiMediumMarginEnd">
-                    <viz:VizFrame
-                        vizType="donut"
-                        width="600px"
-                        height="400px"
-                        vizProperties="{
+                <viz:VizFrame
+                    class="sapUiSmallMargin"
+                    vizType="donut"
+                    width="100%"
+                    height="400px"
+                    vizProperties="{
                             title:{
                                 visible:true,
                                 text:'Status Distribution'
+                            },
+                            plotArea:{
+                                dataLabel:{
+                                    visible:true,
+                                    type:'value'
+                                },
+                                showGap:true
                             }
                         }"
-                    >
-                        <viz:dataset>
-                            <viz.data:FlattenedDataset
-                                data="{
-                                    path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
-                                    parameters:{
-                                        $select:'StatusCategory,TaskCounter'
-                                    }
-                                }"
-                            >
-                                <viz.data:dimensions>
-                                    <viz.data:DimensionDefinition
-                                        name="Status"
-                                        value="{statsAnalytics>StatusCategory}"
-                                    />
-                                </viz.data:dimensions>
+                >
+                    <viz:layoutData>
+                        <FlexItemData
+                            growFactor="1"
+                            minWidth="500px"
+                        />
+                    </viz:layoutData>
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset
+                            data="{
+                                path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
+                                parameters:{
+                                    $select:'StatusCategory,TaskCounter'
+                                }                                
+                            }"
+                        >
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition
+                                    name="Status"
+                                    value="{StatusCategory}"
+                                />
+                            </viz.data:dimensions>
 
-                                <viz.data:measures>
-                                    <viz.data:MeasureDefinition
-                                        name="Tasks"
-                                        value="{statsAnalytics>TaskCounter}"
-                                    />
-                                </viz.data:measures>
-                            </viz.data:FlattenedDataset>
-                        </viz:dataset>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition
+                                    name="Tasks"
+                                    value="{TaskCounter}"
+                                />
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
 
-                        <viz:feeds>
-                            <viz.feeds:FeedItem
-                                uid="color"
-                                type="Dimension"
-                                values="Status"
-                            />
-                            <viz.feeds:FeedItem
-                                uid="size"
-                                type="Measure"
-                                values="Tasks"
-                            />
-                        </viz:feeds>
-                    </viz:VizFrame>
-                </Panel>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem
+                            uid="color"
+                            type="Dimension"
+                            values="Status"
+                        />
+                        <viz.feeds:FeedItem
+                            uid="size"
+                            type="Measure"
+                            values="Tasks"
+                        />
+                    </viz:feeds>
+                </viz:VizFrame>
 
                 <!-- PRIORITY BAR -->
-                <Panel class="chartContainerPanel">
-                    <viz:VizFrame
-                        vizType="bar"
-                        width="900px"
-                        height="400px"
-                        vizProperties="{
-        title:{
-            visible:true,
-            text:'Tasks in Processing by Priority'
-        },
-        plotArea:{
-            dataLabel:{
-                visible:true,
-                type:'value',
-                hideWhenOverlap:true
-            },
-            colorPalette:['#e60000','#f2c200','#7ed321'],
-            isScrollable:true
-        },
-        legend:{
-            visible:true
-        }
-    }"
-                    >
-                        <viz:dataset>
-                            <viz.data:FlattenedDataset
-                                data="{
-                                    path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
-                                    parameters:{
-                                        $select:'PriorityLevel,TaskCounter'
-                                    }
-                                }"
-                            >
-                                <viz.data:dimensions>
-                                    <viz.data:DimensionDefinition
-                                        name="Priority"
-                                        value="{statsAnalytics>PriorityLevel}"
-                                    />
-                                </viz.data:dimensions>
+                <viz:VizFrame
+                    class="sapUiSmallMargin"
+                    vizType="bar"
+                    width="100%"
+                    height="400px"
+                    vizProperties="{
+                        title:{
+                            visible:true,
+                            text:'Tasks in Processing by Priority'
+                        },
+                        plotArea:{
+                            dataLabel:{
+                                visible:true,
+                                type:'value',
+                                hideWhenOverlap:true
+                            },
+                            colorPalette:['#e60000','#f2c200','#7ed321'],
+                            isScrollable:true
+                        },
+                        legend:{
+                            visible:true
+                        }
+                    }"
+                >
+                    <viz:layoutData>
+                        <FlexItemData
+                            growFactor="1"
+                            minWidth="500px"
+                        />
+                    </viz:layoutData>
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset
+                            data="{
+                                path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
+                                parameters:{
+                                    $select:'PriorityLevel,TaskCounter'
+                                }
+                            }"
+                        >
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition
+                                    name="Priority"
+                                    value="{PriorityLevel}"
+                                />
+                            </viz.data:dimensions>
 
-                                <viz.data:measures>
-                                    <viz.data:MeasureDefinition
-                                        name="Tasks"
-                                        value="{statsAnalytics>TaskCounter}"
-                                    />
-                                </viz.data:measures>
-                            </viz.data:FlattenedDataset>
-                        </viz:dataset>
-                        <viz:feeds>
-                            <viz.feeds:FeedItem
-                                uid="valueAxis"
-                                type="Measure"
-                                values="Tasks"
-                            />
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition
+                                    name="Tasks"
+                                    value="{TaskCounter}"
+                                />
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem
+                            uid="valueAxis"
+                            type="Measure"
+                            values="Tasks"
+                        />
 
-                            <viz.feeds:FeedItem
-                                uid="categoryAxis"
-                                type="Dimension"
-                                values="Priority"
-                            />
+                        <viz.feeds:FeedItem
+                            uid="categoryAxis"
+                            type="Dimension"
+                            values="Priority"
+                        />
 
-                            <viz.feeds:FeedItem
-                                uid="color"
-                                type="Dimension"
-                                values="Priority"
-                            />
-                        </viz:feeds>
-                    </viz:VizFrame>
-                </Panel>
+                        <viz.feeds:FeedItem
+                            uid="color"
+                            type="Dimension"
+                            values="Priority"
+                        />
+                    </viz:feeds>
+                </viz:VizFrame>
             </HBox>
         </VBox>
-
-        <Panel class="sapUiMediumMarginTop">
-            <VBox />
-        </Panel>
     </Panel>
 </core:FragmentDefinition>

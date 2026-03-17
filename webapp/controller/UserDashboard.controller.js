@@ -158,7 +158,7 @@ sap.ui.define([
 
       var iCurrentYear = new Date().getFullYear();
       var sYearStart = iCurrentYear + "0101";
-      var sYearEnd   = iCurrentYear + "1231";
+      var sYearEnd = iCurrentYear + "1231";
 
       oModel.read("/ZC_GSP26SAP02_MYPERF", {
         urlParameters: {
@@ -323,10 +323,10 @@ sap.ui.define([
       var oModel = this.getOwnerComponent().getModel("userProductivityAnalytics");
 
       var mTypeLabels = {
-        "BUS2009001":              "Purchase Requisition",
-        "CL_MM_PUR_WF_OBJECT_PO":  "Purchase Order",
+        "BUS2009001": "Purchase Requisition",
+        "CL_MM_PUR_WF_OBJECT_PO": "Purchase Order",
         "CL_MM_PUR_WF_OBJECT_RFQ": "Request for Quotation",
-        "Unknown":                 "Order"
+        "Unknown": "Order"
       };
 
       oView.setModel(new JSONModel({ data: [], loading: true }), "workflowTypeModel");
@@ -348,14 +348,14 @@ sap.ui.define([
 
           var aTransformed = aResults.reduce(function (acc, oItem)
           {
-            var sCode  = String(oItem.BusinessObjectType || "");
+            var sCode = String(oItem.BusinessObjectType || "");
             var iCount = parseFloat(oItem.CompletedCount) || 0;
             if (!sCode || sCode === "null" || iCount === 0) { return acc; }
 
             acc.push({
-              Type:     mTypeLabels[sCode] || sCode,
+              Type: mTypeLabels[sCode] || sCode,
               Category: "Completed Tasks",
-              Count:    iCount
+              Count: iCount
             });
             return acc;
           }, []);
@@ -450,7 +450,8 @@ sap.ui.define([
       });
       oView.setModel(oAggregateModel, "kpiAggregateModel");
 
-      if (!oModel) {
+      if (!oModel)
+      {
         console.error("userProductivityAnalytics model not found");
         oAggregateModel.setProperty("/loading", false);
         return;
@@ -479,13 +480,16 @@ sap.ui.define([
           var sSlaColor;
           var sSlaState;
 
-          if (fSlaHitRate >= 95) {
+          if (fSlaHitRate >= 95)
+          {
             sSlaColor = "Good";
             sSlaState = "Success";
-          } else if (fSlaHitRate >= 80) {
+          } else if (fSlaHitRate >= 80)
+          {
             sSlaColor = "Critical";
             sSlaState = "Warning";
-          } else {
+          } else
+          {
             sSlaColor = "Error";
             sSlaState = "Error";
           }

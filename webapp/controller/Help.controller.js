@@ -9,10 +9,6 @@ sap.ui.define(
                 BaseController.prototype.onInit.apply(this, arguments);
             },
 
-            onNavBackToDashboard: function ()
-            {
-                this.getOwnerComponent().getRouter().navTo("RouteDashboard");
-            },
         });
     }
 );

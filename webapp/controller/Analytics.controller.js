@@ -357,10 +357,6 @@ sap.ui.define(
         if (oChart) { oChart.zoom({ direction: "out" }); }
       },
 
-      onNavBackToDashboard: function ()
-      {
-        this.getOwnerComponent().getRouter().navTo("RouteDashboard");
-      },
     });
   },
 );

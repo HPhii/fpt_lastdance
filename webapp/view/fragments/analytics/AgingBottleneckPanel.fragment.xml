@@ -6,7 +6,7 @@
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
     <Panel
-        class="sapUiSmallMargin statsPanel"
+        class="sapUiSmallMargin"
         headerText="Workflow Bottleneck Heatmap"
         width="98.5%"
     >
@@ -146,7 +146,7 @@
     <!-- Top Longest Outstanding Tasks -->
     <Panel
         headerText="Longest Outstanding Tasks"
-        class="sapUiSmallMargin statsPanel"
+        class="sapUiSmallMargin "
         width="98.5%"
         visible="{userRole>/isAdmin}"
     >

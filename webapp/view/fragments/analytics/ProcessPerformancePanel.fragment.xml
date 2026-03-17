@@ -6,13 +6,12 @@
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
     <Panel
-        class="sapUiMediumMarginTop"
+        class="sapUiSmallMargin "
         headerText="Process Performance"
         width="98.5%"
     >
         <VBox>
             <!-- PERFORMANCE CHART -->
-
             <viz:VizFrame
                 id="perfChartPanel"
                 vizType="dual_combination"
@@ -104,7 +103,7 @@
                 <viz:VizFrame
                     id="idHeatmapChart"
                     vizType="column"
-                    width="1600px"
+                    width="100%"
                     height="400px"
                     vizProperties="{
                         title:{

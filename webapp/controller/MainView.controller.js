@@ -406,7 +406,8 @@ sap.ui.define([
     {
       this.byId("searchTaskField").setValue("");
       this._oList.getBinding("items").filter([]);
-      this.getOwnerComponent().getRouter().navTo("RouteDashboard");
+
+      BaseController.prototype.onNavBackToDashboard.apply(this, arguments);
     },
 
     onCustomColumn: function ()

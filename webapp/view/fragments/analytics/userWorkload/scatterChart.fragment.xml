@@ -95,7 +95,7 @@
             uiConfig="{applicationSet:'fiori'}"
             class="sapUiSmallMargin"
             width="100%"
-            vizType='scatter'
+            vizType='combination'
             vizProperties="{
                 plotArea: {
                     dataLabel: {
@@ -104,7 +104,11 @@
                         hideWhenOverlap: true
                     },
                     colorPalette: ['#5899DA','#E8743B','#19A979','#ED4A7B','#945ECF','#13A4B4','#525DF4','#BF399E','#6C8893','#EE6868','#2F6497'],
-                    isScrollable: true
+                    isScrollable: true,
+                    series: [
+                        { type: 'column' },
+                        { type: 'line' }
+                    ]
                 },
                 interaction: {
                     zoom: { enablement: 'enabled' },
@@ -114,7 +118,8 @@
                     visible: true
                 },
                 title: {
-                    visible: true
+                    visible: true,
+                    text: 'Agent Completed vs Cycle Time'
                 }
             }"
         >
@@ -151,15 +156,10 @@
                 <viz.feeds:FeedItem
                     uid="valueAxis"
                     type="Measure"
-                    values="Completed"
+                    values="Completed,Days"
                 />
                 <viz.feeds:FeedItem
-                    uid="valueAxis2"
-                    type="Measure"
-                    values="Days"
-                />
-                <viz.feeds:FeedItem
-                    uid="color"
+                    uid="categoryAxis"
                     type="Dimension"
                     values="Agent"
                 />

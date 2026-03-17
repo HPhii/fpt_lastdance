@@ -10,7 +10,11 @@
     xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds"
     displayBlock="true"
 >
-    <Page title="My KPI Dashboard">
+    <Page
+        title="My KPI Dashboard"
+        showNavButton="true"
+        navButtonPress=".onNavBackToDashboard"
+    >
         <headerContent>
             <core:Fragment
                 fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
@@ -20,7 +24,7 @@
         <content>
             <!-- Section 1: Task KPIs -->
             <Panel
-                class="sapUiMediumMargin statsPanel"
+                class="sapUiMediumMargin "
                 headerText="My Task KPIs"
                 width="98.5%"
             >
@@ -100,24 +104,51 @@
                         busy="{kpiAggregateModel>/loading}"
                     >
                         <!-- Header -->
-                        <HBox class="avgTimeCardHeader" alignItems="Center">
-                            <core:Icon src="sap-icon://history" class="avgTimeHeaderIcon" />
-                            <Text text="My Avg Processing Time" class="avgTimeHeaderTitle" />
+                        <HBox
+                            class="avgTimeCardHeader"
+                            alignItems="Center"
+                        >
+                            <core:Icon
+                                src="sap-icon://history"
+                                class="avgTimeHeaderIcon"
+                            />
+                            <Text
+                                text="My Avg Processing Time"
+                                class="avgTimeHeaderTitle"
+                            />
                         </HBox>
 
                         <!-- Value -->
-                        <VBox class="avgTimeValueWrap" alignItems="Center">
-                            <HBox alignItems="Baseline" justifyContent="Center">
-                                <Text text="{kpiAggregateModel>/avgProcessingTime}" class="avgTimeValueText" />
-                                <Text text=" days" class="avgTimeUnitText" />
+                        <VBox
+                            class="avgTimeValueWrap"
+                            alignItems="Center"
+                        >
+                            <HBox
+                                alignItems="Baseline"
+                                justifyContent="Center"
+                            >
+                                <Text
+                                    text="{kpiAggregateModel>/avgProcessingTime}"
+                                    class="avgTimeValueText"
+                                />
+                                <Text
+                                    text=" days"
+                                    class="avgTimeUnitText"
+                                />
                             </HBox>
-                            <Text text="per task completed" class="avgTimeSublabel" />
+                            <Text
+                                text="per task completed"
+                                class="avgTimeSublabel"
+                            />
                         </VBox>
 
                         <!-- Gauge -->
                         <VBox class="avgTimeGaugeWrap">
                             <!-- Progress fill (state-coloured) -->
-                            <HBox class="avgTimeProgressTrack" width="100%">
+                            <HBox
+                                class="avgTimeProgressTrack"
+                                width="100%"
+                            >
                                 <HBox
                                     width="{kpiAggregateModel>/avgTimeMeterPct}"
                                     class="avgTimeProgressFill avgTimeProgressFillGood"
@@ -136,58 +167,119 @@
                             </HBox>
 
                             <!-- Zone reference bar -->
-                            <HBox width="100%" class="avgTimeBaseLine sapUiTinyMarginTop">
-                                <HBox width="33%" class="avgTimeBaseSegment avgTimeBaseGreen" />
-                                <HBox width="34%" class="avgTimeBaseSegment avgTimeBaseYellow" />
-                                <HBox width="33%" class="avgTimeBaseSegment avgTimeBaseRed" />
+                            <HBox
+                                width="100%"
+                                class="avgTimeBaseLine sapUiTinyMarginTop"
+                            >
+                                <HBox
+                                    width="33%"
+                                    class="avgTimeBaseSegment avgTimeBaseGreen"
+                                />
+                                <HBox
+                                    width="34%"
+                                    class="avgTimeBaseSegment avgTimeBaseYellow"
+                                />
+                                <HBox
+                                    width="33%"
+                                    class="avgTimeBaseSegment avgTimeBaseRed"
+                                />
                             </HBox>
 
                             <!-- Scale labels -->
-                            <HBox width="100%" class="avgTimeScaleRow sapUiTinyMarginTop">
-                                <HBox width="33%" justifyContent="SpaceBetween">
-                                    <Text text="0d" wrapping="false" />
-                                    <Text text="5d" wrapping="false" />
+                            <HBox
+                                width="100%"
+                                class="avgTimeScaleRow sapUiTinyMarginTop"
+                            >
+                                <HBox
+                                    width="33%"
+                                    justifyContent="SpaceBetween"
+                                >
+                                    <Text
+                                        text="0d"
+                                        wrapping="false"
+                                    />
+                                    <Text
+                                        text="5d"
+                                        wrapping="false"
+                                    />
                                 </HBox>
-                                <HBox width="34%" justifyContent="End">
-                                    <Text text="10d" wrapping="false" />
+                                <HBox
+                                    width="34%"
+                                    justifyContent="End"
+                                >
+                                    <Text
+                                        text="10d"
+                                        wrapping="false"
+                                    />
                                 </HBox>
-                                <HBox width="33%" justifyContent="End">
-                                    <Text text="15d" wrapping="false" />
+                                <HBox
+                                    width="33%"
+                                    justifyContent="End"
+                                >
+                                    <Text
+                                        text="15d"
+                                        wrapping="false"
+                                    />
                                 </HBox>
                             </HBox>
                         </VBox>
 
                         <!-- Status badge -->
-                        <HBox class="avgTimeStatusRow" alignItems="Center" justifyContent="Center">
+                        <HBox
+                            class="avgTimeStatusRow"
+                            alignItems="Center"
+                            justifyContent="Center"
+                        >
                             <HBox
                                 visible="{= ${kpiAggregateModel>/avgTimeState} === 'good'}"
                                 alignItems="Center"
                                 class="avgTimeStatusBadge avgTimeStatusBadgeGood"
                             >
-                                <core:Icon src="sap-icon://accept" class="avgTimeStatusIcon" />
-                                <Text text="Within target (≤ 5 days)" class="avgTimeStatusText" />
+                                <core:Icon
+                                    src="sap-icon://accept"
+                                    class="avgTimeStatusIcon"
+                                />
+                                <Text
+                                    text="Within target (≤ 5 days)"
+                                    class="avgTimeStatusText"
+                                />
                             </HBox>
                             <HBox
                                 visible="{= ${kpiAggregateModel>/avgTimeState} === 'warn'}"
                                 alignItems="Center"
                                 class="avgTimeStatusBadge avgTimeStatusBadgeWarn"
                             >
-                                <core:Icon src="sap-icon://alert" class="avgTimeStatusIcon" />
-                                <Text text="Moderate (5–10 days)" class="avgTimeStatusText" />
+                                <core:Icon
+                                    src="sap-icon://alert"
+                                    class="avgTimeStatusIcon"
+                                />
+                                <Text
+                                    text="Moderate (5–10 days)"
+                                    class="avgTimeStatusText"
+                                />
                             </HBox>
                             <HBox
                                 visible="{= ${kpiAggregateModel>/avgTimeState} === 'bad'}"
                                 alignItems="Center"
                                 class="avgTimeStatusBadge avgTimeStatusBadgeBad"
                             >
-                                <core:Icon src="sap-icon://status-negative" class="avgTimeStatusIcon" />
-                                <Text text="Needs attention (&gt; 10 days)" class="avgTimeStatusText" />
+                                <core:Icon
+                                    src="sap-icon://status-negative"
+                                    class="avgTimeStatusIcon"
+                                />
+                                <Text
+                                    text="Needs attention (&gt; 10 days)"
+                                    class="avgTimeStatusText"
+                                />
                             </HBox>
                         </HBox>
                     </VBox>
 
                     <!-- Card: SLA Hit Rate Bullet Chart -->
-                    <VBox class="sapUiTinyMarginEnd sapUiTinyMarginBottom" width="54rem">
+                    <VBox
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        width="54rem"
+                    >
                         <Panel
                             headerText="SLA Hit Rate"
                             class="sapUiNoContentPadding slaPanel"
@@ -200,13 +292,19 @@
                                     justifyContent="SpaceBetween"
                                     class="slaChartRow"
                                 >
-                                    <VBox width="70%" class="slaBulletWrap">
+                                    <VBox
+                                        width="70%"
+                                        class="slaBulletWrap"
+                                    >
                                         <VBox
                                             id="slaChartHoverArea"
                                             class="slaLineChartWrap"
                                         >
                                             <HBox class="slaProgressMain">
-                                                <HBox class="slaProgressTrack" width="100%">
+                                                <HBox
+                                                    class="slaProgressTrack"
+                                                    width="100%"
+                                                >
                                                     <HBox
                                                         width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
                                                         class="slaProgressFill slaProgressFillGood"
@@ -230,66 +328,131 @@
                                                 </HBox>
                                             </HBox>
 
-                                            <HBox width="100%" class="slaBaseLine sapUiTinyMarginTop">
-                                                <HBox width="65%" class="slaBaseSegment slaBaseRed" />
-                                                <HBox width="15%" class="slaBaseSegment slaBaseYellow" />
-                                                <HBox width="20%" class="slaBaseSegment slaBaseGreen" />
+                                            <HBox
+                                                width="100%"
+                                                class="slaBaseLine sapUiTinyMarginTop"
+                                            >
+                                                <HBox
+                                                    width="65%"
+                                                    class="slaBaseSegment slaBaseRed"
+                                                />
+                                                <HBox
+                                                    width="15%"
+                                                    class="slaBaseSegment slaBaseYellow"
+                                                />
+                                                <HBox
+                                                    width="20%"
+                                                    class="slaBaseSegment slaBaseGreen"
+                                                />
                                             </HBox>
                                         </VBox>
 
-                                        <HBox width="100%" class="slaTickRow sapUiTinyMarginTop">
-                                            <HBox width="65%" class="slaTickSegment" />
-                                            <HBox width="15%" class="slaTickSegment" />
-                                            <HBox width="20%" class="slaTickSegment slaTickSegmentNoEnd" />
+                                        <HBox
+                                            width="100%"
+                                            class="slaTickRow sapUiTinyMarginTop"
+                                        >
+                                            <HBox
+                                                width="65%"
+                                                class="slaTickSegment"
+                                            />
+                                            <HBox
+                                                width="15%"
+                                                class="slaTickSegment"
+                                            />
+                                            <HBox
+                                                width="20%"
+                                                class="slaTickSegment slaTickSegmentNoEnd"
+                                            />
                                         </HBox>
 
                                         <HBox
                                             width="100%"
                                             class="slaScaleRow sapUiTinyMarginTop"
                                         >
-                                            <HBox width="65%" justifyContent="SpaceBetween">
-                                                <Text text="0%" wrapping="false" />
-                                                <Text text="65%" wrapping="false" />
+                                            <HBox
+                                                width="65%"
+                                                justifyContent="SpaceBetween"
+                                            >
+                                                <Text
+                                                    text="0%"
+                                                    wrapping="false"
+                                                />
+                                                <Text
+                                                    text="65%"
+                                                    wrapping="false"
+                                                />
                                             </HBox>
-                                            <HBox width="15%" justifyContent="End">
-                                                <Text text="80%" wrapping="false" />
+                                            <HBox
+                                                width="15%"
+                                                justifyContent="End"
+                                            >
+                                                <Text
+                                                    text="80%"
+                                                    wrapping="false"
+                                                />
                                             </HBox>
-                                            <HBox width="20%" justifyContent="End">
-                                                <Text text="100%" wrapping="false" />
+                                            <HBox
+                                                width="20%"
+                                                justifyContent="End"
+                                            >
+                                                <Text
+                                                    text="100%"
+                                                    wrapping="false"
+                                                />
                                             </HBox>
                                         </HBox>
-
                                     </VBox>
 
-                                    <VBox class="slaSideLegend sapUiSmallMarginBegin" width="18rem">
-                                        <HBox class="slaSideLegendItem sapUiTinyMarginBottom" alignItems="Center">
+                                    <VBox
+                                        class="slaSideLegend sapUiSmallMarginBegin"
+                                        width="18rem"
+                                    >
+                                        <HBox
+                                            class="slaSideLegendItem sapUiTinyMarginBottom"
+                                            alignItems="Center"
+                                        >
                                             <core:Icon
                                                 src="sap-icon://stop"
                                                 color="#3fae2a"
                                                 class="slaLegendSwatch sapUiTinyMarginEnd"
                                             />
                                             <VBox>
-                                                <Text text="(≥80%): Running smoothly." class="slaLegendTitle" />
+                                                <Text
+                                                    text="(≥80%): Running smoothly."
+                                                    class="slaLegendTitle"
+                                                />
                                             </VBox>
                                         </HBox>
-                                        <HBox class="slaSideLegendItem sapUiTinyMarginBottom" alignItems="Center">
+                                        <HBox
+                                            class="slaSideLegendItem sapUiTinyMarginBottom"
+                                            alignItems="Center"
+                                        >
                                             <core:Icon
                                                 src="sap-icon://stop"
                                                 color="#f2c037"
                                                 class="slaLegendSwatch sapUiTinyMarginEnd"
                                             />
                                             <VBox>
-                                                <Text text="(65-79%): Slowing down." class="slaLegendTitle" />
+                                                <Text
+                                                    text="(65-79%): Slowing down."
+                                                    class="slaLegendTitle"
+                                                />
                                             </VBox>
                                         </HBox>
-                                        <HBox class="slaSideLegendItem" alignItems="Center">
+                                        <HBox
+                                            class="slaSideLegendItem"
+                                            alignItems="Center"
+                                        >
                                             <core:Icon
                                                 src="sap-icon://stop"
                                                 color="#e64a45"
                                                 class="slaLegendSwatch sapUiTinyMarginEnd"
                                             />
                                             <VBox>
-                                                <Text text="(&lt;65%): Underperforming" class="slaLegendTitle" />
+                                                <Text
+                                                    text="(&lt;65%): Underperforming"
+                                                    class="slaLegendTitle"
+                                                />
                                             </VBox>
                                         </HBox>
                                     </VBox>
@@ -315,7 +478,9 @@
                         busy="{productivityModel>/loading}"
                     >
                         <viz:dataset>
-                            <vizData:FlattenedDataset data="{productivityModel>/data}">
+                            <vizData:FlattenedDataset
+                                data="{productivityModel>/data}"
+                            >
                                 <vizData:dimensions>
                                     <vizData:DimensionDefinition
                                         name="Completion Date"
@@ -371,7 +536,9 @@
                         busy="{workflowTypeModel>/loading}"
                     >
                         <viz:dataset>
-                            <vizData:FlattenedDataset data="{workflowTypeModel>/data}">
+                            <vizData:FlattenedDataset
+                                data="{workflowTypeModel>/data}"
+                            >
                                 <vizData:dimensions>
                                     <vizData:DimensionDefinition
                                         name="Document Type"
@@ -410,7 +577,6 @@
                     </viz:VizFrame>
                 </VBox>
             </Panel>
-
         </content>
         <footer>
             <Toolbar>

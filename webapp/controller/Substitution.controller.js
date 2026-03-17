@@ -231,14 +231,6 @@ sap.ui.define(
       },
 
       /**
-       * Navigate back to Dashboard
-       */
-      onNavBackToDashboard: function ()
-      {
-        this.getOwnerComponent().getRouter().navTo("RouteDashboard");
-      },
-
-      /**
        * Open Add Substitution Dialog
        */
       onOpenAddDialog: function ()
