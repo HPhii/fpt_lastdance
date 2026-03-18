@@ -104,6 +104,16 @@
           "odataVersion": "2.0",
           "defaultBindingMode": "OneWay"
         }
+      },
+      "adminInboxService": {
+        "uri": "/sap/opu/odata4/sap/zui_gsp26sap02_wf_task_o4/srvd/sap/zsd_gsp26sap02_wf_task/0001/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/adminInboxService/metadata.xml",
+          "odataVersion": "4.0",
+          "defaultBindingMode": "OneWay"
+        }
       }
     },
     "crossNavigation": {
@@ -160,7 +170,10 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "z.wf.zwfmanagement.i18n.i18n",
-          "supportedLocales": ["en", "de"],
+          "supportedLocales": [
+            "en",
+            "de"
+          ],
           "fallbackLocale": "en"
         }
       },
@@ -253,6 +266,16 @@
           "autoExpandSelect": true,
           "earlyRequests": false
         }
+      },
+      "adminInbox": {
+        "dataSource": "adminInboxService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": false
+        }
       }
     },
     "resources": {
@@ -285,7 +308,10 @@
         {
           "pattern": "tasks/{propertyPath}/{layout}",
           "name": "RouteDetail",
-          "target": ["TargetMainView", "TargetDetail"]
+          "target": [
+            "TargetMainView",
+            "TargetDetail"
+          ]
         },
         {
           "pattern": "analytics",
@@ -306,6 +332,11 @@
           "pattern": "userdashboard",
           "name": "RouteUserDashboard",
           "target": "TargetUserDashboard"
+        },
+        {
+          "pattern": "adminInbox",
+          "name": "RouteAdminInbox",
+          "target": "TargetAdminInbox"
         }
       ],
       "targets": {
@@ -342,6 +373,11 @@
         "TargetUserDashboard": {
           "viewId": "UserDashboard",
           "viewName": "UserDashboard",
+          "controlAggregation": "beginColumnPages"
+        },
+        "TargetAdminInbox": {
+          "viewId": "AdminInbox",
+          "viewName": "AdminInbox",
           "controlAggregation": "beginColumnPages"
         }
       }

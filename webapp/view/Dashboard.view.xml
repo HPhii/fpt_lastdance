@@ -4,6 +4,7 @@
     xmlns="sap.m"
     displayBlock="true"
     xmlns:core="sap.ui.core"
+    xmlns:microchart="sap.suite.ui.microchart"
 >
     <Page title="{i18n>dashboardTitle}">
         <headerContent>
@@ -26,10 +27,10 @@
                         header="{i18n>dashboardTaskManagement}"
                         subheader="{i18n>dashboardTaskSubheader}"
                         press=".onNavToTask"
+                        state="{= ${path: '/WfTasks/$count', targetType: 'any'} === undefined ? 'Loading' : 'Loaded'}"
                     >
-                        <TileContent unit="Tasks">
+                        <TileContent unit="{i18n>tasksUnit}">
                             <NumericContent
-                                busy="{= ${path: '/WfTasks/$count', targetType: 'any'} === undefined}"
                                 value="{
                                     path: '/WfTasks/$count',
                                     parameters: {
@@ -78,8 +79,8 @@
 
                     <GenericTile
                         class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        header="My KPIs"
-                        subheader="Personal task statistics"
+                        header="{i18n>dashboardMyKPIs}"
+                        subheader="{i18n>dashboardMyKPIsSubheader}"
                         press=".onNavToUserDashboard"
                     >
                         <TileContent>
@@ -103,12 +104,69 @@
                     class="sapUiTinyMarginTop"
                 >
                     <GenericTile
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="{i18n>dashboardRoleManagement}"
                         subheader="{i18n>dashboardRoleManagementSubheader}"
                         press=".onNavToRoleManagement"
                     >
                         <TileContent>
                             <ImageContent src="sap-icon://manager" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        header="{i18n>dashboardAdminInbox}"
+                        subheader="{i18n>dashboardAdminInboxSubheader}"
+                        press=".onNavToAdminInbox"
+                        frameType="TwoByOne"
+                        state="{= ${path: 'adminInbox>/AdminInbox/$count', targetType: 'any'} === undefined ? 'Loading' : 'Loaded'}"
+                    >
+                        <TileContent unit="{i18n>tasksUnit}">
+                            <NumericContent
+                                value="{
+                                    path:'adminInbox>/AdminInbox/$count',
+                                    type:'sap.ui.model.type.Integer'
+                                }"
+                                icon="sap-icon://inbox"
+                                valueColor="Neutral"
+                                indicator="None"
+                                withMargin="false"
+                                animateTextChange="true"
+                            />
+                        </TileContent>
+                        <TileContent>
+                            <microchart:ComparisonMicroChart
+                                view="Normal"
+                                size="Responsive"
+                                height="100%"
+                            >
+                                <microchart:data>
+                                    <microchart:ComparisonMicroChartData
+                                        title="{i18n>dashboardAdminInboxClaimedStatus}"
+                                        value="{
+                                            path:'adminInbox>/AdminInbox/$count',
+                                            type:'sap.ui.model.type.Integer',
+                                            parameters: {
+                                                $filter: 'TechnicalStatus eq \'SELECTED\''
+                                            }
+                                        }"
+                                        color="Good"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <microchart:ComparisonMicroChartData
+                                        title="{i18n>dashboardAdminInboxWaitingStatus}"
+                                        value="{
+                                            path:'adminInbox>/AdminInbox/$count',
+                                            type:'sap.ui.model.type.Integer',
+                                            parameters: {
+                                                $filter: 'TechnicalStatus eq \'WAITING\''
+                                            }
+                                        }"
+                                        color="Critical"
+                                    />
+                                </microchart:data>
+                            </microchart:ComparisonMicroChart>
                         </TileContent>
                     </GenericTile>
                 </HBox>

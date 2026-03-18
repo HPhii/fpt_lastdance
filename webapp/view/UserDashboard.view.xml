@@ -38,8 +38,7 @@
                     <GenericTile
                         header="My Open Tasks"
                         frameType="OneByOne"
-                        state="Loaded"
-                        busy="{kpiModel>/busy}"
+                        state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
                         width="100%"
                     >
                         <layoutData>
@@ -50,7 +49,7 @@
                             />
                         </layoutData>
                         <tileContent>
-                            <TileContent unit="{i18n>tableHeaderTitle}">
+                            <TileContent unit="{i18n>tasksUnit}">
                                 <content>
                                     <NumericContent
                                         value="{kpiModel>/MyOpenTasksCount}"
@@ -68,8 +67,7 @@
                     <GenericTile
                         header="Due Today"
                         frameType="OneByOne"
-                        state="Loaded"
-                        busy="{kpiModel>/busy}"
+                        state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
                         width="100%"
                     >
                         <layoutData>
@@ -80,7 +78,7 @@
                             />
                         </layoutData>
                         <tileContent>
-                            <TileContent unit="{i18n>tableHeaderTitle}">
+                            <TileContent unit="{i18n>tasksUnit}">
                                 <content>
                                     <NumericContent
                                         value="{kpiModel>/DueTodayCount}"
@@ -98,8 +96,7 @@
                     <GenericTile
                         header="{i18n>OverdueTasksText}"
                         frameType="OneByOne"
-                        state="Loaded"
-                        busy="{kpiModel>/busy}"
+                        state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
                         width="100%"
                     >
                         <layoutData>
@@ -112,7 +109,7 @@
                         <tileContent>
                             <TileContent
                                 footer="{i18n>OverdueTasksText}"
-                                unit="{i18n>tableHeaderTitle}"
+                                unit="{i18n>tasksUnit}"
                             >
                                 <content>
                                     <NumericContent

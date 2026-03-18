@@ -1,0 +1,27 @@
+<mvc:View
+    controllerName="z.wf.zwfmanagement.controller.AdminInbox"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Page
+        title="Admin Inbox"
+        showNavButton="true"
+        navButtonPress=".onNavBackToDashboard"
+    >
+        <headerContent>
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.LanguageSelect"
+                type="XML"
+            />
+        </headerContent>
+
+        <content>
+            <!-- <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
+                type="XML"
+            /> -->
+            <Text text="Admin Inbox" />
+        </content>
+    </Page>
+</mvc:View>
