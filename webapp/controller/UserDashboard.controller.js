@@ -22,6 +22,8 @@ sap.ui.define([
     {
       this._detachSlaHoverEvents();
       this._attachSlaHoverEvents();
+      this._detachAvgTimeHoverEvents();
+      this._attachAvgTimeHoverEvents();
       this._configureProductivityChart();
       this._configureWorkflowTypeChart();
     },
@@ -29,6 +31,7 @@ sap.ui.define([
     onExit: function ()
     {
       this._detachSlaHoverEvents();
+      this._detachAvgTimeHoverEvents();
       if (this._oSlaPopover)
       {
         this._oSlaPopover.destroy();
@@ -140,6 +143,55 @@ sap.ui.define([
       if (this._oSlaPopover)
       {
         this._oSlaPopover.close();
+      }
+    },
+
+    _attachAvgTimeHoverEvents: function ()
+    {
+      var oChartArea = this.byId("avgTimeChartHoverArea");
+      if (!oChartArea) { return; }
+      oChartArea.attachBrowserEvent("mouseenter", this._handleAvgTimeMouseEnter, this);
+      oChartArea.attachBrowserEvent("mouseleave", this._handleAvgTimeMouseLeave, this);
+    },
+
+    _detachAvgTimeHoverEvents: function ()
+    {
+      var oChartArea = this.byId("avgTimeChartHoverArea");
+      if (!oChartArea) { return; }
+      oChartArea.detachBrowserEvent("mouseenter", this._handleAvgTimeMouseEnter, this);
+      oChartArea.detachBrowserEvent("mouseleave", this._handleAvgTimeMouseLeave, this);
+    },
+
+    _handleAvgTimeMouseEnter: function ()
+    {
+      var oChartArea = this.byId("avgTimeChartHoverArea");
+      var oAggregateModel = this.getView().getModel("kpiAggregateModel");
+      var fAvg = oAggregateModel ? oAggregateModel.getProperty("/avgProcessingTime") : "0.00";
+
+      if (!oChartArea) { return; }
+
+      if (!this._oAvgTimePopover)
+      {
+        this._oAvgTimePopoverText = new Text();
+        this._oAvgTimePopover = new Popover({
+          showHeader: false,
+          placement: "Top",
+          contentWidth: "14rem",
+          content: [this._oAvgTimePopoverText]
+        });
+        this._oAvgTimePopover.addStyleClass("sapUiContentPadding");
+        this.getView().addDependent(this._oAvgTimePopover);
+      }
+
+      this._oAvgTimePopoverText.setText("Avg Processing Time: " + fAvg + " days / task");
+      this._oAvgTimePopover.openBy(oChartArea);
+    },
+
+    _handleAvgTimeMouseLeave: function ()
+    {
+      if (this._oAvgTimePopover)
+      {
+        this._oAvgTimePopover.close();
       }
     },
 
@@ -439,7 +491,9 @@ sap.ui.define([
       var oAggregateModel = new JSONModel({
         avgProcessingTime: "0.00",
         avgTimeMeterPct: "0%",
+        avgTimeMeterNum: 0,
         avgTimeState: "good",
+        avgTimeValueState: "None",
         slaHitRate: 0,
         slaColor: "Neutral",
         slaState: "None",
@@ -492,11 +546,14 @@ sap.ui.define([
 
           var fAvgMeterPct = parseFloat(Math.min(fAvgProcessingTime / 15 * 100, 100).toFixed(1));
           var sAvgTimeState = fAvgProcessingTime <= 5 ? "good" : fAvgProcessingTime <= 10 ? "warn" : "bad";
+          var sAvgTimeValueState = fAvgProcessingTime <= 5 ? "Success" : fAvgProcessingTime <= 10 ? "Warning" : "Error";
 
           oAggregateModel.setData({
             avgProcessingTime: fAvgProcessingTime.toFixed(2),
             avgTimeMeterPct: fAvgMeterPct + "%",
+            avgTimeMeterNum: fAvgMeterPct,
             avgTimeState: sAvgTimeState,
+            avgTimeValueState: sAvgTimeValueState,
             slaHitRate: fSlaRounded,
             slaColor: sSlaColor,
             slaState: sSlaState,
