@@ -206,8 +206,7 @@ img.sapMSelectListItemIcon {
   border-radius: 0.5rem;
   background: var(--sapBaseColor);
   padding: 1rem 1.25rem;
-  min-width: 17rem;
-  width: 17rem;
+  min-width: 15rem;
   box-sizing: border-box;
 }
 

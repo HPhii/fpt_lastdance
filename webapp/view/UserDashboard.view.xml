@@ -133,12 +133,13 @@
                 width="98.5%"
             >
                 <HBox
+                    width="100%"
                     wrap="Wrap"
-                    renderType="Bare"
                     class="sapUiSmallMargin sapUiTinyMarginTop"
                 >
                     <!-- Card: My Avg Processing Time (redesigned) -->
                     <VBox
+                        width="24%"
                         class="avgTimeCard sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         busy="{kpiAggregateModel>/loading}"
                     >
@@ -157,53 +158,20 @@
                             />
                         </HBox>
 
-                        <!-- Value -->
-                        <VBox
-                            class="avgTimeValueWrap"
-                            alignItems="Center"
-                        >
-                            <HBox
-                                alignItems="Baseline"
-                                justifyContent="Center"
-                            >
-                                <Text
-                                    text="{kpiAggregateModel>/avgProcessingTime}"
-                                    class="avgTimeValueText"
-                                />
-                                <Text
-                                    text=" days"
-                                    class="avgTimeUnitText"
-                                />
-                            </HBox>
-                            <Text
-                                text="per task completed"
-                                class="avgTimeSublabel"
-                            />
-                        </VBox>
-
                         <!-- Gauge -->
-                        <VBox class="avgTimeGaugeWrap">
-                            <!-- Progress fill (state-coloured) -->
-                            <HBox
-                                class="avgTimeProgressTrack"
+                        <VBox
+                            id="avgTimeChartHoverArea"
+                            class="avgTimeGaugeWrap"
+                        >
+                            <!-- Progress indicator -->
+                            <ProgressIndicator
+                                percentValue="{kpiAggregateModel>/avgTimeMeterNum}"
+                                state="{kpiAggregateModel>/avgTimeValueState}"
+                                showValue="false"
+                                height="0.78rem"
                                 width="100%"
-                            >
-                                <HBox
-                                    width="{kpiAggregateModel>/avgTimeMeterPct}"
-                                    class="avgTimeProgressFill avgTimeProgressFillGood"
-                                    visible="{= ${kpiAggregateModel>/avgTimeState} === 'good'}"
-                                />
-                                <HBox
-                                    width="{kpiAggregateModel>/avgTimeMeterPct}"
-                                    class="avgTimeProgressFill avgTimeProgressFillWarn"
-                                    visible="{= ${kpiAggregateModel>/avgTimeState} === 'warn'}"
-                                />
-                                <HBox
-                                    width="{kpiAggregateModel>/avgTimeMeterPct}"
-                                    class="avgTimeProgressFill avgTimeProgressFillBad"
-                                    visible="{= ${kpiAggregateModel>/avgTimeState} === 'bad'}"
-                                />
-                            </HBox>
+                                class="sapUiTinyMarginBottom"
+                            />
 
                             <!-- Zone reference bar -->
                             <HBox
@@ -317,7 +285,7 @@
                     <!-- Card: SLA Hit Rate Bullet Chart -->
                     <VBox
                         class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        width="54rem"
+                        width="74%"
                     >
                         <Panel
                             headerText="SLA Hit Rate"
@@ -339,33 +307,15 @@
                                             id="slaChartHoverArea"
                                             class="slaLineChartWrap"
                                         >
-                                            <HBox class="slaProgressMain">
-                                                <HBox
-                                                    class="slaProgressTrack"
-                                                    width="100%"
-                                                >
-                                                    <HBox
-                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
-                                                        class="slaProgressFill slaProgressFillGood"
-                                                        visible="{= ${kpiAggregateModel>/slaState} === 'Success'}"
-                                                    />
-                                                    <HBox
-                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
-                                                        class="slaProgressFill slaProgressFillWarning"
-                                                        visible="{= ${kpiAggregateModel>/slaState} === 'Warning'}"
-                                                    />
-                                                    <HBox
-                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
-                                                        class="slaProgressFill slaProgressFillError"
-                                                        visible="{= ${kpiAggregateModel>/slaState} === 'Error'}"
-                                                    />
-                                                    <HBox
-                                                        width="{= ${kpiAggregateModel>/slaHitRate} + '%'}"
-                                                        class="slaProgressFill slaProgressFillNeutral"
-                                                        visible="{= ${kpiAggregateModel>/slaState} === 'None'}"
-                                                    />
-                                                </HBox>
-                                            </HBox>
+                                            <!-- SLA progress indicator -->
+                                            <ProgressIndicator
+                                                percentValue="{kpiAggregateModel>/slaHitRate}"
+                                                state="{kpiAggregateModel>/slaState}"
+                                                showValue="false"
+                                                height="0.78rem"
+                                                width="100%"
+                                                class="sapUiTinyMarginBottom"
+                                            />
 
                                             <HBox
                                                 width="100%"
