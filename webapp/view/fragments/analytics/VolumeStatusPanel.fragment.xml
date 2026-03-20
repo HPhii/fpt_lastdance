@@ -39,6 +39,7 @@
                         >
                             <content>
                                 <NumericContent
+                                    class="sapUiTextBold"
                                     value="{statsAnalyticsModel>/result/IsOpenCount}"
                                     icon="sap-icon://paste"
                                     valueColor="Good"
@@ -72,6 +73,7 @@
                         >
                             <content>
                                 <NumericContent
+                                    class="sapUiTextBold"
                                     value="{statsAnalyticsModel>/result/IsCompletedThisMonth}"
                                     icon="sap-icon://task"
                                     valueColor="Good"
@@ -105,6 +107,7 @@
                         >
                             <content>
                                 <NumericContent
+                                    class="sapUiTextBold"
                                     value="{statsAnalyticsModel>/result/IsOverdueCount}"
                                     icon="sap-icon://alert"
                                     valueColor="Error"
@@ -138,6 +141,7 @@
                         >
                             <content>
                                 <NumericContent
+                                    class="sapUiTextBold"
                                     icon="sap-icon://pie-chart"
                                     value="{
                                         parts:[

@@ -3,6 +3,7 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:pf="sap.suite.ui.commons"
 >
     <Page
         title="Admin Inbox"
@@ -16,12 +17,37 @@
             />
         </headerContent>
 
+        <subHeader>
+            <Toolbar>
+                <ToolbarSpacer width="0" />
+                <Breadcrumbs
+                    currentLocationText="{adminInboxViewModel>/currentLocation}"
+                    separatorStyle="BackSlash"
+                    links="{adminInboxViewModel>/links}"
+                >
+                    <Link
+                        press=".onLinkPress"
+                        text="{adminInboxViewModel>text}"
+                    />
+                </Breadcrumbs>
+            </Toolbar>
+        </subHeader>
+
         <content>
-            <!-- <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.analytics.VolumeStatusPanel"
-                type="XML"
-            /> -->
-            <Text text="Admin Inbox" />
+            <VBox class="sapUiSmallMargin">
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.adminInbox.UsersTable"
+                    type="XML"
+                />
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.adminInbox.TasksTable"
+                    type="XML"
+                />
+                <core:Fragment
+                    fragmentName="z.wf.zwfmanagement.view.fragments.adminInbox.TraceLogsPanel"
+                    type="XML"
+                />
+            </VBox>
         </content>
     </Page>
 </mvc:View>

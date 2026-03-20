@@ -96,7 +96,7 @@ sap.ui.define([
       if (sNumberOfDays === '9,999' || sNumberOfDays === '9999' || sNumberOfDays === '9.999')
       {
         return "Infinity";
-      } else if (parseInt(sNumberOfDays, 10) < 0)
+      } else if (parseInt(sNumberOfDays, 10) <= 0)
       {
         return "";
       }

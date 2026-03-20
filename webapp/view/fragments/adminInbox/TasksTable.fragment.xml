@@ -1,0 +1,62 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Table
+        id="adminInboxTasksTable"
+        busy="{adminInboxViewModel>/isTasksBusy}"
+        visible="{adminInboxViewModel>/isTasksVisible}"
+        sticky="ColumnHeaders,HeaderToolbar"
+        items="{
+            path: 'adminInbox>/AdminInbox',
+            parameters: {
+                $expand: '_TraceLogs'
+            },
+            sorter: {
+                path: 'Priority',
+                descending: false
+            }
+        }"
+        itemPress=".onTaskPress"
+    >
+        <headerToolbar>
+            <OverflowToolbar width="100%">
+                <Title
+                    busy="{adminInboxViewModel>/isTasksBusy}"
+                    text="{adminInboxViewModel>/countTotal}"
+                    level="H2"
+                />
+            </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+            <Column>
+                <Text text="{i18n>columnTaskWorkItemId}" />
+            </Column>
+            <Column>
+                <Text text="{i18n>columnTaskName}" />
+            </Column>
+            <Column>
+                <Text text="{i18n>columnTaskCreationDate}" />
+            </Column>
+            <Column>
+                <Text text="{i18n>columnTaskStatus}" />
+            </Column>
+            <Column>
+                <Text text="{i18n>columnTaskProcessStatus}" />
+            </Column>
+            <Column>
+                <Text text="{i18n>columnTaskPriority}" />
+            </Column>
+        </columns>
+        <ColumnListItem type="Navigation">
+            <cells>
+                <Text text="{adminInbox>WorkItemID}" />
+                <Text text="{adminInbox>WorkItemText}" />
+                <Text text="{adminInbox>CreationDate}" />
+                <Text text="{adminInbox>TechnicalStatus}" />
+                <Text text="{adminInbox>TechnicalStatusText}" />
+                <Text text="{adminInbox>Priority}" />
+            </cells>
+        </ColumnListItem>
+    </Table>
+</core:FragmentDefinition>

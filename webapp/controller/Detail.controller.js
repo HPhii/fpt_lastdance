@@ -32,7 +32,7 @@ sap.ui.define(
       onInit: function ()
       {
         var oView = this.getView();
-        this.oRouter = this.getOwnerComponent().getRouter();
+        this._oRouter = this.getOwnerComponent().getRouter();
 
         var oViewModel = new JSONModel({
           headerBusy: false,
@@ -45,9 +45,8 @@ sap.ui.define(
 
         oView.setModel(oViewModel, "detailView");
         oView.setModel(new JSONModel({}), "commentsModel");
-        this.oModel = this.getOwnerComponent().getModel();
 
-        this.oRouter
+        this._oRouter
           .getRoute("RouteDetail")
           .attachPatternMatched(this._onObjectMatched, this);
       },
@@ -57,6 +56,9 @@ sap.ui.define(
         var oView = this.getView();
         var oViewModel = oView.getModel("detailView");
         var oDetailPanel = this.byId("DetailObjectPageLayout");
+
+        // Close side panel when navigating to a new task selection
+        this._closeSidePanel();
 
         // Get the propertyPath parameter from the route
         var sPropertyPath = oEvent.getParameter("arguments").propertyPath;
@@ -117,6 +119,16 @@ sap.ui.define(
             },
           },
         });
+      },
+
+      _closeSidePanel: function ()
+      {
+        var oSidePanel = this.byId("mySidePanel");
+
+        if (!oSidePanel) return;
+
+        oSidePanel.setSelectedItem(null);
+        oSidePanel.setActionBarExpanded(false);
       },
 
       onDecisionAction: function (oEvent)
@@ -282,7 +294,7 @@ sap.ui.define(
 
       handleFullScreen: function ()
       {
-        this.oRouter.navTo("RouteDetail", {
+        this._oRouter.navTo("RouteDetail", {
           layout: "MidColumnFullScreen",
           propertyPath: this._propertyPath
         });
@@ -290,7 +302,7 @@ sap.ui.define(
 
       handleExitFullScreen: function ()
       {
-        this.oRouter.navTo("RouteDetail", {
+        this._oRouter.navTo("RouteDetail", {
           layout: "TwoColumnsMidExpanded",
           propertyPath: this._propertyPath
         });
@@ -313,7 +325,7 @@ sap.ui.define(
           }
         }
 
-        this.oRouter.navTo("RouteMainView", {
+        this._oRouter.navTo("RouteMainView", {
           layout: "OneColumn"
         });
       },

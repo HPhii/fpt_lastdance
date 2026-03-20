@@ -1,0 +1,66 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Table
+        id="adminInboxUsersTable"
+        busy="{adminInboxViewModel>/isUsersBusy}"
+        visible="{adminInboxViewModel>/isUsersVisible}"
+        items="{
+            path: 'adminInboxViewModel>/users',
+            sorter: {
+                path: 'UniqueName', 
+                descending: false 
+            }
+        }"
+        itemPress=".onUserPress"
+        sticky="ColumnHeaders,HeaderToolbar"
+    >
+        <headerToolbar>
+            <OverflowToolbar width="100%">
+                <Title
+                    busy="{adminInboxViewModel>/isUsersBusy}"
+                    text="{adminInboxViewModel>/countTotal}"
+                    level="H2"
+                />
+            </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+            <Column>
+                <Text text="Unique Name" />
+            </Column>
+            <Column>
+                <Text text="Display Name" />
+            </Column>
+            <Column>
+                <Text text="Address" />
+            </Column>
+            <Column>
+                <Text text="Company" />
+            </Column>
+            <Column>
+                <Text text="Department" />
+            </Column>
+            <Column>
+                <Text text="Email" />
+            </Column>
+        </columns>
+        <ColumnListItem type="Navigation">
+            <cells>
+                <Text text="{adminInboxViewModel>UniqueName}" />
+                <Text text="{adminInboxViewModel>DisplayName}" />
+                <Text
+                    text="{= 
+                        ${adminInboxViewModel>Address/Street} + ' ' + 
+                        ${adminInboxViewModel>Address/StreetNumber} + ', ' + 
+                        ${adminInboxViewModel>Address/City} + ', ' + 
+                        ${adminInboxViewModel>Address/Country} 
+                    }"
+                />
+                <Text text="{adminInboxViewModel>Company}" />
+                <Text text="{adminInboxViewModel>Department}" />
+                <Text text="{adminInboxViewModel>Email}" />
+            </cells>
+        </ColumnListItem>
+    </Table>
+</core:FragmentDefinition>

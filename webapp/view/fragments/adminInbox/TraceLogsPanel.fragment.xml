@@ -1,0 +1,42 @@
+<core:FragmentDefinition
+    xmlns:m="sap.m"
+    xmlns="sap.suite.ui.commons"
+    xmlns:core="sap.ui.core"
+>
+    <m:Panel visible="{adminInboxViewModel>/isTraceLogsVisible}">
+        <m:Label
+            text="Process Flow sample - zooming buttons and highlighted items"
+        />
+        <ProcessFlow
+            id="processflow1"
+            scrollable="false"
+            foldedCorners="true"
+            nodePress="onNodePress"
+            nodes="{adminInboxViewModel>/traceLogsNodes}"
+            lanes="{adminInboxViewModel>/traceLogsLanes}"
+        >
+            <nodes>
+                <ProcessFlowNode
+                    laneId="{adminInboxViewModel>lane}"
+                    nodeId="{adminInboxViewModel>id}"
+                    title="{adminInboxViewModel>title}"
+                    titleAbbreviation="{adminInboxViewModel>titleAbbreviation}"
+                    children="{adminInboxViewModel>children}"
+                    state="{adminInboxViewModel>state}"
+                    stateText="{adminInboxViewModel>stateText}"
+                    texts="{adminInboxViewModel>texts}"
+                    highlighted="{adminInboxViewModel>highlighted}"
+                    focused="{adminInboxViewModel>focused}"
+                />
+            </nodes>
+            <lanes>
+                <ProcessFlowLaneHeader
+                    laneId="{adminInboxViewModel>id}"
+                    iconSrc="{adminInboxViewModel>icon}"
+                    text="{adminInboxViewModel>label}"
+                    position="{adminInboxViewModel>position}"
+                />
+            </lanes>
+        </ProcessFlow>
+    </m:Panel>
+</core:FragmentDefinition>
