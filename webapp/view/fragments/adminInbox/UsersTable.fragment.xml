@@ -20,8 +20,24 @@
             <OverflowToolbar width="100%">
                 <Title
                     busy="{adminInboxViewModel>/isUsersBusy}"
-                    text="{adminInboxViewModel>/countTotal}"
+                    text="Users ({adminInboxViewModel>/countTotal})"
                     level="H2"
+                />
+                <ToolbarSpacer />
+                <SearchField
+                    width="auto"
+                    search=".onSearchUsers"
+                    tooltip="Search Users"
+                />
+                <Button
+                    icon="sap-icon://sort"
+                    press=".onSortUsers"
+                    tooltip="Sort"
+                />
+                <Button
+                    icon="sap-icon://filter"
+                    press=".onFilterUsers"
+                    tooltip="Filter"
                 />
             </OverflowToolbar>
         </headerToolbar>

@@ -23,8 +23,24 @@
             <OverflowToolbar width="100%">
                 <Title
                     busy="{adminInboxViewModel>/isTasksBusy}"
-                    text="{adminInboxViewModel>/countTotal}"
+                    text="Tasks ({adminInboxViewModel>/countTotal})"
                     level="H2"
+                />
+                <ToolbarSpacer />
+                <SearchField
+                    width="auto"
+                    search=".onSearchTasks"
+                    tooltip="Search Tasks"
+                />
+                <Button
+                    icon="sap-icon://sort"
+                    press=".onSortTasks"
+                    tooltip="Sort"
+                />
+                <Button
+                    icon="sap-icon://filter"
+                    press=".onFilterTasks"
+                    tooltip="Filter"
                 />
             </OverflowToolbar>
         </headerToolbar>

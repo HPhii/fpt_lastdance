@@ -1,8 +1,13 @@
 sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageBox"
-], function (BaseController, JSONModel, MessageBox)
+    "sap/m/MessageBox",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/m/ViewSettingsDialog",
+    "sap/m/ViewSettingsItem",
+    "sap/ui/model/Sorter"
+], function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, ViewSettingsDialog, ViewSettingsItem, Sorter)
 {
     "use strict";
 
@@ -288,6 +293,208 @@ sap.ui.define([
                 default:
                     return "sap-icon://sys-help";
             }
+        },
+
+        onSearchUsers: function (oEvent)
+        {
+            var sQuery = oEvent.getParameter("query");
+            var oTable = this.byId("adminInboxUsersTable");
+            var oBinding = oTable.getBinding("items");
+
+            if (sQuery)
+            {
+                var aFilters = [
+                    new Filter({
+                        filters: [
+                            new Filter("UniqueName", FilterOperator.Contains, sQuery),
+                            new Filter("DisplayName", FilterOperator.Contains, sQuery),
+                            new Filter("Email", FilterOperator.Contains, sQuery),
+                            new Filter("Company", FilterOperator.Contains, sQuery),
+                            new Filter("Department", FilterOperator.Contains, sQuery)
+                        ],
+                        and: false
+                    })
+                ];
+                oBinding.filter(aFilters);
+            } else
+            {
+                oBinding.filter([]);
+            }
+        },
+
+        onSortUsers: function (oEvent)
+        {
+            if (!this._oSortUsersDialog)
+            {
+                this._oSortUsersDialog = new ViewSettingsDialog({
+                    sortItems: [
+                        new ViewSettingsItem({ text: "Unique Name", key: "UniqueName" }),
+                        new ViewSettingsItem({ text: "Display Name", key: "DisplayName" }),
+                        new ViewSettingsItem({ text: "Company", key: "Company" }),
+                        new ViewSettingsItem({ text: "Department", key: "Department" }),
+                        new ViewSettingsItem({ text: "Email", key: "Email" })
+                    ],
+                    confirm: function (oEvent)
+                    {
+                        var oParams = oEvent.getParameters();
+                        var oBinding = this.byId("adminInboxUsersTable").getBinding("items");
+                        var aSorters = [];
+
+                        if (oParams.sortItem)
+                        {
+                            var sPath = oParams.sortItem.getKey();
+                            var bDescending = oParams.sortDescending;
+                            aSorters.push(new Sorter(sPath, bDescending));
+                        }
+
+                        oBinding.sort(aSorters);
+                    }.bind(this)
+                });
+            }
+
+            this._oSortUsersDialog.open();
+        },
+
+        onFilterUsers: function (oEvent)
+        {
+            // Simple placeholder configuration, update per real requirements
+            if (!this._oFilterUsersDialog)
+            {
+                this._oFilterUsersDialog = new ViewSettingsDialog({
+                    confirm: function (oEvent)
+                    {
+                        var oParams = oEvent.getParameters();
+                        var oBinding = this.byId("adminInboxUsersTable").getBinding("items");
+                        var aFilters = [];
+
+                        oParams.filterItems.forEach(function (oItem)
+                        {
+                            var aSplit = oItem.getKey().split("___");
+                            var sPath = aSplit[0];
+                            var sValue = aSplit[1];
+                            aFilters.push(new Filter(sPath, FilterOperator.EQ, sValue));
+                        });
+
+                        oBinding.filter(aFilters);
+                    }.bind(this)
+                });
+            }
+
+            this._oFilterUsersDialog.open();
+        },
+
+        onSearchTasks: function (oEvent)
+        {
+            var sQuery = oEvent.getParameter("query");
+            var oTable = this.byId("adminInboxTasksTable");
+            var oBinding = oTable.getBinding("items");
+
+            if (sQuery)
+            {
+                var aFilters = [
+                    new Filter({
+                        filters: [
+                            new Filter("WorkItemText", FilterOperator.Contains, sQuery),
+                            new Filter("WorkItemID", FilterOperator.Contains, sQuery),
+                            new Filter("TechnicalStatus", FilterOperator.Contains, sQuery),
+                            new Filter("Priority", FilterOperator.Contains, sQuery)
+                        ],
+                        and: false
+                    })
+                ];
+                oBinding.filter(aFilters);
+            } else
+            {
+                oBinding.filter([]);
+            }
+        },
+
+        onSortTasks: function (oEvent)
+        {
+            if (!this._oSortTasksDialog)
+            {
+                this._oSortTasksDialog = new ViewSettingsDialog({
+                    sortItems: [
+                        new ViewSettingsItem({ text: "Creation Date", key: "CreationDate" }),
+                        new ViewSettingsItem({ text: "Priority", key: "Priority" }),
+                        new ViewSettingsItem({ text: "Status", key: "TechnicalStatus" }),
+                        new ViewSettingsItem({ text: "Task Name", key: "WorkItemText" })
+                    ],
+                    confirm: function (oEvent)
+                    {
+                        var oParams = oEvent.getParameters();
+                        var oBinding = this.byId("adminInboxTasksTable").getBinding("items");
+                        var aSorters = [];
+
+                        if (oParams.sortItem)
+                        {
+                            var sPath = oParams.sortItem.getKey();
+                            var bDescending = oParams.sortDescending;
+                            aSorters.push(new Sorter(sPath, bDescending));
+                        }
+
+                        oBinding.sort(aSorters);
+                    }.bind(this)
+                });
+            }
+
+            this._oSortTasksDialog.open();
+        },
+
+        onFilterTasks: function (oEvent)
+        {
+            if (!this._oFilterTasksDialog)
+            {
+                this._oFilterTasksDialog = new ViewSettingsDialog({
+                    filterItems: [
+                        new ViewSettingsItem({
+                            text: "Priority",
+                            key: "Priority",
+                            items: [
+                                new ViewSettingsItem({ text: "High", key: "Priority___1" }),
+                                new ViewSettingsItem({ text: "Medium", key: "Priority___5" }),
+                                new ViewSettingsItem({ text: "Low", key: "Priority___9" })
+                            ]
+                        }),
+                        new ViewSettingsItem({
+                            text: "Status",
+                            key: "TechnicalStatus",
+                            items: [
+                                new ViewSettingsItem({ text: "Ready", key: "TechnicalStatus___READY" }),
+                                new ViewSettingsItem({ text: "Started", key: "TechnicalStatus___STARTED" }),
+                                new ViewSettingsItem({ text: "Completed", key: "TechnicalStatus___COMPLETED" }),
+                                new ViewSettingsItem({ text: "Error", key: "TechnicalStatus___ERROR" })
+                            ]
+                        })
+                    ],
+                    confirm: function (oEvent)
+                    {
+                        var oParams = oEvent.getParameters();
+                        var oBinding = this.byId("adminInboxTasksTable").getBinding("items");
+                        var aFilters = [];
+
+                        oParams.filterItems.forEach(function (oItem)
+                        {
+                            var aSplit = oItem.getKey().split("___");
+                            var sPath = aSplit[0];
+                            var sValue = aSplit[1];
+                            aFilters.push(new Filter(sPath, FilterOperator.EQ, sValue));
+                        });
+
+                        // Preserve existing target filter from onUserPress (SampleResponsibleUser)
+                        var oViewModel = this.getView().getModel("adminInboxViewModel");
+                        var sUniqueName = oViewModel.getProperty("/lastSelectedUser");
+                        if (sUniqueName)
+                        {
+                            aFilters.push(new Filter("SampleResponsibleUser", FilterOperator.EQ, sUniqueName));
+                        }
+
+                        oBinding.filter(aFilters);
+                    }.bind(this)
+                });
+            }
+
+            this._oFilterTasksDialog.open();
         }
     });
 
