@@ -152,6 +152,9 @@ sap.ui.define([
                         MessageToast.show(oResourceBundle.getText("successMessage"));
 
                         oModel.refresh();
+
+                        // Fire a global event so that MainView or other views know they should refresh
+                        sap.ui.getCore().getEventBus().publish("wf", "taskActionCompleted");
                     }.bind(this),
                 )
                 .catch(

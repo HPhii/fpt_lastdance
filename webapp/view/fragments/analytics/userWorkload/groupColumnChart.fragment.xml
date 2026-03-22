@@ -145,57 +145,5 @@
                 <viz:Popover id="OpenCompletedPopover" />
             </viz:dependents>
         </viz:VizFrame>
-
-        <!-- VizSlider -->
-        <viz:VizSlider
-            id="OpenCompletedSlider"
-            uiConfig="{applicationSet:'fiori'}"
-            height="70px"
-            width="100%"
-            vizType='column'
-        >
-            <viz:dataset>
-                <viz.data:FlattenedDataset
-                    data="{
-                        path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
-                        parameters : {
-                            $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
-                            $filter: 'ActualAgent ne \'Unassigned\''
-                        }
-                    }"
-                >
-                    <viz.data:dimensions>
-                        <viz.data:DimensionDefinition
-                            name="Agent"
-                            value="{ActualAgent}"
-                            dataType="string"
-                        />
-                    </viz.data:dimensions>
-                    <viz.data:measures>
-                        <viz.data:MeasureDefinition
-                            name="Open"
-                            value="{IsOpenCount}"
-                        />
-                        <viz.data:MeasureDefinition
-                            name="Completed"
-                            value="{IsCompletedCount}"
-                        />
-                    </viz.data:measures>
-                </viz.data:FlattenedDataset>
-            </viz:dataset>
-
-            <viz:feeds>
-                <viz.feeds:FeedItem
-                    uid="valueAxis"
-                    type="Measure"
-                    values="Open,Completed"
-                />
-                <viz.feeds:FeedItem
-                    uid="categoryAxis"
-                    type="Dimension"
-                    values="Agent"
-                />
-            </viz:feeds>
-        </viz:VizSlider>
     </VBox>
 </core:FragmentDefinition>

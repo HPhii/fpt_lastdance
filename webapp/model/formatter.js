@@ -259,6 +259,15 @@ sap.ui.define([
       return Math.round(fRate * 100) / 100;
     },
 
+    formatStatusTabIndicator: function (sText, bHasTasks)
+    {
+      if (bHasTasks)
+      {
+        return sText + " •";
+      }
+      return sText;
+    },
+
     formatCompletionRateColor: function (sCompleted, sTotal)
     {
       var total = parseFloat(sTotal) || 0;

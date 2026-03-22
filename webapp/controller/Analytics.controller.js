@@ -33,7 +33,6 @@ sap.ui.define(
       /* ROUTE MATCHED */
       _onObjectMatched: function ()
       {
-        this._loadOpenCompletedSlider(); //TODO
         this._loadAgingChart();
         this._loadBottleneckHeatmap();
         this._connectPopovers();
@@ -67,70 +66,6 @@ sap.ui.define(
             console.error("Failed to fetch analytics data:", oError);
           }.bind(this),
         });
-      },
-
-      //TODO
-      _loadOpenCompletedSlider: function ()
-      {
-        var oVizFrame = this.byId("OpenCompletedColumnChart");
-        var oRangeSlider = this.byId("OpenCompletedSlider");
-        if (!oRangeSlider)
-        {
-          return;
-        }
-
-        oRangeSlider.setValueAxisVisible(false);
-        oRangeSlider.setShowPercentageLabel(false);
-        oRangeSlider.setShowStartEndLabel(false);
-        oRangeSlider.setLayoutData(new FlexItemData({
-          maxHeight: '7%',
-          baseSize: '100%',
-          order: 1,
-          styleClass: 'rangeSliderPadding'
-        }));
-
-        oRangeSlider.attachRangeChanged(function (e)
-        {
-          var data = e.getParameters().data;
-          console.log(">>>> ", data);
-
-          var oBinding = oVizFrame.getDataset().getBinding("data");
-          if (!oBinding) return;
-
-          var aOrder = oBinding.getContexts().map(function (ctx) { return ctx.getProperty("ActualAgent"); });
-
-          console.log("aOrder ", aOrder);
-
-          var iStart = 0;
-          var iEnd = aOrder.length - 1;
-
-          var iMin = Math.min(iStart, iEnd);
-          var iMax = Math.max(iStart, iEnd);
-
-          var aKeep = aOrder.filter(function (sAgent, idx) { return idx >= iMin && idx <= iMax; });
-
-          var oMultiFilter = new Filter({
-            filters: aKeep.map(function (sAgent)
-            {
-              return new Filter("ActualAgent", FilterOperator.EQ, sAgent);
-            }),
-            and: false,
-          });
-
-          oBinding.filter([oMultiFilter]);
-        });
-      },
-
-      //TODO
-      _getChartBinding: function (sChartId)
-      {
-        var oChart = this.byId(sChartId);
-        if (!oChart)
-        {
-          return null;
-        }
-        var oDataset = oChart.getDataset();
-        return oDataset && oDataset.getBinding("data");
       },
 
       //TODO

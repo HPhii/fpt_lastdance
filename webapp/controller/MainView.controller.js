@@ -30,9 +30,6 @@ sap.ui.define([
       // Initialize router
       this.oRouter = this.getOwnerComponent().getRouter();
 
-      // Clear selection when navigating back to main view (e.g. browser back button)
-      this.oRouter.getRoute("RouteMainView").attachPatternMatched(this._onMainViewMatched, this);
-
       let oViewModel,
         oList = this.byId("idTasksList");
 
@@ -40,6 +37,22 @@ sap.ui.define([
 
       //keeps the search state
       this._aTableSearchState = [];
+
+      var oStatusFilterCounter = new JSONModel({
+        readyCount: 0,
+        selectedCount: 0,
+        startedCount: 0,
+        committedCount: 0,
+        waitingCount: 0,
+        checkedCount: 0,
+        completedCount: 0,
+        cancelledCount: 0,
+        errorCount: 0,
+        isHasOverdue: false,
+        isHasDueOn: false
+      });
+
+      this.getView().setModel(oStatusFilterCounter, "statusFilterCounter");
 
       // Model used to manipulate control states
       oViewModel = new JSONModel({
@@ -82,6 +95,65 @@ sap.ui.define([
         overdue: [new Filter("IsOverdue", FilterOperator.EQ, "X")],
         ondue: [new Filter("IsDueOn", FilterOperator.EQ, "X")]
       };
+
+      this.oRouter.getRoute("RouteMainView").attachPatternMatched(this._onMainViewMatched, this);
+      this._loadStatusFilterCounter();
+
+      // Subscribe to global event to refresh the filter bar manually when tasks are changed in detail view
+      sap.ui.getCore().getEventBus().subscribe("wf", "taskActionCompleted", this._loadStatusFilterCounter, this);
+    },
+
+    _loadStatusFilterCounter: function ()
+    {
+
+      var oView = this.getView();
+      var oStatusFilterCounter = oView.getModel("statusFilterCounter");
+      // Fallback to Component model if View model is not yet propagated in onInit
+      var oODataModel = oView.getModel() || this.getOwnerComponent().getModel();
+
+      if (!oODataModel)
+      {
+        console.error("Default model is undefined.");
+        return;
+      }
+
+      var oListBinding = oODataModel.bindList("/TaskBase");
+
+      oListBinding.requestContexts(0, 1).then(function (aContexts)
+      {
+        if (aContexts && aContexts.length > 0)
+        {
+          var oData = aContexts[0].getObject();
+          oStatusFilterCounter.setData({
+            readyCount: oData.readyCount || 0,
+            selectedCount: oData.reservedCount || 0,
+            startedCount: oData.inProcessCount || 0,
+            committedCount: oData.executedCount || 0,
+            waitingCount: oData.waitingCount || 0,
+            checkedCount: oData.checkedCount || 0,
+            completedCount: oData.completedCount || 0,
+            cancelledCount: oData.deletedCount || 0,
+            errorCount: oData.errorCount || 0
+          });
+        }
+      }).catch(function (oError)
+      {
+        console.error("Failed to map TaskBase counts:", oError);
+      });
+
+      var oDueOnBinding = oODataModel.bindList("/WfTasks", undefined, undefined, [new Filter("IsDueOn", FilterOperator.EQ, "X")]);
+      oDueOnBinding.requestContexts(0, 0).then(function ()
+      {
+        var iCount = oDueOnBinding.getLength();
+        oStatusFilterCounter.setProperty("/isHasDueOn", iCount > 0);
+      });
+
+      var oOverdueBinding = oODataModel.bindList("/WfTasks", undefined, undefined, [new Filter("IsOverdue", FilterOperator.EQ, "X")]);
+      oOverdueBinding.requestContexts(0, 0).then(function ()
+      {
+        var iCount = oOverdueBinding.getLength();
+        oStatusFilterCounter.setProperty("/isHasOverdue", iCount > 0);
+      });
     },
 
     onSort: function ()
@@ -419,10 +491,7 @@ sap.ui.define([
 
     _onMainViewMatched: function ()
     {
-      if (this._oList)
-      {
-        this._oList.removeSelections(true);
-      }
+      if (this._oList) this._oList.removeSelections(true);
     },
 
     onSubstitutePress: function ()

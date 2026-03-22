@@ -187,7 +187,7 @@
                         <Text
                             class="sapUiTextItalic"
                             visible="{= %{worklistView>/columns/userSubstitutedBy} &amp;&amp; %{UserSubstitutedBy}  !== '' }"
-                            text="{= ${i18n>columnTaskUserSubstitutedBy} + ' ' + %{UserSubstitutedBy}}"
+                            text="{= ${i18n>columnTaskUserSubstitutedBy} + ' ' + (%{UserSubstitutedByName} || %{UserSubstitutedBy})}"
                         />
                     </VBox>
                     <Text text="{TaskID}" />

@@ -17,7 +17,10 @@
                 <Select
                     id="prioritySelect"
                     forceSelection="false"
-                    selectedKey="{Priority}"
+                    selectedKey="{
+                        path: 'Priority', 
+                        mode: 'OneWay'
+                    }"
                     items="{priorityModel>/priorities}"
                     width="100%"
                 >

@@ -4,9 +4,7 @@
     xmlns:core="sap.ui.core"
 >
     <m:Panel visible="{adminInboxViewModel>/isTraceLogsVisible}">
-        <m:Label
-            text="Process Flow sample - zooming buttons and highlighted items"
-        />
+        <m:Label text="Trace Logs" />
         <ProcessFlow
             id="processflow1"
             scrollable="false"
