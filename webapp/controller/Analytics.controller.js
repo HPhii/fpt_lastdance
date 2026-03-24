@@ -2,19 +2,9 @@ sap.ui.define(
   [
     "./BaseController",
     "sap/ui/model/json/JSONModel",
-    "sap/m/FlexItemData",
-    "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator",
     "../utils/ChartFilterDialog",
   ],
-  function (
-    BaseController,
-    JSONModel,
-    FlexItemData,
-    Filter,
-    FilterOperator,
-    ChartFilterDialogHelper,
-  ) {
+  function (BaseController, JSONModel, ChartFilterDialogHelper) {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Analytics", {
@@ -24,6 +14,8 @@ sap.ui.define(
         var oStatsModel = new JSONModel({
           busy: false,
           result: {},
+          priorityBusy: false,
+          priorityData: [],
         });
 
         this.getView().setModel(oStatsModel, "statsAnalyticsModel");
@@ -71,7 +63,6 @@ sap.ui.define(
         });
       },
 
-      //TODO
       onChartToggleFullScreen: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
         var oPanel = this.byId(sChartId);
@@ -91,7 +82,6 @@ sap.ui.define(
         }
       },
 
-      //TODO
       onChartOpenFilter: function (oEvent) {
         var oView = this.getView(),
           sChartId = oEvent.getSource().data("chartId"),
@@ -178,7 +168,6 @@ sap.ui.define(
           success: function (oData) {
             var aRaw = oData.results || [];
 
-            // Thu thập các giá trị hợp lệ để loại trừ "N/A" và tạo đủ các điểm giao cắt, tránh lỗi "No value"
             var aPriorities = [];
             var aBuckets = [];
             var mData = {};
@@ -188,7 +177,6 @@ sap.ui.define(
               var b = item.AgingBucket || "";
               var c = Number(item.IsOpenCount) || 0;
 
-              // Bỏ qua các dòng có nội dung N/A
               if (
                 b.indexOf("N/A") !== -1 ||
                 p.indexOf("N/A") !== -1 ||
@@ -205,7 +193,6 @@ sap.ui.define(
               mData[key] = (mData[key] || 0) + c;
             });
 
-            // Tạo list data hoàn chỉnh cho tất cả các trục (nếu không có data thì mặc định là 0)
             var aHeatData = [];
             aPriorities.forEach(function (p) {
               aBuckets.forEach(function (b) {
@@ -238,7 +225,6 @@ sap.ui.define(
         var oView = this.getView();
         var oModel = oView.getModel("statsAnalytics");
 
-        // Set busy
         var oStatsModel = oView.getModel("statsAnalyticsModel");
         oStatsModel.setProperty("/donutBusy", true);
 
@@ -252,7 +238,6 @@ sap.ui.define(
             var aRaw = oData.results || [];
             var mData = {};
 
-            // Group by StatusCategory and Sum TaskCounter
             aRaw.forEach(function (item) {
               var status = item.StatusCategory || "Unknown";
               var count = Number(item.TaskCounter) || 0;
@@ -260,7 +245,6 @@ sap.ui.define(
               mData[status] = (mData[status] || 0) + count;
             });
 
-            // Convert to Array for VizFrame
             var aGroupedData = [];
             for (var key in mData) {
               aGroupedData.push({
@@ -269,7 +253,6 @@ sap.ui.define(
               });
             }
 
-            // Create or update a local model for the Donut Chart
             var oDonutModel = new JSONModel({
               DonutData: aGroupedData,
             });
@@ -287,7 +270,6 @@ sap.ui.define(
         var oView = this.getView();
         var oModel = oView.getModel("statsAnalytics");
 
-        // Set busy
         var oStatsModel = oView.getModel("statsAnalyticsModel");
         oStatsModel.setProperty("/priorityBusy", true);
 
@@ -301,7 +283,6 @@ sap.ui.define(
             var aRaw = oData.results || [];
             var mData = {};
 
-            // Group by PriorityLevel and Sum TaskCounter
             aRaw.forEach(function (item) {
               var priority = item.PriorityLevel || "Unknown";
               var count = Number(item.TaskCounter) || 0;
@@ -309,7 +290,6 @@ sap.ui.define(
               mData[priority] = (mData[priority] || 0) + count;
             });
 
-            // Convert to Array for VizFrame
             var aGroupedData = [];
             for (var key in mData) {
               aGroupedData.push({
@@ -318,7 +298,6 @@ sap.ui.define(
               });
             }
 
-            // Create or update a local model for the Priority Chart
             var oPriorityModel = new JSONModel({
               PriorityData: aGroupedData,
             });
@@ -357,9 +336,6 @@ sap.ui.define(
 
       onChartZoomIn: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
-
-        console.log(sChartId);
-
         var oChart = this.byId(sChartId);
         if (oChart) {
           oChart.zoom({ direction: "in" });

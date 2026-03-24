@@ -136,10 +136,6 @@
                         values="OpenTasks"
                     />
                 </viz:feeds>
-
-                <viz:dependents>
-                    <viz:Popover id="BottleneckPopover" />
-                </viz:dependents>
             </viz:VizFrame>
         </FlexBox>
     </Panel>
