@@ -22,11 +22,10 @@ sap.ui.define([
             var oViewModel = new JSONModel({
                 currentLocation: "",
                 links: [
-                    {
-                        text: "Users"
-                    }
+                    { text: "Users" }
                 ],
                 countTotal: 0,
+                countTotalTableHeader: 0,
                 tasks: [],
                 users: [],
                 traceLogs: [],
@@ -36,7 +35,10 @@ sap.ui.define([
                 isUsersVisible: true,
                 isTraceLogsVisible: false,
                 isTraceLogsBusy: false,
-                lastSelectedUser: ""
+                lastSelectedUser: "",
+                isClaimedByUsersLoaded: false,
+                countSelectedStatus: 0,
+                countWaitingStatus: 0
             });
 
             oView.setModel(oViewModel, "adminInboxViewModel");
@@ -46,34 +48,9 @@ sap.ui.define([
                 .attachPatternMatched(this._onObjectMatched, this);
         },
 
-        _onObjectMatched: function (oEvent)
+        _onObjectMatched: function ()
         {
-            var oView = this.getView();
-            var oAdminInboxModel = oView.getModel("adminInboxViewModel");
-
-            const oODataModel = oView.getModel("taskProcessing");
-            const sEntityPath = "/SearchUsers";
-
-            oAdminInboxModel.setProperty("/isUsersBusy", true);
-            oODataModel.callFunction(sEntityPath, {
-                method: "GET",
-                urlParameters: {
-                    "sap-client": "324",
-                    "SAP__Origin": "LOCAL_TGW",
-                    "SearchPattern": 'DEV-1*'
-                },
-                success: function (oData)
-                {
-                    oAdminInboxModel.setProperty("/users", oData.results || []);
-                    oAdminInboxModel.setProperty("/countTotal", oData.results.length);
-                    oAdminInboxModel.setProperty("/isUsersBusy", false);
-                },
-                error: function (oError)
-                {
-                    MessageBox.error("Error fetching user data: " + oError.message);
-                    oAdminInboxModel.setProperty("/isUsersBusy", false);
-                }
-            });
+            this.onSearchUsers();
         },
 
         onUserPress: function (oEvent)
@@ -94,8 +71,6 @@ sap.ui.define([
             var oTasksTable = oView.byId("adminInboxTasksTable");
             var oBinding = oTasksTable.getBinding("items");
 
-            console.log(oBinding);
-
             if (!oBinding) return;
 
             // Attach listeners permanently just once to avoid leaks
@@ -107,9 +82,47 @@ sap.ui.define([
                 });
                 oBinding.attachEvent("dataReceived", function (oData)
                 {
+                    var aSelectedStatusCount = 0,
+                        aWaitingStatusCount = 0,
+                        aClaimedByUser = [],
+                        isClaimedByUsersLoaded = oViewModel.getProperty("/isClaimedByUsersLoaded");
+
                     var aContexts = oData.getSource().getCurrentContexts();
                     oViewModel.setProperty("/isTasksBusy", false);
-                    oViewModel.setProperty("/countTotal", aContexts ? aContexts.length : 0);
+
+                    aContexts.map(function (oContext)
+                    {
+                        var sStatus = oContext.getProperty("TechnicalStatus");
+                        var sClaimedByUser = oContext.getProperty("ClaimedByUser");
+
+                        if (sStatus === "SELECTED")
+                        {
+                            aSelectedStatusCount++;
+                        }
+                        else if (sStatus === "WAITING")
+                        {
+                            aWaitingStatusCount++;
+                        }
+
+                        if (!isClaimedByUsersLoaded) 
+                        {
+                            if (sClaimedByUser && !aClaimedByUser.includes(sClaimedByUser))
+                            {
+                                aClaimedByUser.push(sClaimedByUser);
+                            }
+                        }
+                    });
+
+                    if (!isClaimedByUsersLoaded) 
+                    {
+                        oViewModel.setProperty("/claimedByUsers", aClaimedByUser);
+                        oViewModel.setProperty("/isClaimedByUsersLoaded", true);
+                        oViewModel.setProperty("/countTotal", aContexts ? aContexts.length : 0);
+                        oViewModel.setProperty("/countSelectedStatus", aSelectedStatusCount);
+                        oViewModel.setProperty("/countWaitingStatus", aWaitingStatusCount);
+                    }
+
+                    oViewModel.setProperty("/countTotalTableHeader", aContexts ? aContexts.length : 0);
                 });
                 this._bTaskEventsAttached = true;
             }
@@ -124,6 +137,7 @@ sap.ui.define([
             } else
             {
                 oViewModel.setProperty("/lastSelectedUser", sUniqueName);
+                oViewModel.setProperty("/isClaimedByUsersLoaded", false);
                 // apply expand and filter
                 oBinding.changeParameters({
                     $expand: "_TraceLogs",
@@ -134,6 +148,8 @@ sap.ui.define([
 
         onLinkPress: function (oEvent)
         {
+            this._resetSearchAndFilters();
+
             var oSource = oEvent.getSource();
             var sText = oSource.getText();
             var oView = this.getView();
@@ -183,12 +199,61 @@ sap.ui.define([
             }
         },
 
+        onNavBackToUsers: function () 
+        {
+            this._resetSearchAndFilters();
+            var oViewModel = this.getView().getModel('adminInboxViewModel');
+            oViewModel.setProperty('/isTasksVisible', false);
+            oViewModel.setProperty('/isUsersVisible', true);
+            oViewModel.setProperty('/isTraceLogsVisible', false);
+            oViewModel.setProperty('/currentLocation', '');
+        },
+
+        onNavBackToTasks: function ()
+        {
+            this._resetSearchAndFilters();
+            var oViewModel = this.getView().getModel('adminInboxViewModel');
+            var sLastSelectedUser = oViewModel.getProperty("/lastSelectedUser");
+            oViewModel.setProperty('/isTasksVisible', true);
+            oViewModel.setProperty('/isTraceLogsVisible', false);
+            oViewModel.setProperty('/currentLocation', sLastSelectedUser);
+            oViewModel.setProperty('/links', [{ text: 'Users' }]);
+        },
+
+        onTaskStatusFilterSelect: function (oEvent)
+        {
+            var sKey = oEvent.getParameter('key');
+            var oTable = this.byId('adminInboxTasksTable');
+
+            if (!oTable) return;
+
+            var oBinding = oTable.getBinding('items');
+            var sUniqueName = this.getView().getModel('adminInboxViewModel').getProperty('/lastSelectedUser');
+
+            var aFilters = [];
+
+            if (sUniqueName)
+            {
+                aFilters.push(new Filter('SampleResponsibleUser', FilterOperator.EQ, sUniqueName));
+            }
+
+            if (sKey.startsWith("claimedByUser-")) 
+            {
+                var sClaimedBy = sKey.replace("claimedByUser-", "");
+                aFilters.push(new Filter('ClaimedByUser', FilterOperator.EQ, sClaimedBy));
+            }
+            else if (sKey !== 'all' && sKey !== 'claimedBy')
+            {
+                aFilters.push(new Filter('TechnicalStatus', FilterOperator.EQ, sKey));
+            }
+
+            oBinding.filter(aFilters, 'Application');
+        },
+
         onTaskPress: function (oEvent)
         {
             var oView = this.getView();
             var oCtx = oEvent.getParameter("listItem")?.getBindingContext("adminInbox");
-
-            console.log(oCtx);
 
             if (!oCtx) return;
 
@@ -220,7 +285,7 @@ sap.ui.define([
                 var sLaneId = "lane" + iIndex;
                 aLanes.push({
                     id: sLaneId,
-                    icon: this._getIconForStatus(oLog.StepStatus),
+                    icon: this.formatter.formatTraceLogIcon(oLog.StepStatus),
                     label: oLog.StatusText || oLog.StepDescription,
                     position: iIndex
                 });
@@ -239,8 +304,8 @@ sap.ui.define([
                     title: oLog.StepDescription,
                     titleAbbreviation: oLog.StepDescription ? oLog.StepDescription.substring(0, 2) : "",
                     children: aChildren,
-                    state: this._getStateForStatus(oLog.StepStatus),
-                    stateText: oLog.StatusText,
+                    state: this.formatter.formatTraceLogState(oLog.StepStatus),
+                    stateText: oLog.StepStatus,
                     focused: iIndex === aTraceLogs.length - 1,
                     texts: [
                         oLog.ActualAgent,
@@ -257,68 +322,127 @@ sap.ui.define([
             oViewModel.setProperty("/isTraceLogsVisible", true);
         },
 
-        _getStateForStatus: function (sStatus)
-        {
-            switch (sStatus)
-            {
-                case "COMPLETED":
-                    return "Positive";
-                case "READY":
-                case "IN_PROGRESS":
-                case "STARTED":
-                case "SELECTED":
-                case "WAITING":
-                    return "Neutral";
-                case "ERROR":
-                    return "Negative";
-                default:
-                    return "Neutral";
-            }
-        },
-
-        _getIconForStatus: function (sStatus)
-        {
-            switch (sStatus)
-            {
-                case "COMPLETED":
-                    return "sap-icon://accept";
-                case "READY":
-                case "IN_PROGRESS":
-                case "STARTED":
-                case "SELECTED":
-                case "WAITING":
-                    return "sap-icon://in-progress";
-                case "ERROR":
-                    return "sap-icon://error";
-                default:
-                    return "sap-icon://sys-help";
-            }
-        },
-
         onSearchUsers: function (oEvent)
         {
-            var sQuery = oEvent.getParameter("query");
-            var oTable = this.byId("adminInboxUsersTable");
-            var oBinding = oTable.getBinding("items");
+            var sQuery = oEvent?.getParameter("query");
 
-            if (sQuery)
+            var oView = this.getView();
+            var oAdminInboxModel = oView.getModel("adminInboxViewModel");
+
+            const oODataModel = oView.getModel("taskProcessing");
+            const sEntityPath = "/SearchUsers";
+            var sDefaultUserId = sQuery || "DEV-1*";
+
+            oAdminInboxModel.setProperty("/isUsersBusy", true);
+            oODataModel.callFunction(sEntityPath, {
+                method: "GET",
+                urlParameters: {
+                    "sap-client": "324",
+                    "SAP__Origin": "LOCAL_TGW",
+                    "SearchPattern": `${sDefaultUserId}`
+                },
+                success: function (oData)
+                {
+                    oAdminInboxModel.setProperty("/users", oData.results || []);
+                    oAdminInboxModel.setProperty("/countTotal", oData.results.length);
+                    oAdminInboxModel.setProperty("/isUsersBusy", false);
+                },
+                error: function (oError)
+                {
+                    MessageBox.error("Error fetching user data: " + oError.message);
+                    oAdminInboxModel.setProperty("/isUsersBusy", false);
+                }
+            });
+        },
+
+        onNavBackToDashboard: function ()
+        {
+            this._resetSearchAndFilters();
+            this.getView().getModel("adminInboxViewModel").setData({
+                currentLocation: "",
+                links: [
+                    { text: "Users" }
+                ],
+                countTotal: 0,
+                countTotalTableHeader: 0,
+                tasks: [],
+                users: [],
+                traceLogs: [],
+                isTasksBusy: false,
+                isUsersBusy: false,
+                isTasksVisible: false,
+                isUsersVisible: true,
+                isTraceLogsVisible: false,
+                isTraceLogsBusy: false,
+                lastSelectedUser: "",
+                isClaimedByUsersLoaded: false,
+                countSelectedStatus: 0,
+                countWaitingStatus: 0
+            });
+            BaseController.prototype.onNavBackToDashboard.apply(this, arguments);
+        },
+
+        _resetSearchAndFilters: function ()
+        {
+            // Reset Tasks Search Field & Filters
+            var oTasksTable = this.byId("adminInboxTasksTable");
+            if (oTasksTable)
             {
-                var aFilters = [
-                    new Filter({
-                        filters: [
-                            new Filter("UniqueName", FilterOperator.Contains, sQuery),
-                            new Filter("DisplayName", FilterOperator.Contains, sQuery),
-                            new Filter("Email", FilterOperator.Contains, sQuery),
-                            new Filter("Company", FilterOperator.Contains, sQuery),
-                            new Filter("Department", FilterOperator.Contains, sQuery)
-                        ],
-                        and: false
-                    })
-                ];
-                oBinding.filter(aFilters);
-            } else
+                var oTasksHeader = oTasksTable.getHeaderToolbar();
+                if (oTasksHeader)
+                {
+                    var aTasksContent = oTasksHeader.getContent();
+                    aTasksContent.forEach(function (oControl)
+                    {
+                        if (oControl.isA && oControl.isA("sap.m.SearchField"))
+                        {
+                            oControl.setValue("");
+                        }
+                    });
+                }
+
+                var oBinding = oTasksTable.getBinding("items");
+                if (oBinding)
+                {
+                    var sUniqueName = this.getView().getModel("adminInboxViewModel").getProperty("/lastSelectedUser");
+                    var aTasksFilters = [];
+                    if (sUniqueName)
+                    {
+                        aTasksFilters.push(new Filter("SampleResponsibleUser", FilterOperator.EQ, sUniqueName));
+                    }
+                    oBinding.filter(aTasksFilters, "Application");
+                }
+            }
+
+            // Reset Tasks IconTabBar
+            var oTaskTabBar = this.byId("adminInboxTasksIconTabBar");
+            if (oTaskTabBar)
             {
-                oBinding.filter([]);
+                oTaskTabBar.setSelectedKey("all");
+            }
+
+            // Reset Users Search Field & Filters
+            var oUsersTable = this.byId("adminInboxUsersTable");
+            if (oUsersTable)
+            {
+                var oUsersHeader = oUsersTable.getHeaderToolbar();
+                if (oUsersHeader)
+                {
+                    var aUsersContent = oUsersHeader.getContent();
+                    aUsersContent.forEach(function (oControl)
+                    {
+                        if (oControl.isA && oControl.isA("sap.m.SearchField"))
+                        {
+                            oControl.setValue("");
+                        }
+                    });
+                }
+
+                var oUsersBinding = oUsersTable.getBinding("items");
+                if (oUsersBinding)
+                {
+                    oUsersBinding.filter([]);
+                }
             }
         },
 
@@ -497,5 +621,4 @@ sap.ui.define([
             this._oFilterTasksDialog.open();
         }
     });
-
 });

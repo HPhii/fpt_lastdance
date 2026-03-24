@@ -2,77 +2,211 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
 >
-    <Table
-        id="adminInboxTasksTable"
-        busy="{adminInboxViewModel>/isTasksBusy}"
+    <VBox
         visible="{adminInboxViewModel>/isTasksVisible}"
-        sticky="ColumnHeaders,HeaderToolbar"
-        items="{
-            path: 'adminInbox>/AdminInbox',
-            parameters: {
-                $expand: '_TraceLogs'
-            },
-            sorter: {
-                path: 'Priority',
-                descending: false
-            }
-        }"
-        itemPress=".onTaskPress"
+        height="100%"
     >
-        <headerToolbar>
-            <OverflowToolbar width="100%">
-                <Title
-                    busy="{adminInboxViewModel>/isTasksBusy}"
-                    text="Tasks ({adminInboxViewModel>/countTotal})"
-                    level="H2"
+        <IconTabBar
+            id="adminInboxTasksIconTabBar"
+            select=".onTaskStatusFilterSelect"
+            expandable="false"
+            upperCase="true"
+            busy="{adminInboxViewModel>/isTasksBusy}"
+        >
+            <items>
+                <IconTabFilter
+                    key="all"
+                    text="{i18n>WorklistFilterTasksAll}"
+                    count="{adminInboxViewModel>/countTotal}"
+                    showAll="true"
                 />
-                <ToolbarSpacer />
-                <SearchField
-                    width="auto"
-                    search=".onSearchTasks"
-                    tooltip="Search Tasks"
+                <IconTabSeparator />
+                <IconTabFilter
+                    key="selected"
+                    icon="sap-icon://employee-approvals"
+                    iconColor="Neutral"
+                    count="{adminInboxViewModel>/countSelectedStatus}"
+                    text="{i18n>WorklistFilterTasksSelected}"
                 />
-                <Button
-                    icon="sap-icon://sort"
-                    press=".onSortTasks"
-                    tooltip="Sort"
+                <IconTabFilter
+                    key="waiting"
+                    icon="sap-icon://pending"
+                    iconColor="Critical"
+                    count="{adminInboxViewModel>/countWaitingStatus}"
+                    text="{i18n>WorklistFilterTasksWaiting}"
                 />
-                <Button
-                    icon="sap-icon://filter"
-                    press=".onFilterTasks"
-                    tooltip="Filter"
-                />
-            </OverflowToolbar>
-        </headerToolbar>
-        <columns>
-            <Column>
-                <Text text="{i18n>columnTaskWorkItemId}" />
-            </Column>
-            <Column>
-                <Text text="{i18n>columnTaskName}" />
-            </Column>
-            <Column>
-                <Text text="{i18n>columnTaskCreationDate}" />
-            </Column>
-            <Column>
-                <Text text="{i18n>columnTaskStatus}" />
-            </Column>
-            <Column>
-                <Text text="{i18n>columnTaskProcessStatus}" />
-            </Column>
-            <Column>
-                <Text text="{i18n>columnTaskPriority}" />
-            </Column>
-        </columns>
-        <ColumnListItem type="Navigation">
-            <cells>
-                <Text text="{adminInbox>WorkItemID}" />
-                <Text text="{adminInbox>WorkItemText}" />
-                <Text text="{adminInbox>CreationDate}" />
-                <Text text="{adminInbox>TechnicalStatus}" />
-                <Text text="{adminInbox>TechnicalStatusText}" />
-                <Text text="{adminInbox>Priority}" />
-            </cells>
-        </ColumnListItem>
-    </Table>
+                <IconTabSeparator />
+                <IconTabFilter
+                    key="claimedBy"
+                    icon="sap-icon://account"
+                    text="{i18n>WorklistFilterTasksClaimedBy}"
+                    design="Horizontal"
+                    iconDensityAware="true"
+                    items="{adminInboxViewModel>/claimedByUsers}"
+                >
+                    <items>
+                        <IconTabFilter
+                            key="claimedByUser-{adminInboxViewModel>}"
+                            text="{adminInboxViewModel>}"
+                        />
+                    </items>
+                </IconTabFilter>
+            </items>
+        </IconTabBar>
+
+        <Table
+            id="adminInboxTasksTable"
+            busy="{adminInboxViewModel>/isTasksBusy}"
+            sticky="ColumnHeaders,HeaderToolbar"
+            items="{
+                path: 'adminInbox>/AdminInbox',
+                parameters: {
+                    $expand: '_TraceLogs'
+                },
+                sorter: {
+                    path: 'Priority',
+                    descending: false
+                }
+            }"
+            itemPress=".onTaskPress"
+        >
+            <headerToolbar>
+                <OverflowToolbar width="100%">
+                    <HBox
+                        alignItems="Center"
+                        justifyContent="Center"
+                        height="100%"
+                    >
+                        <Button
+                            icon="sap-icon://nav-back"
+                            press=".onNavBackToUsers"
+                            tooltip="{i18n>tooltipNavBack}"
+                            type="Transparent"
+                        />
+                        <Title
+                            busy="{adminInboxViewModel>/isTasksBusy}"
+                            text="{i18n>tableHeaderTitle} ({adminInboxViewModel>/countTotalTableHeader})"
+                            level="H2"
+                            class="sapUiTinyMarginBegin"
+                        />
+                    </HBox>
+
+                    <ToolbarSpacer />
+                    <SearchField
+                        width="auto"
+                        search="_onObjectMatched"
+                        placeholder="{i18n>tableHeaderSearchPlaceholder}"
+                        tooltip="{i18n>tooltipHeaderSearch}"
+                    />
+                    <Button
+                        icon="sap-icon://sort"
+                        press=".onSortTasks"
+                        tooltip="{i18n>tooltipHeaderSort}"
+                    />
+                    <Button
+                        icon="sap-icon://filter"
+                        press=".onFilterTasks"
+                        tooltip="{i18n>tooltipHeaderFilter}"
+                    />
+                </OverflowToolbar>
+            </headerToolbar>
+            <columns>
+                <Column>
+                    <Text text="{i18n>columnTaskWorkItemId}" />
+                </Column>
+                <Column
+                    demandPopin="true"
+                    minScreenWidth="Tablet"
+                >
+                    <Text text="{i18n>columnTaskName}" />
+                </Column>
+                <Column
+                    demandPopin="true"
+                    minScreenWidth="Tablet"
+                >
+                    <Text text="{i18n>columnTaskCreationDate}" />
+                </Column>
+                <Column
+                    demandPopin="true"
+                    minScreenWidth="Tablet"
+                >
+                    <Text text="{i18n>columnTaskStatus}" />
+                </Column>
+                <Column
+                    demandPopin="true"
+                    minScreenWidth="Desktop"
+                    popinDisplay="Inline"
+                >
+                    <Text text="{i18n>columnTaskProcessStatus}" />
+                </Column>
+                <Column
+                    demandPopin="true"
+                    minScreenWidth="Tablet"
+                >
+                    <Text text="{i18n>columnTaskPriority}" />
+                </Column>
+                <Column
+                    demandPopin="true"
+                    minScreenWidth="Desktop"
+                    popinDisplay="Inline"
+                >
+                    <Text text="Claimed By" />
+                </Column>
+                <Column
+                    demandPopin="true"
+                    minScreenWidth="Desktop"
+                    popinDisplay="Inline"
+                >
+                    <Text text="Responsible" />
+                </Column>
+            </columns>
+            <ColumnListItem type="Navigation">
+                <cells>
+                    <ObjectIdentifier
+                        title="{adminInbox>WorkItemID}"
+                        text="{adminInbox>TopWorkItemID}"
+                    />
+                    <Text text="{adminInbox>WorkItemText}" />
+                    <Text text="{adminInbox>CreationDate}" />
+                    <ObjectStatus
+                        class="sapUiTextBold"
+                        text="{adminInbox>TechnicalStatus}"
+                        state="{
+                            path: 'adminInbox>TechnicalStatus', 
+                            formatter: '.formatter.formatTechnicalStatus'
+                        }"
+                    />
+                    <Text text="{adminInbox>TechnicalStatusText}" />
+                    <ObjectStatus
+                        text="{
+                            path: 'adminInbox>Priority',
+                            formatter: '.formatter.formatPriorityText'
+                        }"
+                        state="{
+                            path: 'adminInbox>Priority', 
+                            formatter: '.formatter.formatPriorityState'
+                        }"
+                        icon="{
+                            path: 'adminInbox>Priority', 
+                            formatter: '.formatter.formatPriorityIcon'
+                        }"
+                    />
+                    <Text
+                        text="{= 
+                            ${adminInbox>ClaimedByUserName} ? 
+                            ${adminInbox>ClaimedByUserName} : 
+                            ${adminInbox>ClaimedByUser} 
+                        }"
+                    />
+                    <Text
+                        text="{= 
+                            ${adminInbox>SampleResponsibleUserName} ? 
+                            ${adminInbox>SampleResponsibleUserName} : 
+                            ${adminInbox>SampleResponsibleUser}
+                        }"
+                    />
+                </cells>
+            </ColumnListItem>
+        </Table>
+    </VBox>
 </core:FragmentDefinition>

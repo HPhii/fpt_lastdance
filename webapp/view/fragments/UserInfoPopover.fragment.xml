@@ -37,14 +37,14 @@
             <!-- Contact Details Section -->
             <VBox class="sapUiSmallMarginTop">
                 <Title
-                    text="Contact Details"
+                    text="{i18n>userContactDetails}"
                     level="H6"
                     class="sapUiTinyMarginBottom"
                 />
                 <VBox class="contactDetailsBox sapUiSmallMarginTop">
                     <HBox class="sapUiTinyMarginBottom">
                         <Label
-                            text="Mobile:"
+                            text="{i18n>userMobile}:"
                             width="80px"
                             class="contactLabel"
                         />
@@ -52,7 +52,7 @@
                     </HBox>
                     <HBox class="sapUiTinyMarginBottom">
                         <Label
-                            text="Phone:"
+                            text="{i18n>userPhone}:"
                             width="80px"
                             class="contactLabel"
                         />
@@ -60,7 +60,7 @@
                     </HBox>
                     <HBox class="sapUiTinyMarginBottom">
                         <Label
-                            text="Email:"
+                            text="{i18n>userEmail}:"
                             width="80px"
                             class="contactLabel"
                         />
@@ -72,14 +72,14 @@
             <!-- Company Section -->
             <VBox class="sapUiSmallMarginTop">
                 <Title
-                    text="Company"
+                    text="{i18n>userCompany}"
                     level="H6"
                     class="sapUiTinyMarginBottom"
                 />
                 <VBox class="companyBox sapUiSmallMarginTop">
                     <HBox class="sapUiTinyMarginBottom">
                         <Label
-                            text="Name:"
+                            text="{i18n>userCompanyName}:"
                             width="80px"
                             class="contactLabel"
                         />
@@ -87,7 +87,7 @@
                     </HBox>
                     <HBox>
                         <Label
-                            text="Address:"
+                            text="{i18n>userAddress}:"
                             width="80px"
                             class="contactLabel"
                         />

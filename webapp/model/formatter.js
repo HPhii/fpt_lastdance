@@ -84,6 +84,33 @@ sap.ui.define([
       }
     },
 
+    formatPriorityText: function (sPriority)
+    {
+      switch (sPriority)
+      {
+        case "1":
+          return "Highest - Express";
+        case "2":
+          return "Very high";
+        case "3":
+          return "Higher";
+        case "4":
+          return "High";
+        case "5":
+          return "Medium";
+        case "6":
+          return "Low";
+        case "7":
+          return "Lower";
+        case "8":
+          return "Very low";
+        case "9":
+          return "Lowest";
+        default:
+          return "Unknown";
+      }
+    },
+
     /**
      * Formatter for days to deadline text
      * @param {string} sNumberOfDays 
@@ -278,6 +305,48 @@ sap.ui.define([
       if (pct >= 50) return "Neutral";
       if (pct >= 20) return "Critical";
       if (pct >= 0) return "Error";
+    },
+
+    formatTraceLogIcon: function (sStatus)
+    {
+      switch (sStatus)
+      {
+        case "COMPLETED":
+          return "sap-icon://complete";
+        case "READY":
+          return "sap-icon://task";
+        case "STARTED":
+          return "sap-icon://begin";
+        case "SELECTED":
+          return "sap-icon://employee-approvals";
+        case "WAITING":
+          return "sap-icon://pending";
+        case "ERROR":
+          return "sap-icon://error";
+        default:
+          return "sap-icon://sys-help";
+      }
+    },
+
+    formatTraceLogState: function (sStatus)
+    {
+      switch (sStatus)
+      {
+        case "COMPLETED":
+          return "Positive";
+        case "READY":
+          return "Neutral";
+        case "STARTED":
+          return "Critical";
+        case "SELECTED":
+          return "Neutral";
+        case "WAITING":
+          return "Critical";
+        case "ERROR":
+          return "Negative";
+        default:
+          return "Neutral";
+      }
     }
   };
 });

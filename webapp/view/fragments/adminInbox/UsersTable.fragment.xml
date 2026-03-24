@@ -20,45 +20,46 @@
             <OverflowToolbar width="100%">
                 <Title
                     busy="{adminInboxViewModel>/isUsersBusy}"
-                    text="Users ({adminInboxViewModel>/countTotal})"
+                    text="{i18n>userTitle} ({adminInboxViewModel>/countTotal})"
                     level="H2"
                 />
                 <ToolbarSpacer />
                 <SearchField
                     width="auto"
                     search=".onSearchUsers"
-                    tooltip="Search Users"
+                    placeholder="{i18n>userInputPlaceholder}"
+                    tooltip="{i18n>tooltipHeaderSearch}"
                 />
                 <Button
                     icon="sap-icon://sort"
                     press=".onSortUsers"
-                    tooltip="Sort"
+                    tooltip="{i18n>tooltipHeaderSort}"
                 />
                 <Button
                     icon="sap-icon://filter"
                     press=".onFilterUsers"
-                    tooltip="Filter"
+                    tooltip="{i18n>tooltipHeaderFilter}"
                 />
             </OverflowToolbar>
         </headerToolbar>
         <columns>
             <Column>
-                <Text text="Unique Name" />
+                <Text text="{i18n>userUniqueName}" />
             </Column>
             <Column>
-                <Text text="Display Name" />
+                <Text text="{i18n>userDisplayName}" />
             </Column>
             <Column>
-                <Text text="Address" />
+                <Text text="{i18n>userAddress}" />
             </Column>
             <Column>
-                <Text text="Company" />
+                <Text text="{i18n>userCompany}" />
             </Column>
             <Column>
-                <Text text="Department" />
+                <Text text="{i18n>userDepartment}" />
             </Column>
             <Column>
-                <Text text="Email" />
+                <Text text="{i18n>userEmail}" />
             </Column>
         </columns>
         <ColumnListItem type="Navigation">
