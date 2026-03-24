@@ -181,6 +181,7 @@
                     vizType="donut"
                     width="100%"
                     height="400px"
+                    busy="{statsAnalyticsModel>/donutBusy}"
                     vizProperties="{
                             title:{
                                 visible:true,
@@ -203,24 +204,19 @@
                     </viz:layoutData>
                     <viz:dataset>
                         <viz.data:FlattenedDataset
-                            data="{
-                                path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
-                                parameters:{
-                                    $select:'StatusCategory,TaskCounter'
-                                }                                
-                            }"
+                            data="{donutModel>/DonutData}"
                         >
                             <viz.data:dimensions>
                                 <viz.data:DimensionDefinition
                                     name="Status"
-                                    value="{StatusCategory}"
+                                    value="{donutModel>StatusCategory}"
                                 />
                             </viz.data:dimensions>
 
                             <viz.data:measures>
                                 <viz.data:MeasureDefinition
                                     name="Tasks"
-                                    value="{TaskCounter}"
+                                    value="{donutModel>TaskCounter}"
                                 />
                             </viz.data:measures>
                         </viz.data:FlattenedDataset>
@@ -246,6 +242,7 @@
                     vizType="bar"
                     width="100%"
                     height="400px"
+                    busy="{statsAnalyticsModel>/priorityBusy}"
                     vizProperties="{
                         title:{
                             visible:true,
@@ -273,24 +270,19 @@
                     </viz:layoutData>
                     <viz:dataset>
                         <viz.data:FlattenedDataset
-                            data="{
-                                path:'statsAnalytics>/ZC_GSP26SAP02_WF_ANALYTICS',
-                                parameters:{
-                                    $select:'PriorityLevel,TaskCounter'
-                                }
-                            }"
+                            data="{priorityModel>/PriorityData}"
                         >
                             <viz.data:dimensions>
                                 <viz.data:DimensionDefinition
                                     name="Priority"
-                                    value="{PriorityLevel}"
+                                    value="{priorityModel>PriorityLevel}"
                                 />
                             </viz.data:dimensions>
 
                             <viz.data:measures>
                                 <viz.data:MeasureDefinition
                                     name="Tasks"
-                                    value="{TaskCounter}"
+                                    value="{priorityModel>TaskCounter}"
                                 />
                             </viz.data:measures>
                         </viz.data:FlattenedDataset>

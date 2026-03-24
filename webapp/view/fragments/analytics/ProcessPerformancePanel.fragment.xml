@@ -109,6 +109,24 @@
                         title:{
                             visible:true,
                             text:'Task Cycle Time by Business Object'
+                        },
+                        plotArea:{
+                            dataLabel:{
+                                visible:true,
+                                type:'value',
+                                hideWhenOverlap:true
+                            }
+                        },
+                        valueAxis: {
+                            scale: {
+                                fixedRange: true,
+                                minValue: 0,
+                                maxValue: 600
+                            }
+                        },
+                        interaction:{
+                            zoom:{enablement:'enabled'},
+                            selectability:{mode:'multiple'}
                         }
                     }"
                 >
