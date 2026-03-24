@@ -1,0 +1,61 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:vizData="sap.viz.ui5.data"
+    xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds"
+>
+    <Panel
+        class="sapUiSmallMargin workflowTypePanel"
+        headerText="{i18n>workloadDistributionHeader}"
+        width="98.5%"
+    >
+        <VBox class="sapUiSmallMargin">
+            <viz:VizFrame
+                id="workflowTypeVizFrame"
+                vizType="heatmap"
+                width="100%"
+                height="300px"
+                busy="{workflowTypeModel>/loading}"
+            >
+                <viz:dataset>
+                    <vizData:FlattenedDataset data="{workflowTypeModel>/data}">
+                        <vizData:dimensions>
+                            <vizData:DimensionDefinition
+                                name="Document Type"
+                                value="{Type}"
+                            />
+                            <vizData:DimensionDefinition
+                                name="Category"
+                                value="{Category}"
+                            />
+                        </vizData:dimensions>
+                        <vizData:measures>
+                            <vizData:MeasureDefinition
+                                name="Completed Tasks"
+                                value="{Count}"
+                            />
+                        </vizData:measures>
+                    </vizData:FlattenedDataset>
+                </viz:dataset>
+                <viz:feeds>
+                    <vizFeeds:FeedItem
+                        uid="categoryAxis"
+                        type="Dimension"
+                        values="Document Type"
+                    />
+                    <vizFeeds:FeedItem
+                        uid="categoryAxis2"
+                        type="Dimension"
+                        values="Category"
+                    />
+                    <vizFeeds:FeedItem
+                        uid="color"
+                        type="Measure"
+                        values="Completed Tasks"
+                    />
+                </viz:feeds>
+            </viz:VizFrame>
+        </VBox>
+    </Panel>
+</core:FragmentDefinition>

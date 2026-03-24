@@ -4,7 +4,7 @@
 >
     <Panel
         class="sapUiSmallMargin"
-        headerText="My Task KPIs"
+        headerText="{i18n>myKPIHeader}"
         width="98.5%"
     >
         <HBox
@@ -15,7 +15,7 @@
         >
             <!-- My Open Tasks -->
             <GenericTile
-                header="My Open Tasks"
+                header="{i18n>myKPIOpenTasks}"
                 frameType="OneByOne"
                 state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
                 width="100%"
@@ -44,7 +44,7 @@
 
             <!-- Due Today -->
             <GenericTile
-                header="Due Today"
+                header="{i18n>myKPIDueTodayTasks}"
                 frameType="OneByOne"
                 state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
                 width="100%"
@@ -86,10 +86,7 @@
                     />
                 </layoutData>
                 <tileContent>
-                    <TileContent
-                        footer="{i18n>OverdueTasksText}"
-                        unit="{i18n>tasksUnit}"
-                    >
+                    <TileContent unit="{i18n>tasksUnit}">
                         <content>
                             <NumericContent
                                 value="{kpiModel>/MyOverdueCount}"

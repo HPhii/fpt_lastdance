@@ -184,20 +184,12 @@ img.sapMSelectListItemIcon {
   font-size: 1.1rem !important;
 }
 
-.slaLegendTitle {
-  font-size: 1rem;
-  line-height: 1.35;
-}
 
 @media (max-width: 1200px) {
   .slaScaleRow .sapMText {
     font-size: 0.875rem;
   }
 
-  .slaLegendItem .sapMText,
-  .slaLegendTitle {
-    font-size: 1rem;
-  }
 }
 
 /* ========== Avg Processing Time Card ========== */
@@ -218,12 +210,6 @@ img.sapMSelectListItemIcon {
 .avgTimeHeaderIcon {
   font-size: 1.125rem !important;
   color: var(--sapInformativeColor) !important;
-}
-
-.avgTimeHeaderTitle>span {
-  font-size: 0.875rem !important;
-  font-weight: 600 !important;
-  color: var(--sapTitleColor) !important;
 }
 
 .avgTimeValueWrap {
@@ -345,9 +331,4 @@ img.sapMSelectListItemIcon {
 
 .avgTimeStatusIcon {
   font-size: 0.8rem !important;
-}
-
-.avgTimeStatusText>span {
-  font-size: 0.75rem !important;
-  font-weight: 600 !important;
 }

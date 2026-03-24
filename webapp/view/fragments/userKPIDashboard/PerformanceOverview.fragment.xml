@@ -1,0 +1,317 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Panel
+        class="sapUiSmallMargin"
+        headerText="{i18n>performanceOverviewHeader}"
+        width="98.5%"
+    >
+        <HBox
+            width="100%"
+            wrap="Wrap"
+            class="sapUiSmallMargin sapUiTinyMarginTop"
+        >
+            <!-- Card: My Avg Processing Time (redesigned) -->
+            <VBox
+                width="24%"
+                class="avgTimeCard sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                busy="{kpiAggregateModel>/loading}"
+            >
+                <!-- Header -->
+                <HBox
+                    class="avgTimeCardHeader"
+                    alignItems="Center"
+                >
+                    <core:Icon
+                        src="sap-icon://history"
+                        class="avgTimeHeaderIcon"
+                    />
+                    <Title
+                        text="{i18n>performanceAvgProcessingTime}"
+                        level="H2"
+                    />
+                </HBox>
+
+                <!-- Gauge -->
+                <VBox
+                    id="avgTimeChartHoverArea"
+                    class="avgTimeGaugeWrap"
+                >
+                    <!-- Progress indicator -->
+                    <ProgressIndicator
+                        percentValue="{kpiAggregateModel>/avgTimeMeterNum}"
+                        state="{kpiAggregateModel>/avgTimeValueState}"
+                        showValue="false"
+                        height="0.78rem"
+                        width="100%"
+                        class="sapUiTinyMarginBottom"
+                    />
+
+                    <!-- Zone reference bar -->
+                    <HBox
+                        width="100%"
+                        class="avgTimeBaseLine sapUiTinyMarginTop"
+                    >
+                        <HBox
+                            width="33%"
+                            class="avgTimeBaseSegment avgTimeBaseGreen"
+                        />
+                        <HBox
+                            width="34%"
+                            class="avgTimeBaseSegment avgTimeBaseYellow"
+                        />
+                        <HBox
+                            width="33%"
+                            class="avgTimeBaseSegment avgTimeBaseRed"
+                        />
+                    </HBox>
+
+                    <!-- Scale labels -->
+                    <HBox
+                        width="100%"
+                        class="avgTimeScaleRow sapUiTinyMarginTop"
+                    >
+                        <HBox
+                            width="33%"
+                            justifyContent="SpaceBetween"
+                        >
+                            <Text
+                                text="0d"
+                                wrapping="false"
+                            />
+                            <Text
+                                text="5d"
+                                wrapping="false"
+                            />
+                        </HBox>
+                        <HBox
+                            width="34%"
+                            justifyContent="End"
+                        >
+                            <Text
+                                text="10d"
+                                wrapping="false"
+                            />
+                        </HBox>
+                        <HBox
+                            width="33%"
+                            justifyContent="End"
+                        >
+                            <Text
+                                text="15d"
+                                wrapping="false"
+                            />
+                        </HBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Status badge -->
+                <HBox
+                    class="avgTimeStatusRow"
+                    alignItems="Center"
+                    justifyContent="Center"
+                >
+                    <HBox
+                        visible="{= ${kpiAggregateModel>/avgTimeState} === 'good'}"
+                        alignItems="Center"
+                        class="avgTimeStatusBadge avgTimeStatusBadgeGood"
+                    >
+                        <core:Icon
+                            src="sap-icon://accept"
+                            class="avgTimeStatusIcon"
+                        />
+                        <Text text="{i18n>performanceWithinTarget}" />
+                    </HBox>
+                    <HBox
+                        visible="{= ${kpiAggregateModel>/avgTimeState} === 'warn'}"
+                        alignItems="Center"
+                        class="avgTimeStatusBadge avgTimeStatusBadgeWarn"
+                    >
+                        <core:Icon
+                            src="sap-icon://alert"
+                            class="avgTimeStatusIcon"
+                        />
+                        <Text text="{i18n>performanceModerate}" />
+                    </HBox>
+                    <HBox
+                        visible="{= ${kpiAggregateModel>/avgTimeState} === 'bad'}"
+                        alignItems="Center"
+                        class="avgTimeStatusBadge avgTimeStatusBadgeBad"
+                    >
+                        <core:Icon
+                            src="sap-icon://status-negative"
+                            class="avgTimeStatusIcon"
+                        />
+                        <Text text="{i18n>performanceNeedsAttention}" />
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!-- Card: SLA Hit Rate Bullet Chart -->
+            <VBox
+                class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                width="74%"
+            >
+                <Panel
+                    headerText="{i18n>slaHitRateHeader}"
+                    class="sapUiNoContentPadding slaPanel"
+                    width="100%"
+                >
+                    <VBox class="sapUiSmallMargin">
+                        <HBox
+                            width="100%"
+                            alignItems="Center"
+                            justifyContent="SpaceBetween"
+                            class="slaChartRow"
+                        >
+                            <VBox
+                                width="70%"
+                                class="slaBulletWrap"
+                            >
+                                <VBox
+                                    id="slaChartHoverArea"
+                                    class="slaLineChartWrap"
+                                >
+                                    <!-- SLA progress indicator -->
+                                    <ProgressIndicator
+                                        percentValue="{kpiAggregateModel>/slaHitRate}"
+                                        state="{kpiAggregateModel>/slaState}"
+                                        showValue="false"
+                                        height="0.78rem"
+                                        width="100%"
+                                        class="sapUiTinyMarginBottom"
+                                    />
+
+                                    <HBox
+                                        width="100%"
+                                        class="slaBaseLine sapUiTinyMarginTop"
+                                    >
+                                        <HBox
+                                            width="65%"
+                                            class="slaBaseSegment slaBaseRed"
+                                        />
+                                        <HBox
+                                            width="15%"
+                                            class="slaBaseSegment slaBaseYellow"
+                                        />
+                                        <HBox
+                                            width="20%"
+                                            class="slaBaseSegment slaBaseGreen"
+                                        />
+                                    </HBox>
+                                </VBox>
+
+                                <HBox
+                                    width="100%"
+                                    class="slaTickRow sapUiTinyMarginTop"
+                                >
+                                    <HBox
+                                        width="65%"
+                                        class="slaTickSegment"
+                                    />
+                                    <HBox
+                                        width="15%"
+                                        class="slaTickSegment"
+                                    />
+                                    <HBox
+                                        width="20%"
+                                        class="slaTickSegment slaTickSegmentNoEnd"
+                                    />
+                                </HBox>
+
+                                <HBox
+                                    width="100%"
+                                    class="slaScaleRow sapUiTinyMarginTop"
+                                >
+                                    <HBox
+                                        width="65%"
+                                        justifyContent="SpaceBetween"
+                                    >
+                                        <Text
+                                            text="0%"
+                                            wrapping="false"
+                                        />
+                                        <Text
+                                            text="65%"
+                                            wrapping="false"
+                                        />
+                                    </HBox>
+                                    <HBox
+                                        width="15%"
+                                        justifyContent="End"
+                                    >
+                                        <Text
+                                            text="80%"
+                                            wrapping="false"
+                                        />
+                                    </HBox>
+                                    <HBox
+                                        width="20%"
+                                        justifyContent="End"
+                                    >
+                                        <Text
+                                            text="100%"
+                                            wrapping="false"
+                                        />
+                                    </HBox>
+                                </HBox>
+                            </VBox>
+
+                            <VBox
+                                class="slaSideLegend sapUiSmallMarginBegin"
+                                width="18rem"
+                            >
+                                <HBox
+                                    class="slaSideLegendItem sapUiTinyMarginBottom"
+                                    alignItems="Center"
+                                >
+                                    <core:Icon
+                                        src="sap-icon://status-positive"
+                                        color="#3fae2a"
+                                        class="slaLegendSwatch sapUiTinyMarginEnd"
+                                    />
+                                    <VBox>
+                                        <Text
+                                            text="{i18n>slaHitRateRunningSmoothly}"
+                                        />
+                                    </VBox>
+                                </HBox>
+                                <HBox
+                                    class="slaSideLegendItem sapUiTinyMarginBottom"
+                                    alignItems="Center"
+                                >
+                                    <core:Icon
+                                        src="sap-icon://high-priority"
+                                        color="#f2c037"
+                                        class="slaLegendSwatch sapUiTinyMarginEnd"
+                                    />
+                                    <VBox>
+                                        <Text
+                                            text="{i18n>slaHitRateSlowingDown}"
+                                        />
+                                    </VBox>
+                                </HBox>
+                                <HBox
+                                    class="slaSideLegendItem"
+                                    alignItems="Center"
+                                >
+                                    <core:Icon
+                                        src="sap-icon://error"
+                                        color="#e64a45"
+                                        class="slaLegendSwatch sapUiTinyMarginEnd"
+                                    />
+                                    <VBox>
+                                        <Text
+                                            text="{i18n>slaHitRateUnderperforming}"
+                                        />
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </Panel>
+            </VBox>
+        </HBox>
+    </Panel>
+</core:FragmentDefinition>
