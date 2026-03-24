@@ -329,9 +329,9 @@
           "target": "TargetSubstitution"
         },
         {
-          "pattern": "userdashboard",
-          "name": "RouteUserDashboard",
-          "target": "TargetUserDashboard"
+          "pattern": "userkpidashboard",
+          "name": "RouteUserKPIDashboard",
+          "target": "TargetUserKPIDashboard"
         },
         {
           "pattern": "adminInbox",
@@ -370,9 +370,9 @@
           "viewName": "Substitution",
           "controlAggregation": "beginColumnPages"
         },
-        "TargetUserDashboard": {
-          "viewId": "UserDashboard",
-          "viewName": "UserDashboard",
+        "TargetUserKPIDashboard": {
+          "viewId": "UserKPIDashboard",
+          "viewName": "UserKPIDashboard",
           "controlAggregation": "beginColumnPages"
         },
         "TargetAdminInbox": {

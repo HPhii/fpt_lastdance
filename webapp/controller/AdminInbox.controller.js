@@ -38,6 +38,7 @@ sap.ui.define([
                 lastSelectedUser: "",
                 isClaimedByUsersLoaded: false,
                 countSelectedStatus: 0,
+                countStartedStatus: 0,
                 countWaitingStatus: 0
             });
 
@@ -83,6 +84,7 @@ sap.ui.define([
                 oBinding.attachEvent("dataReceived", function (oData)
                 {
                     var aSelectedStatusCount = 0,
+                        aStartedStatusCount = 0,
                         aWaitingStatusCount = 0,
                         aClaimedByUser = [],
                         isClaimedByUsersLoaded = oViewModel.getProperty("/isClaimedByUsersLoaded");
@@ -102,6 +104,9 @@ sap.ui.define([
                         else if (sStatus === "WAITING")
                         {
                             aWaitingStatusCount++;
+                        } else if (sStatus === "STARTED")
+                        {
+                            aStartedStatusCount++;
                         }
 
                         if (!isClaimedByUsersLoaded) 
@@ -120,6 +125,7 @@ sap.ui.define([
                         oViewModel.setProperty("/countTotal", aContexts ? aContexts.length : 0);
                         oViewModel.setProperty("/countSelectedStatus", aSelectedStatusCount);
                         oViewModel.setProperty("/countWaitingStatus", aWaitingStatusCount);
+                        oViewModel.setProperty("/countStartedStatus", aStartedStatusCount);
                     }
 
                     oViewModel.setProperty("/countTotalTableHeader", aContexts ? aContexts.length : 0);
@@ -131,18 +137,16 @@ sap.ui.define([
 
             if (sLastUser === sUniqueName)
             {
-                // If same user, changeParameters might skip fetching. Force refresh to trigger events.
+                // If same user, filter might skip fetching. Force refresh to trigger events.
                 oViewModel.setProperty("/isTasksBusy", true);
                 oBinding.refresh();
             } else
             {
                 oViewModel.setProperty("/lastSelectedUser", sUniqueName);
                 oViewModel.setProperty("/isClaimedByUsersLoaded", false);
-                // apply expand and filter
-                oBinding.changeParameters({
-                    $expand: "_TraceLogs",
-                    $filter: "SampleResponsibleUser eq '" + sUniqueName + "'"
-                });
+                // apply filter
+                var aFilters = [new Filter("SampleResponsibleUser", FilterOperator.EQ, sUniqueName)];
+                oBinding.filter(aFilters, "Application");
             }
         },
 
@@ -377,6 +381,7 @@ sap.ui.define([
                 lastSelectedUser: "",
                 isClaimedByUsersLoaded: false,
                 countSelectedStatus: 0,
+                countStartedStatus: 0,
                 countWaitingStatus: 0
             });
             BaseController.prototype.onNavBackToDashboard.apply(this, arguments);

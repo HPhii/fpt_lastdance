@@ -7,7 +7,7 @@ sap.ui.define([
 {
   "use strict";
 
-  return BaseController.extend("z.wf.zwfmanagement.controller.UserDashboard", {
+  return BaseController.extend("z.wf.zwfmanagement.controller.UserKPIDashboard", {
 
     onInit: function ()
     {

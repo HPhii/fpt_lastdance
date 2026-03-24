@@ -81,7 +81,7 @@
                         class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="{i18n>dashboardMyKPIs}"
                         subheader="{i18n>dashboardMyKPIsSubheader}"
-                        press=".onNavToUserDashboard"
+                        press=".onNavToUserKPIDashboard"
                     >
                         <TileContent>
                             <ImageContent

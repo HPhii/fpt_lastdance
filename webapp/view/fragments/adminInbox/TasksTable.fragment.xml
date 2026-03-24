@@ -29,6 +29,13 @@
                     text="{i18n>WorklistFilterTasksSelected}"
                 />
                 <IconTabFilter
+                    key="started"
+                    icon="sap-icon://begin"
+                    iconColor="Critical"
+                    count="{adminInboxViewModel>/countStartedStatus}"
+                    text="{i18n>WorklistFilterTasksStarted}"
+                />
+                <IconTabFilter
                     key="waiting"
                     icon="sap-icon://pending"
                     iconColor="Critical"

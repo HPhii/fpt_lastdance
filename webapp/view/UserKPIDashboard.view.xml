@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="z.wf.zwfmanagement.controller.UserDashboard"
+    controllerName="z.wf.zwfmanagement.controller.UserKPIDashboard"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:f="sap.f"
@@ -23,108 +23,10 @@
         </headerContent>
         <content>
             <!-- Section 1: Task KPIs -->
-            <Panel
-                class="sapUiSmallMargin"
-                headerText="My Task KPIs"
-                width="98.5%"
-            >
-                <HBox
-                    wrap="Wrap"
-                    width="100%"
-                    justifyContent="SpaceBetween"
-                    class="statsCardsRow"
-                >
-                    <!-- My Open Tasks -->
-                    <GenericTile
-                        header="My Open Tasks"
-                        frameType="OneByOne"
-                        state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
-                        width="100%"
-                    >
-                        <layoutData>
-                            <FlexItemData
-                                growFactor="1"
-                                shrinkFactor="1"
-                                minWidth="14rem"
-                            />
-                        </layoutData>
-                        <tileContent>
-                            <TileContent unit="{i18n>tasksUnit}">
-                                <content>
-                                    <NumericContent
-                                        value="{kpiModel>/MyOpenTasksCount}"
-                                        icon="sap-icon://task"
-                                        valueColor="Good"
-                                        indicator="None"
-                                        withMargin="false"
-                                    />
-                                </content>
-                            </TileContent>
-                        </tileContent>
-                    </GenericTile>
-
-                    <!-- Due Today -->
-                    <GenericTile
-                        header="Due Today"
-                        frameType="OneByOne"
-                        state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
-                        width="100%"
-                    >
-                        <layoutData>
-                            <FlexItemData
-                                growFactor="1"
-                                shrinkFactor="1"
-                                minWidth="14rem"
-                            />
-                        </layoutData>
-                        <tileContent>
-                            <TileContent unit="{i18n>tasksUnit}">
-                                <content>
-                                    <NumericContent
-                                        value="{kpiModel>/DueTodayCount}"
-                                        icon="sap-icon://appointment"
-                                        valueColor="Critical"
-                                        indicator="None"
-                                        withMargin="false"
-                                    />
-                                </content>
-                            </TileContent>
-                        </tileContent>
-                    </GenericTile>
-
-                    <!-- Overdue Tasks -->
-                    <GenericTile
-                        header="{i18n>OverdueTasksText}"
-                        frameType="OneByOne"
-                        state="{= ${kpiModel>/busy} ? 'Loading' : 'Loaded'}"
-                        width="100%"
-                    >
-                        <layoutData>
-                            <FlexItemData
-                                growFactor="1"
-                                shrinkFactor="1"
-                                minWidth="14rem"
-                            />
-                        </layoutData>
-                        <tileContent>
-                            <TileContent
-                                footer="{i18n>OverdueTasksText}"
-                                unit="{i18n>tasksUnit}"
-                            >
-                                <content>
-                                    <NumericContent
-                                        value="{kpiModel>/MyOverdueCount}"
-                                        icon="sap-icon://alert"
-                                        valueColor="Error"
-                                        indicator="Down"
-                                        withMargin="false"
-                                    />
-                                </content>
-                            </TileContent>
-                        </tileContent>
-                    </GenericTile>
-                </HBox>
-            </Panel>
+            <core:Fragment
+                fragmentName="z.wf.zwfmanagement.view.fragments.userKPIDashboard.TaskKPIs"
+                type="XML"
+            />
 
             <!-- Section 2: Performance Overview -->
             <Panel

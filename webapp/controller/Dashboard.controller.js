@@ -41,9 +41,9 @@ sap.ui.define(
         this._oRouter.navTo("RouteSubstitution");
       },
 
-      onNavToUserDashboard: function ()
+      onNavToUserKPIDashboard: function ()
       {
-        this._oRouter.navTo("RouteUserDashboard");
+        this._oRouter.navTo("RouteUserKPIDashboard");
       },
 
       onNavToAdminInbox: function ()
