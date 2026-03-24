@@ -79,7 +79,8 @@
                         visible:true
                     },
                     title:{
-                        visible:true
+                        visible:true,
+                        text:'Bottleneck Heatmap by Priority and Aging'
                     },
                     interaction:{
                         selectability:{mode:'single'}
@@ -151,10 +152,9 @@
         visible="{userRole>/isAdmin}"
     >
         <Table
-            growing="true"
-            growingThreshold="10"
             items="{
                 path:'reportAnalytics>/TopAging',
+                length: 10,
                 parameters: {
                     $orderby: 'DaysOpen desc',
                     $select: 'CreatedByUser,DaysOpen,StatusCategory'

@@ -2,18 +2,23 @@ sap.ui.define(
   [
     "./BaseController",
     "sap/ui/model/json/JSONModel",
-    'sap/m/FlexItemData',
-    'sap/ui/model/Filter',
-    'sap/ui/model/FilterOperator',
-    "../utils/ChartFilterDialog"
+    "sap/m/FlexItemData",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "../utils/ChartFilterDialog",
   ],
-  function (BaseController, JSONModel, FlexItemData, Filter, FilterOperator, ChartFilterDialogHelper)
-  {
+  function (
+    BaseController,
+    JSONModel,
+    FlexItemData,
+    Filter,
+    FilterOperator,
+    ChartFilterDialogHelper,
+  ) {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Analytics", {
-      onInit: function ()
-      {
+      onInit: function () {
         BaseController.prototype.onInit.apply(this, arguments);
 
         var oStatsModel = new JSONModel({
@@ -31,10 +36,11 @@ sap.ui.define(
       },
 
       /* ROUTE MATCHED */
-      _onObjectMatched: function ()
-      {
+      _onObjectMatched: function () {
         this._loadAgingChart();
         this._loadBottleneckHeatmap();
+        this._loadStatusDonutChart();
+        this._loadPriorityBarChart();
         this._connectPopovers();
 
         var oView = this.getView();
@@ -49,44 +55,36 @@ sap.ui.define(
               "IsOpenCount,IsCompletedThisMonth,IsOverdueCount,TaskCounter,IsCompletedCount",
           },
 
-          success: function (oData)
-          {
+          success: function (oData) {
             oStatsModel.setProperty("/busy", false);
 
             var aResults = oData.results || [];
 
-            if (aResults.length > 0)
-            {
+            if (aResults.length > 0) {
               oStatsModel.setProperty("/result", aResults[0]);
             }
           }.bind(this),
 
-          error: function (oError)
-          {
+          error: function (oError) {
             console.error("Failed to fetch analytics data:", oError);
           }.bind(this),
         });
       },
 
       //TODO
-      onChartToggleFullScreen: function (oEvent)
-      {
+      onChartToggleFullScreen: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
         var oPanel = this.byId(sChartId);
-        if (!oPanel)
-        {
+        if (!oPanel) {
           return;
         }
 
         var bFull = oPanel.data("fullScreen") === true;
-        if (bFull)
-        {
+        if (bFull) {
           oPanel.removeStyleClass("fullScreenPanel");
           oPanel.data("fullScreen", false);
           oEvent.getSource().setIcon("sap-icon://full-screen");
-        }
-        else
-        {
+        } else {
           oPanel.addStyleClass("fullScreenPanel");
           oPanel.data("fullScreen", true);
           oEvent.getSource().setIcon("sap-icon://exit-full-screen");
@@ -94,13 +92,11 @@ sap.ui.define(
       },
 
       //TODO
-      onChartOpenFilter: function (oEvent)
-      {
+      onChartOpenFilter: function (oEvent) {
         var oView = this.getView(),
           sChartId = oEvent.getSource().data("chartId"),
           oChart = this.byId(sChartId);
-        if (!oChart)
-        {
+        if (!oChart) {
           return;
         }
 
@@ -108,15 +104,13 @@ sap.ui.define(
       },
 
       /* AGING CHART */
-      _loadAgingChart: function ()
-      {
+      _loadAgingChart: function () {
         var oView = this.getView();
         var oModel = oView.getModel("bottleneckAnalytics");
 
         var oChart = this.byId("agingChart");
 
-        if (oChart)
-        {
+        if (oChart) {
           oChart.setVizProperties({
             title: {
               text: "Open Tasks by Business Object Type and Aging Bucket",
@@ -127,19 +121,16 @@ sap.ui.define(
         }
 
         oModel.read("/ZC_GSP26SAP02_WF_AGIG", {
-          success: function (oData)
-          {
+          success: function (oData) {
             var aResults = oData.results || [];
             var mGrouped = {};
 
-            aResults.forEach(function (item)
-            {
+            aResults.forEach(function (item) {
               var obj = item.BusinessObjectType;
               var bucket = item.AgingBucket;
               var count = Number(item.IsOpenCount);
 
-              if (!mGrouped[obj])
-              {
+              if (!mGrouped[obj]) {
                 mGrouped[obj] = {
                   BusinessObject: obj,
                   ZeroToTwoDays: 0,
@@ -148,18 +139,15 @@ sap.ui.define(
                 };
               }
 
-              if (bucket && bucket.includes("0-2"))
-              {
+              if (bucket && bucket.includes("0-2")) {
                 mGrouped[obj]["ZeroToTwoDays"] = count;
               }
 
-              if (bucket && bucket.includes("3-7"))
-              {
+              if (bucket && bucket.includes("3-7")) {
                 mGrouped[obj]["ThreeToSevenDays"] = count;
               }
 
-              if (bucket && bucket.includes(">7"))
-              {
+              if (bucket && bucket.includes(">7")) {
                 mGrouped[obj]["OverSevenDays"] = count;
               }
             });
@@ -171,16 +159,14 @@ sap.ui.define(
             oView.setModel(oJSON, "agingModel");
           }.bind(this),
 
-          error: function (oError)
-          {
+          error: function (oError) {
             console.error("OData ERROR:", oError);
           },
         });
       },
 
       /* BOTTLENECK HEATMAP */
-      _loadBottleneckHeatmap: function ()
-      {
+      _loadBottleneckHeatmap: function () {
         var oView = this.getView();
         var oModel = oView.getModel("bottleneckAnalytics");
 
@@ -189,8 +175,7 @@ sap.ui.define(
             $select: "PriorityLevel,AgingBucket,IsOpenCount",
           },
 
-          success: function (oData)
-          {
+          success: function (oData) {
             var aRaw = oData.results || [];
 
             // Thu thập các giá trị hợp lệ để loại trừ "N/A" và tạo đủ các điểm giao cắt, tránh lỗi "No value"
@@ -198,15 +183,18 @@ sap.ui.define(
             var aBuckets = [];
             var mData = {};
 
-            aRaw.forEach(function (item)
-            {
+            aRaw.forEach(function (item) {
               var p = item.PriorityLevel || "";
               var b = item.AgingBucket || "";
               var c = Number(item.IsOpenCount) || 0;
 
               // Bỏ qua các dòng có nội dung N/A
-              if (b.indexOf("N/A") !== -1 || p.indexOf("N/A") !== -1 || b === "" || p === "")
-              {
+              if (
+                b.indexOf("N/A") !== -1 ||
+                p.indexOf("N/A") !== -1 ||
+                b === "" ||
+                p === ""
+              ) {
                 return;
               }
 
@@ -219,15 +207,13 @@ sap.ui.define(
 
             // Tạo list data hoàn chỉnh cho tất cả các trục (nếu không có data thì mặc định là 0)
             var aHeatData = [];
-            aPriorities.forEach(function (p)
-            {
-              aBuckets.forEach(function (b)
-              {
+            aPriorities.forEach(function (p) {
+              aBuckets.forEach(function (b) {
                 var key = p + "|||" + b;
                 aHeatData.push({
                   PriorityLevel: p,
                   AgingBucket: b,
-                  IsOpenCount: mData[key] || 0
+                  IsOpenCount: mData[key] || 0,
                 });
               });
             });
@@ -239,8 +225,7 @@ sap.ui.define(
             oView.setModel(oJSON, "bottleneckModel");
           }.bind(this),
 
-          error: function (oError)
-          {
+          error: function (oError) {
             console.error("Heatmap load error:", oError);
           },
         });
@@ -248,15 +233,111 @@ sap.ui.define(
 
       /* CONNECT POPOVERS */
 
-      _connectPopovers: function ()
-      {
+      /* STATUS DONUT CHART - Group Data Manually */
+      _loadStatusDonutChart: function () {
+        var oView = this.getView();
+        var oModel = oView.getModel("statsAnalytics");
+
+        // Set busy
+        var oStatsModel = oView.getModel("statsAnalyticsModel");
+        oStatsModel.setProperty("/donutBusy", true);
+
+        oModel.read("/ZC_GSP26SAP02_WF_ANALYTICS", {
+          urlParameters: {
+            $select: "StatusCategory,TaskCounter",
+          },
+          success: function (oData) {
+            oStatsModel.setProperty("/donutBusy", false);
+
+            var aRaw = oData.results || [];
+            var mData = {};
+
+            // Group by StatusCategory and Sum TaskCounter
+            aRaw.forEach(function (item) {
+              var status = item.StatusCategory || "Unknown";
+              var count = Number(item.TaskCounter) || 0;
+
+              mData[status] = (mData[status] || 0) + count;
+            });
+
+            // Convert to Array for VizFrame
+            var aGroupedData = [];
+            for (var key in mData) {
+              aGroupedData.push({
+                StatusCategory: key,
+                TaskCounter: mData[key],
+              });
+            }
+
+            // Create or update a local model for the Donut Chart
+            var oDonutModel = new JSONModel({
+              DonutData: aGroupedData,
+            });
+            oView.setModel(oDonutModel, "donutModel");
+          }.bind(this),
+          error: function (oError) {
+            oStatsModel.setProperty("/donutBusy", false);
+            console.error("Donut chart data error:", oError);
+          }.bind(this),
+        });
+      },
+
+      /* PRIORITY BAR CHART - Group Data Manually */
+      _loadPriorityBarChart: function () {
+        var oView = this.getView();
+        var oModel = oView.getModel("statsAnalytics");
+
+        // Set busy
+        var oStatsModel = oView.getModel("statsAnalyticsModel");
+        oStatsModel.setProperty("/priorityBusy", true);
+
+        oModel.read("/ZC_GSP26SAP02_WF_ANALYTICS", {
+          urlParameters: {
+            $select: "PriorityLevel,TaskCounter",
+          },
+          success: function (oData) {
+            oStatsModel.setProperty("/priorityBusy", false);
+
+            var aRaw = oData.results || [];
+            var mData = {};
+
+            // Group by PriorityLevel and Sum TaskCounter
+            aRaw.forEach(function (item) {
+              var priority = item.PriorityLevel || "Unknown";
+              var count = Number(item.TaskCounter) || 0;
+
+              mData[priority] = (mData[priority] || 0) + count;
+            });
+
+            // Convert to Array for VizFrame
+            var aGroupedData = [];
+            for (var key in mData) {
+              aGroupedData.push({
+                PriorityLevel: key,
+                TaskCounter: mData[key],
+              });
+            }
+
+            // Create or update a local model for the Priority Chart
+            var oPriorityModel = new JSONModel({
+              PriorityData: aGroupedData,
+            });
+            oView.setModel(oPriorityModel, "priorityModel");
+          }.bind(this),
+          error: function (oError) {
+            oStatsModel.setProperty("/priorityBusy", false);
+            console.error("Priority chart data error:", oError);
+          }.bind(this),
+        });
+      },
+
+      _connectPopovers: function () {
         var oBundle = this.getView().getModel("i18n").getResourceBundle();
 
         var oColumnChart = this.byId("OpenCompletedColumnChart");
         var oColumnPopover = this.byId("OpenCompletedPopover");
 
-        if (oColumnChart && oColumnPopover)
-        {
+        if (oColumnChart && oColumnPopover) {
           oColumnChart.setVizProperties({
             title: { text: oBundle.getText("userWorkloadColumnChartTitle") },
           });
@@ -266,8 +347,7 @@ sap.ui.define(
         var oScatterChart = this.byId("CycleTimeScatterChart");
         var oScatterPopover = this.byId("CycleTimePopover");
 
-        if (oScatterChart && oScatterPopover)
-        {
+        if (oScatterChart && oScatterPopover) {
           oScatterChart.setVizProperties({
             title: { text: oBundle.getText("userWorkloadScatterChartTitle") },
           });
@@ -275,23 +355,24 @@ sap.ui.define(
         }
       },
 
-      onChartZoomIn: function (oEvent)
-      {
+      onChartZoomIn: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
 
         console.log(sChartId);
 
         var oChart = this.byId(sChartId);
-        if (oChart) { oChart.zoom({ direction: "in" }); }
+        if (oChart) {
+          oChart.zoom({ direction: "in" });
+        }
       },
 
-      onChartZoomOut: function (oEvent)
-      {
+      onChartZoomOut: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
         var oChart = this.byId(sChartId);
-        if (oChart) { oChart.zoom({ direction: "out" }); }
+        if (oChart) {
+          oChart.zoom({ direction: "out" });
+        }
       },
-
     });
   },
 );
