@@ -7,7 +7,7 @@
 >
     <Panel
         class="sapUiSmallMargin"
-        headerText="Workflow Bottleneck Heatmap"
+        headerText="{i18n>workflowBottleneckTitle}"
         width="98.5%"
     >
         <Panel>
@@ -142,7 +142,7 @@
 
     <!-- Top Longest Outstanding Tasks -->
     <Panel
-        headerText="Longest Outstanding Tasks"
+        headerText="{i18n>longestOutstandingTitle}"
         class="sapUiSmallMargin "
         width="98.5%"
         visible="{userRole>/isAdmin}"

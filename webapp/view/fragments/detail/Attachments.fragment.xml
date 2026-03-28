@@ -75,6 +75,7 @@
                         </m:VBox>
                     </m:HBox>
                     <m:Button
+                        visible="{= %{IsDeletable} === 'X'}"
                         icon="sap-icon://decline"
                         press=".onRemoveAttachment"
                         type="Transparent"

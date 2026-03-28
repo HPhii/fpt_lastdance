@@ -86,12 +86,9 @@ sap.ui.define(
               if (oBoundContext)
               {
                 var aComments = oBoundContext.getObject("_Comments") || [];
-                if (aComments && aComments.length > 0)
-                {
-                  oView.getModel("commentsModel").setData({
-                    comments: aComments
-                  });
-                }
+                oView.getModel("commentsModel").setData({
+                  comments: aComments
+                });
 
                 var sServiceUrl = oBoundContext.getProperty("TargetServicePath");
                 var sEntitySet = oBoundContext.getProperty("TargetEntitySet");

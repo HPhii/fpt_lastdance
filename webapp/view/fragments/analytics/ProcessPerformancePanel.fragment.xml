@@ -7,7 +7,7 @@
 >
     <Panel
         class="sapUiSmallMargin "
-        headerText="Process Performance"
+        headerText="{i18n>processPerformanceTitle}"
         width="98.5%"
     >
         <VBox>

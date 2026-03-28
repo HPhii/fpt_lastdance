@@ -83,7 +83,7 @@ sap.ui.define([
                 var bSuccess = oEvt.getParameter("success");
                 if (bSuccess)
                 {
-                    MessageToast.show(oResourceBundle.getText("attachmentUploadSuccess"));
+                    MessageToast.show(oResourceBundle.getText("attachmentMessageUploadSuccess"));
                     var oElementBinding = oView.getElementBinding();
                     if (oElementBinding)
                     {
@@ -91,7 +91,7 @@ sap.ui.define([
                     }
                 } else
                 {
-                    MessageBox.error(oResourceBundle.getText("attachmentUploadError"));
+                    MessageBox.error(oResourceBundle.getText("attachmentMessageUploadError", [oEvt.getParameter("error").message]));
                 }
             });
         },
