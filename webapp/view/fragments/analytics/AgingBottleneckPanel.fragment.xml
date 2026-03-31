@@ -11,6 +11,63 @@
         width="98.5%"
     >
         <Panel>
+            <VBox>
+                <OverflowToolbar style="Clear">
+                    <ToolbarSpacer />
+                    <Button
+                        icon="sap-icon://zoom-in"
+                        tooltip="Zoom In"
+                        type="Transparent"
+                        press="onChartZoomIn"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="agingChart"
+                            />
+                        </customData>
+                    </Button>
+                    <Button
+                        icon="sap-icon://zoom-out"
+                        tooltip="Zoom Out"
+                        type="Transparent"
+                        press="onChartZoomOut"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="agingChart"
+                            />
+                        </customData>
+                    </Button>
+                    <ToolbarSeparator />
+                    <Button
+                        icon="sap-icon://filter"
+                        tooltip="Filter"
+                        type="Transparent"
+                        press="onChartOpenFilter"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="agingChart"
+                            />
+                        </customData>
+                    </Button>
+                    <Button
+                        icon="sap-icon://full-screen"
+                        tooltip="Toggle Full Screen"
+                        type="Transparent"
+                        press="onChartToggleFullScreen"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="agingChart"
+                            />
+                        </customData>
+                    </Button>
+                </OverflowToolbar>
             <viz:VizFrame
                 id="agingChart"
                 vizType="stacked_bar"
@@ -21,8 +78,8 @@
                     <viz.data:FlattenedDataset data="{agingModel>/AgingData}">
                         <viz.data:dimensions>
                             <viz.data:DimensionDefinition
-                                name="BusinessObject"
-                                value="{agingModel>BusinessObject}"
+                                name="BusinessObjectDesc"
+                                value="{agingModel>BusinessObjectDesc}"
                             />
                         </viz.data:dimensions>
 
@@ -55,16 +112,73 @@
                     <viz.feeds:FeedItem
                         uid="categoryAxis"
                         type="Dimension"
-                        values="BusinessObject"
+                        values="BusinessObjectDesc"
                     />
                 </viz:feeds>
             </viz:VizFrame>
+            </VBox>
         </Panel>
 
         <FlexBox
             width="100%"
             direction="Column"
         >
+            <OverflowToolbar style="Clear">
+                <ToolbarSpacer />
+                <Button
+                    icon="sap-icon://zoom-in"
+                    tooltip="Zoom In"
+                    type="Transparent"
+                    press="onChartZoomIn"
+                >
+                    <customData>
+                        <core:CustomData
+                            key="chartId"
+                            value="BottleneckHeatmapChart"
+                        />
+                    </customData>
+                </Button>
+                <Button
+                    icon="sap-icon://zoom-out"
+                    tooltip="Zoom Out"
+                    type="Transparent"
+                    press="onChartZoomOut"
+                >
+                    <customData>
+                        <core:CustomData
+                            key="chartId"
+                            value="BottleneckHeatmapChart"
+                        />
+                    </customData>
+                </Button>
+                <ToolbarSeparator />
+                <Button
+                    icon="sap-icon://filter"
+                    tooltip="Filter"
+                    type="Transparent"
+                    press="onChartOpenFilter"
+                >
+                    <customData>
+                        <core:CustomData
+                            key="chartId"
+                            value="BottleneckHeatmapChart"
+                        />
+                    </customData>
+                </Button>
+                <Button
+                    icon="sap-icon://full-screen"
+                    tooltip="Toggle Full Screen"
+                    type="Transparent"
+                    press="onChartToggleFullScreen"
+                >
+                    <customData>
+                        <core:CustomData
+                            key="chartId"
+                            value="BottleneckHeatmapChart"
+                        />
+                    </customData>
+                </Button>
+            </OverflowToolbar>
             <viz:VizFrame
                 id="BottleneckHeatmapChart"
                 uiConfig="{applicationSet:'fiori'}"

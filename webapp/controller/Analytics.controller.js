@@ -116,13 +116,13 @@ sap.ui.define(
             var mGrouped = {};
 
             aResults.forEach(function (item) {
-              var obj = item.BusinessObjectType;
+              var obj = item.BusinessObjectDesc || item.BusinessObjectType;
               var bucket = item.AgingBucket;
               var count = Number(item.IsOpenCount);
 
               if (!mGrouped[obj]) {
                 mGrouped[obj] = {
-                  BusinessObject: obj,
+                  BusinessObjectDesc: obj,
                   ZeroToTwoDays: 0,
                   ThreeToSevenDays: 0,
                   OverSevenDays: 0,
