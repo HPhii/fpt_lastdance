@@ -57,17 +57,6 @@
 
                     <GenericTile
                         class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
-                        header="{i18n>dashboardHelp}"
-                        subheader="{i18n>dashboardHelpSubheader}"
-                        press=".onNavToHelp"
-                    >
-                        <TileContent>
-                            <ImageContent src="sap-icon://sys-help" />
-                        </TileContent>
-                    </GenericTile>
-
-                    <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
                         header="{i18n>dashboardSubstitution}"
                         subheader="{i18n>dashboardSubstitutionSubheader}"
                         press=".onNavToSubstitution"

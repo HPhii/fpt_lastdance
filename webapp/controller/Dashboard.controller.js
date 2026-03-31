@@ -31,11 +31,6 @@ sap.ui.define(
         this._oRouter.navTo("RouteAnalytics");
       },
 
-      onNavToHelp: function ()
-      {
-        this._oRouter.navTo("RouteHelp");
-      },
-
       onNavToSubstitution: function ()
       {
         this._oRouter.navTo("RouteSubstitution");

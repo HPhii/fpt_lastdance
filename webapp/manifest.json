@@ -319,11 +319,6 @@
           "target": "TargetAnalytics"
         },
         {
-          "pattern": "help",
-          "name": "RouteHelp",
-          "target": "TargetHelp"
-        },
-        {
           "pattern": "substitution",
           "name": "RouteSubstitution",
           "target": "TargetSubstitution"
@@ -358,11 +353,6 @@
         "TargetAnalytics": {
           "viewId": "Analytics",
           "viewName": "Analytics",
-          "controlAggregation": "beginColumnPages"
-        },
-        "TargetHelp": {
-          "viewId": "Help",
-          "viewName": "Help",
           "controlAggregation": "beginColumnPages"
         },
         "TargetSubstitution": {
