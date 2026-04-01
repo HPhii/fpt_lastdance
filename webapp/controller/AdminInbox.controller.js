@@ -61,7 +61,7 @@ sap.ui.define([
 
             if (!oCtx) return;
 
-            var sUniqueName = oCtx.getProperty("UniqueName");
+            var sUniqueName = oCtx.getProperty("UserID");
             var oViewModel = oView.getModel("adminInboxViewModel");
             oViewModel.setProperty("/currentLocation", sUniqueName);
 
@@ -205,7 +205,6 @@ sap.ui.define([
 
         onNavBackToUsers: function () 
         {
-            this._resetSearchAndFilters();
             var oViewModel = this.getView().getModel('adminInboxViewModel');
             oViewModel.setProperty('/isTasksVisible', false);
             oViewModel.setProperty('/isUsersVisible', true);
@@ -215,7 +214,6 @@ sap.ui.define([
 
         onNavBackToTasks: function ()
         {
-            this._resetSearchAndFilters();
             var oViewModel = this.getView().getModel('adminInboxViewModel');
             var sLastSelectedUser = oViewModel.getProperty("/lastSelectedUser");
             oViewModel.setProperty('/isTasksVisible', true);
@@ -333,29 +331,38 @@ sap.ui.define([
             var oView = this.getView();
             var oAdminInboxModel = oView.getModel("adminInboxViewModel");
 
-            const oODataModel = oView.getModel("taskProcessing");
-            const sEntityPath = "/SearchUsers";
-            var sDefaultUserId = sQuery || "DEV-1*";
+            const oODataModel = oView.getModel();
 
             oAdminInboxModel.setProperty("/isUsersBusy", true);
-            oODataModel.callFunction(sEntityPath, {
-                method: "GET",
-                urlParameters: {
-                    "sap-client": "324",
-                    "SAP__Origin": "LOCAL_TGW",
-                    "SearchPattern": `${sDefaultUserId}`
-                },
-                success: function (oData)
+
+            var oListBinding = oODataModel.bindList("/ActiveUsers");
+
+            oListBinding.requestContexts(0, 1000).then(function (aContexts)
+            {
+                var aUsers = aContexts.map(function (oContext)
                 {
-                    oAdminInboxModel.setProperty("/users", oData.results || []);
-                    oAdminInboxModel.setProperty("/countTotal", oData.results.length);
-                    oAdminInboxModel.setProperty("/isUsersBusy", false);
-                },
-                error: function (oError)
+                    return oContext.getObject();
+                });
+
+                if (sQuery)
                 {
-                    MessageBox.error("Error fetching user data: " + oError.message);
-                    oAdminInboxModel.setProperty("/isUsersBusy", false);
+                    // Simple local filtering if there's a search query
+                    aUsers = aUsers.filter(function (user)
+                    {
+                        var { UserID, PersonFullName } = user;
+                        return (UserID && UserID.toLowerCase().includes(sQuery.toLowerCase())) ||
+                            (PersonFullName && PersonFullName.toLowerCase().includes(sQuery.toLowerCase()));
+                    });
                 }
+
+                oAdminInboxModel.setProperty("/users", aUsers);
+                oAdminInboxModel.setProperty("/countTotal", aUsers.length);
+                oAdminInboxModel.setProperty("/isUsersBusy", false);
+            }).catch(function (oError)
+            {
+                var sErrorMsg = oError.message || "Unknown error";
+                MessageBox.error("Error fetching user data: " + sErrorMsg);
+                oAdminInboxModel.setProperty("/isUsersBusy", false);
             });
         },
 
@@ -415,7 +422,7 @@ sap.ui.define([
                     {
                         aTasksFilters.push(new Filter("SampleResponsibleUser", FilterOperator.EQ, sUniqueName));
                     }
-                    oBinding.filter(aTasksFilters, "Application");
+                    oBinding.filter(aTasksFilters);
                 }
             }
 
@@ -428,6 +435,7 @@ sap.ui.define([
 
             // Reset Users Search Field & Filters
             var oUsersTable = this.byId("adminInboxUsersTable");
+            var bShouldSearchUsersAgain = false;
             if (oUsersTable)
             {
                 var oUsersHeader = oUsersTable.getHeaderToolbar();
@@ -438,7 +446,11 @@ sap.ui.define([
                     {
                         if (oControl.isA && oControl.isA("sap.m.SearchField"))
                         {
-                            oControl.setValue("");
+                            if (oControl.getValue())
+                            {
+                                oControl.setValue("");
+                                bShouldSearchUsersAgain = true;
+                            }
                         }
                     });
                 }
@@ -448,6 +460,11 @@ sap.ui.define([
                 {
                     oUsersBinding.filter([]);
                 }
+            }
+
+            if (bShouldSearchUsersAgain)
+            {
+                this.onSearchUsers();
             }
         },
 
@@ -514,28 +531,32 @@ sap.ui.define([
 
         onSearchTasks: function (oEvent)
         {
-            var sQuery = oEvent.getParameter("query");
-            var oTable = this.byId("adminInboxTasksTable");
-            var oBinding = oTable.getBinding("items");
+            var oView = this.getView(),
+                sQuery = oEvent.getParameter("query"),
+                oTable = this.byId("adminInboxTasksTable"),
+                oBinding = oTable.getBinding("items"),
+                sUniqueName = oView.getModel("adminInboxViewModel").getProperty("/lastSelectedUser"),
+                aFilters = [];
+
+            if (sUniqueName)
+            {
+                aFilters.push(new Filter("SampleResponsibleUser", FilterOperator.EQ, sUniqueName));
+            }
 
             if (sQuery)
             {
-                var aFilters = [
-                    new Filter({
-                        filters: [
-                            new Filter("WorkItemText", FilterOperator.Contains, sQuery),
-                            new Filter("WorkItemID", FilterOperator.Contains, sQuery),
-                            new Filter("TechnicalStatus", FilterOperator.Contains, sQuery),
-                            new Filter("Priority", FilterOperator.Contains, sQuery)
-                        ],
-                        and: false
-                    })
-                ];
-                oBinding.filter(aFilters);
-            } else
-            {
-                oBinding.filter([]);
+                aFilters.push(new Filter({
+                    filters: [
+                        new Filter("WorkItemText", FilterOperator.Contains, sQuery),
+                        new Filter("WorkItemID", FilterOperator.Contains, sQuery),
+                        new Filter("TechnicalStatus", FilterOperator.Contains, sQuery),
+                        new Filter("Priority", FilterOperator.Contains, sQuery)
+                    ],
+                    and: false
+                }));
             }
+
+            oBinding.filter(aFilters);
         },
 
         onSortTasks: function (oEvent)

@@ -115,7 +115,10 @@
                             <NumericContent
                                 value="{
                                     path:'adminInbox>/AdminInbox/$count',
-                                    type:'sap.ui.model.type.Integer'
+                                    type:'sap.ui.model.type.Integer',
+                                    parameters: {
+                                        $filter: 'TechnicalStatus eq \'SELECTED\' or TechnicalStatus eq \'WAITING\''
+                                    }
                                 }"
                                 icon="sap-icon://inbox"
                                 valueColor="Neutral"

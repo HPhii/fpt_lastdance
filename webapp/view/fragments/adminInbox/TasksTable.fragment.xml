@@ -101,7 +101,7 @@
                     <ToolbarSpacer />
                     <SearchField
                         width="auto"
-                        search="_onObjectMatched"
+                        search=".onSearchTasks"
                         placeholder="{i18n>tableHeaderSearchPlaceholder}"
                         tooltip="{i18n>tooltipHeaderSearch}"
                     />
@@ -169,10 +169,7 @@
             </columns>
             <ColumnListItem type="Navigation">
                 <cells>
-                    <ObjectIdentifier
-                        title="{adminInbox>WorkItemID}"
-                        text="{adminInbox>TopWorkItemID}"
-                    />
+                    <ObjectIdentifier title="{adminInbox>WorkItemID}" />
                     <Text text="{adminInbox>WorkItemText}" />
                     <Text text="{adminInbox>CreationDate}" />
                     <ObjectStatus
