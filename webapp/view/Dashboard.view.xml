@@ -23,7 +23,7 @@
                     class="sapUiTinyMarginTop"
                 >
                     <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
                         header="{i18n>dashboardTaskManagement}"
                         subheader="{i18n>dashboardTaskSubheader}"
                         press=".onNavToTask"
@@ -44,7 +44,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
                         header="{i18n>dashboardReports}"
                         subheader="{i18n>dashboardReportsSubheader}"
                         press=".onNavToAnalytics"
@@ -56,7 +56,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
                         header="{i18n>dashboardSubstitution}"
                         subheader="{i18n>dashboardSubstitutionSubheader}"
                         press=".onNavToSubstitution"
@@ -67,7 +67,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
                         header="{i18n>dashboardMyKPIs}"
                         subheader="{i18n>dashboardMyKPIsSubheader}"
                         press=".onNavToUserKPIDashboard"
@@ -93,7 +93,7 @@
                     class="sapUiTinyMarginTop"
                 >
                     <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
                         header="{i18n>dashboardRoleManagement}"
                         subheader="{i18n>dashboardRoleManagementSubheader}"
                         press=".onNavToRoleManagement"
@@ -104,7 +104,7 @@
                     </GenericTile>
 
                     <GenericTile
-                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
                         header="{i18n>dashboardAdminInbox}"
                         subheader="{i18n>dashboardAdminInboxSubheader}"
                         press=".onNavToAdminInbox"

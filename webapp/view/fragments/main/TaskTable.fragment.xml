@@ -16,8 +16,8 @@
         items="{ 
             path: '/WfTasks',
             sorter: { 
-                path: 'Priority', 
-                descending: false 
+                path: 'CreationDate', 
+                descending: true 
             }
         }"
     >
@@ -65,6 +65,7 @@
                     press=".onToggleMultiSelect"
                     tooltip="Toggle Multi-Select Mode"
                     type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
+                    visible="{= !${worklistView>/detailVisible} }"
                 />
                 <SearchField
                     id="searchTaskField"

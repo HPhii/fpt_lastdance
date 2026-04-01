@@ -1,5 +1,4 @@
 <mvc:View
-    xmlns:simple="sap.gantt.simple"
     controllerName="z.wf.zwfmanagement.controller.MainView"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
@@ -65,26 +64,13 @@
             </IconTabBar>
         </f:content>
         <f:footer>
-            <OverflowToolbar id="otbFooter">
+            <OverflowToolbar class="sapUiTinyMarginBottom">
                 <ToolbarSpacer />
                 <Button
-                    type="Default"
+                    type="Ghost"
                     text="{i18n>buttonFooterDelegate}"
                     press=".onBulkDelegatePress"
-                >
-                    <layoutData>
-                        <OverflowToolbarLayoutData priority="NeverOverflow" />
-                    </layoutData>
-                </Button>
-                <Button
-                    type="Emphasized"
-                    text="{i18n>buttonFooterSubtitute}"
-                    press=".onSubstitutePress"
-                >
-                    <layoutData>
-                        <OverflowToolbarLayoutData priority="NeverOverflow" />
-                    </layoutData>
-                </Button>
+                />
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>

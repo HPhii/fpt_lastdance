@@ -97,6 +97,7 @@ sap.ui.define([
       };
 
       this.oRouter.getRoute("RouteMainView").attachPatternMatched(this._onMainViewMatched, this);
+      this.oRouter.getRoute("RouteDetail").attachPatternMatched(this._onDetailMatched, this);
       this._loadStatusFilterCounter();
 
       // Subscribe to global event to refresh the filter bar manually when tasks are changed in detail view
@@ -346,6 +347,8 @@ sap.ui.define([
       var oNextUIState = oHelper.getNextUIState(1);
       var id = oContext.getPath().split("'")[1];
 
+      oViewModel.setProperty("/detailVisible", true);
+
       this.oRouter.navTo("RouteDetail", {
         layout: oNextUIState.layout,
         propertyPath: id
@@ -492,11 +495,12 @@ sap.ui.define([
     _onMainViewMatched: function ()
     {
       if (this._oList) this._oList.removeSelections(true);
+      this.getView().getModel("worklistView").setProperty("/detailVisible", false);
     },
 
-    onSubstitutePress: function ()
+    _onDetailMatched: function ()
     {
-      this.getOwnerComponent().getRouter().navTo("RouteSubstitution");
+      this.getView().getModel("worklistView").setProperty("/detailVisible", true);
     },
 
     onBulkDelegatePress: function ()
