@@ -40,7 +40,9 @@ sap.ui.define(
           footerBusy: false,
           today: new Date(),
           headerSubtitle: "",
-          snappedTitle: ""
+          snappedTitle: "",
+          isUploading: false,
+          uploadingFileName: ""
         });
 
         oView.setModel(oViewModel, "detailView");

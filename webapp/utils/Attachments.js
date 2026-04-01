@@ -53,6 +53,9 @@ sap.ui.define([
                     var sTitle = aNameParts.join(".");
                     var sMimeType = oFile.type || "application/octet-stream";
 
+                    oView.getModel("detailView").setProperty("/isUploading", true);
+                    oView.getModel("detailView").setProperty("/uploadingFileName", sFileName);
+
                     that._postAttachment(oView, oContext, {
                         DocumentTitle: sTitle,
                         FileExtension: sExtension,
@@ -80,6 +83,8 @@ sap.ui.define([
             var oResourceBundle = oView.getModel("i18n").getResourceBundle();
             oListBinding.attachEventOnce("createCompleted", function (oEvt)
             {
+                oView.getModel("detailView").setProperty("/isUploading", false);
+                oView.getModel("detailView").setProperty("/uploadingFileName", "");
                 var bSuccess = oEvt.getParameter("success");
                 if (bSuccess)
                 {
