@@ -6,8 +6,9 @@ sap.ui.define([
     "sap/ui/model/FilterOperator",
     "sap/m/ViewSettingsDialog",
     "sap/m/ViewSettingsItem",
-    "sap/ui/model/Sorter"
-], function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, ViewSettingsDialog, ViewSettingsItem, Sorter)
+    "sap/ui/model/Sorter",
+    "../utils/TasksFilterDialog"
+], function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, ViewSettingsDialog, ViewSettingsItem, Sorter, TasksFilterDialogHelper)
 {
     "use strict";
 
@@ -593,58 +594,17 @@ sap.ui.define([
 
         onFilterTasks: function (oEvent)
         {
-            if (!this._oFilterTasksDialog)
+            TasksFilterDialogHelper.onOpen(this.getView(), this.byId("adminInboxTasksTable"), function ()
             {
-                this._oFilterTasksDialog = new ViewSettingsDialog({
-                    filterItems: [
-                        new ViewSettingsItem({
-                            text: "Priority",
-                            key: "Priority",
-                            items: [
-                                new ViewSettingsItem({ text: "High", key: "Priority___1" }),
-                                new ViewSettingsItem({ text: "Medium", key: "Priority___5" }),
-                                new ViewSettingsItem({ text: "Low", key: "Priority___9" })
-                            ]
-                        }),
-                        new ViewSettingsItem({
-                            text: "Status",
-                            key: "TechnicalStatus",
-                            items: [
-                                new ViewSettingsItem({ text: "Ready", key: "TechnicalStatus___READY" }),
-                                new ViewSettingsItem({ text: "Started", key: "TechnicalStatus___STARTED" }),
-                                new ViewSettingsItem({ text: "Completed", key: "TechnicalStatus___COMPLETED" }),
-                                new ViewSettingsItem({ text: "Error", key: "TechnicalStatus___ERROR" })
-                            ]
-                        })
-                    ],
-                    confirm: function (oEvent)
-                    {
-                        var oParams = oEvent.getParameters();
-                        var oBinding = this.byId("adminInboxTasksTable").getBinding("items");
-                        var aFilters = [];
-
-                        oParams.filterItems.forEach(function (oItem)
-                        {
-                            var aSplit = oItem.getKey().split("___");
-                            var sPath = aSplit[0];
-                            var sValue = aSplit[1];
-                            aFilters.push(new Filter(sPath, FilterOperator.EQ, sValue));
-                        });
-
-                        // Preserve existing target filter from onUserPress (SampleResponsibleUser)
-                        var oViewModel = this.getView().getModel("adminInboxViewModel");
-                        var sUniqueName = oViewModel.getProperty("/lastSelectedUser");
-                        if (sUniqueName)
-                        {
-                            aFilters.push(new Filter("SampleResponsibleUser", FilterOperator.EQ, sUniqueName));
-                        }
-
-                        oBinding.filter(aFilters);
-                    }.bind(this)
-                });
-            }
-
-            this._oFilterTasksDialog.open();
+                var aBaseFilters = [];
+                var oViewModel = this.getView().getModel("adminInboxViewModel");
+                var sUniqueName = oViewModel.getProperty("/lastSelectedUser");
+                if (sUniqueName)
+                {
+                    aBaseFilters.push(new Filter("SampleResponsibleUser", FilterOperator.EQ, sUniqueName));
+                }
+                return aBaseFilters;
+            }.bind(this));
         }
     });
 });

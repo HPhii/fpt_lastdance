@@ -89,7 +89,7 @@ sap.ui.define([
       switch (sPriority)
       {
         case "1":
-          return "Highest - Express";
+          return "Highest";
         case "2":
           return "Very high";
         case "3":

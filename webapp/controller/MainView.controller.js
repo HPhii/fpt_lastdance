@@ -5,9 +5,11 @@ sap.ui.define([
   "sap/ui/model/FilterOperator",
   "sap/m/ViewSettingsDialog",
   "sap/m/ViewSettingsItem",
+  "sap/m/ViewSettingsFilterItem",
   "sap/ui/model/Sorter",
   "../utils/ColumnSettingsDialog",
-  "../utils/BulkDelegateDialog"
+  "../utils/BulkDelegateDialog",
+  "../utils/TasksFilterDialog"
 ], function (
   BaseController,
   JSONModel,
@@ -15,9 +17,11 @@ sap.ui.define([
   FilterOperator,
   ViewSettingsDialog,
   ViewSettingsItem,
+  ViewSettingsFilterItem,
   Sorter,
   ColumnSettingsDialogHelper,
-  BulkDelegateDialogHelper
+  BulkDelegateDialogHelper,
+  TasksFilterDialogHelper
 )
 {
   "use strict";
@@ -207,67 +211,7 @@ sap.ui.define([
 
     onFilter: function ()
     {
-      if (!this._oFilterDialog)
-      {
-        this._oFilterDialog = new ViewSettingsDialog({
-          filterItems: [
-            new ViewSettingsItem({
-              text: "Priority",
-              key: "Priority",
-              items: [
-                new ViewSettingsItem({
-                  text: "High",
-                  key: "Priority___1",
-                }),
-                new ViewSettingsItem({
-                  text: "Medium",
-                  key: "Priority___5",
-                }),
-                new ViewSettingsItem({
-                  text: "Low",
-                  key: "Priority___9",
-                }),
-              ],
-            }),
-            new ViewSettingsItem({
-              text: "Status",
-              key: "TechnicalStatus",
-              items: [
-                new ViewSettingsItem({
-                  text: "Ready",
-                  key: "TechnicalStatus___READY",
-                }),
-                new ViewSettingsItem({
-                  text: "Started",
-                  key: "TechnicalStatus___STARTED",
-                }),
-                new ViewSettingsItem({
-                  text: "Completed",
-                  key: "TechnicalStatus___COMPLETED",
-                }),
-              ],
-            }),
-          ],
-          confirm: function (oEvent)
-          {
-            var oParams = oEvent.getParameters();
-            var oBinding = this._oList.getBinding("items");
-            var aFilters = [];
-
-            oParams.filterItems.forEach(function (oItem)
-            {
-              var sPath = oItem.getKey().split("___")[0];
-              var sValue = oItem.getKey().split("___")[1];
-              var oFilter = new Filter(sPath, FilterOperator.EQ, sValue);
-              aFilters.push(oFilter);
-            });
-
-            oBinding.filter(aFilters);
-          }.bind(this),
-        });
-      }
-
-      this._oFilterDialog.open();
+      TasksFilterDialogHelper.onOpen(this.getView(), this._oList);
     },
 
     onGroup: function ()
@@ -282,7 +226,7 @@ sap.ui.define([
             }),
             new ViewSettingsItem({
               text: "Priority",
-              key: "Priority",
+              key: "PriorityText",
             }),
             new ViewSettingsItem({
               text: "User",

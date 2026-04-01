@@ -71,8 +71,8 @@
                     $expand: '_TraceLogs'
                 },
                 sorter: {
-                    path: 'Priority',
-                    descending: false
+                    path: 'CreationDate',
+                    descending: true
                 }
             }"
             itemPress=".onTaskPress"
