@@ -170,38 +170,46 @@
             <!-- ===== CHART AREA ===== -->
             <HBox
                 width="100%"
-                wrap="Wrap"
                 justifyContent="SpaceBetween"
                 class="sapUiTinyMarginTop"
                 busy="{statsAnalyticsModel>/busy}"
             >
                 <!-- STATUS DONUT -->
-                <viz:VizFrame
-                    class="sapUiSmallMargin"
-                    vizType="donut"
-                    width="100%"
-                    height="400px"
-                    busy="{statsAnalyticsModel>/donutBusy}"
-                    vizProperties="{
-                            title:{
-                                visible:true,
-                                text:'Status Distribution'
-                            },
-                            plotArea:{
-                                dataLabel:{
-                                    visible:true,
-                                    type:'value'
-                                },
-                                showGap:true
-                            }
-                        }"
-                >
-                    <viz:layoutData>
+                <VBox class="sapUiSmallMargin">
+                    <layoutData>
                         <FlexItemData
                             growFactor="1"
-                            minWidth="500px"
+                            minWidth="200px"
                         />
-                    </viz:layoutData>
+                    </layoutData>
+                    <Toolbar style="Clear">
+                        <ToolbarSpacer />
+                        <Title text="Status Distribution" level="H4" />
+                        <ToolbarSpacer />
+                        <Button icon="sap-icon://message-information" type="Transparent" press=".onChartInfoPress" tooltip="{i18n>statusDistributionInfoTooltip}">
+                            <customData>
+                                <core:CustomData key="chartType" value="status" />
+                            </customData>
+                        </Button>
+                    </Toolbar>
+                    <viz:VizFrame
+                        vizType="donut"
+                        width="100%"
+                        height="400px"
+                        busy="{statsAnalyticsModel>/donutBusy}"
+                        vizProperties="{
+                                title:{
+                                    visible:false
+                                },
+                                plotArea:{
+                                    dataLabel:{
+                                        visible:true,
+                                        type:'value'
+                                    },
+                                    showGap:true
+                                }
+                            }"
+                    >
                     <viz:dataset>
                         <viz.data:FlattenedDataset
                             data="{donutModel>/DonutData}"
@@ -235,18 +243,30 @@
                         />
                     </viz:feeds>
                 </viz:VizFrame>
+                </VBox>
 
                 <!-- PRIORITY BAR -->
+                <VBox class="sapUiSmallMargin">
+                    <layoutData>
+                        <FlexItemData
+                            growFactor="1"
+                            minWidth="200px"
+                        />
+                    </layoutData>
+                    <Toolbar style="Clear">
+                        <ToolbarSpacer />
+                        <Title text="Tasks in Processing by Priority" level="H4" />
+                        <ToolbarSpacer />
+                        <Button icon="sap-icon://message-information" type="Transparent" press=".onChartInfoPress('priority')" tooltip="{i18n>priorityBarInfoTooltip}" />
+                    </Toolbar>
                 <viz:VizFrame
-                    class="sapUiSmallMargin"
                     vizType="bar"
                     width="100%"
                     height="400px"
                     busy="{statsAnalyticsModel>/priorityBusy}"
                     vizProperties="{
                         title:{
-                            visible:true,
-                            text:'Tasks in Processing by Priority'
+                            visible:false
                         },
                         plotArea:{
                             dataLabel:{
@@ -262,12 +282,6 @@
                         }
                     }"
                 >
-                    <viz:layoutData>
-                        <FlexItemData
-                            growFactor="1"
-                            minWidth="500px"
-                        />
-                    </viz:layoutData>
                     <viz:dataset>
                         <viz.data:FlattenedDataset
                             data="{priorityModel>/PriorityData}"
@@ -307,6 +321,7 @@
                         />
                     </viz:feeds>
                 </viz:VizFrame>
+                </VBox>
             </HBox>
         </VBox>
     </Panel>

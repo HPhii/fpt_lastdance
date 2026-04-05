@@ -1,0 +1,14 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+>
+	<Popover
+		id="chartInfoPopover"
+		placement="Bottom"
+		title="{i18n>chartInfoTitle}"
+		showHeader="false"
+		contentWidth="250px"
+	>
+		<Text text="{chartInfoModel>/text}" class="sapUiSmallMargin" />
+	</Popover>
+</core:FragmentDefinition>

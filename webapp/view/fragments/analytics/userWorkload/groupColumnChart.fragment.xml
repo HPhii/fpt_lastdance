@@ -8,7 +8,10 @@
     <VBox>
         <!-- Chart Toolbar -->
         <OverflowToolbar style="Clear">
+            <ToolbarSpacer width="35%" />
+            <Title text="Open vs Completed Tasks by Agent" level="H4" />
             <ToolbarSpacer />
+            
             <Button
                 icon="sap-icon://zoom-in"
                 tooltip="Zoom In"
@@ -35,30 +38,16 @@
                     />
                 </customData>
             </Button>
-            <ToolbarSeparator />
             <Button
-                icon="sap-icon://filter"
-                tooltip="Filter"
+                icon="sap-icon://message-information"
+                tooltip="Information"
                 type="Transparent"
-                press="onChartOpenFilter"
+                press=".onChartInfoPress"
             >
                 <customData>
                     <core:CustomData
-                        key="chartId"
-                        value="OpenCompletedColumnChart"
-                    />
-                </customData>
-            </Button>
-            <Button
-                icon="sap-icon://full-screen"
-                tooltip="Toggle Full Screen"
-                type="Transparent"
-                press="onChartToggleFullScreen"
-            >
-                <customData>
-                    <core:CustomData
-                        key="chartId"
-                        value="OpenCompletedColumnChart"
+                        key="chartType"
+                        value="workloadGroup"
                     />
                 </customData>
             </Button>
@@ -94,7 +83,7 @@
                     visible: true
                 },
                 title: {
-                    visible: true
+                    visible: false
                 }
             }"
         >

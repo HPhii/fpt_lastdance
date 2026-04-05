@@ -63,25 +63,6 @@ sap.ui.define(
         });
       },
 
-      onChartToggleFullScreen: function (oEvent) {
-        var sChartId = oEvent.getSource().data("chartId");
-        var oPanel = this.byId(sChartId);
-        if (!oPanel) {
-          return;
-        }
-
-        var bFull = oPanel.data("fullScreen") === true;
-        if (bFull) {
-          oPanel.removeStyleClass("fullScreenPanel");
-          oPanel.data("fullScreen", false);
-          oEvent.getSource().setIcon("sap-icon://full-screen");
-        } else {
-          oPanel.addStyleClass("fullScreenPanel");
-          oPanel.data("fullScreen", true);
-          oEvent.getSource().setIcon("sap-icon://exit-full-screen");
-        }
-      },
-
       onChartOpenFilter: function (oEvent) {
         var oView = this.getView(),
           sChartId = oEvent.getSource().data("chartId"),
@@ -218,8 +199,6 @@ sap.ui.define(
         });
       },
 
-      /* CONNECT POPOVERS */
-
       /* STATUS DONUT CHART - Group Data Manually */
       _loadStatusDonutChart: function () {
         var oView = this.getView();
@@ -332,6 +311,59 @@ sap.ui.define(
           });
           oScatterPopover.connect(oScatterChart.getVizUid());
         }
+      },
+
+      onChartInfoPress: function (oEvent) {
+        var oSourceButton = oEvent.getSource();
+        var sType = oSourceButton.data("chartType");
+
+        var oView = this.getView();
+        if (!this._oChartInfoPopover) {
+          this._oChartInfoPopover = sap.ui.xmlfragment(
+            oView.getId(),
+            "z.wf.zwfmanagement.view.fragments.analytics.ChartInfoPopover",
+            this,
+          );
+          oView.addDependent(this._oChartInfoPopover);
+          this._oChartInfoModel = new sap.ui.model.json.JSONModel({ text: "" });
+          this._oChartInfoPopover.setModel(
+            this._oChartInfoModel,
+            "chartInfoModel",
+          );
+        }
+
+        var oBundle = oView.getModel("i18n").getResourceBundle();
+        var sText = "";
+
+        if (sType === "status") {
+          sText =
+            "This chart displays the distribution of total tasks by their status (Open, In Process, Completed...).";
+        } else if (sType === "priority") {
+          sText =
+            "This chart displays the number of tasks in processing based on their priority (High, Medium, Low).";
+        } else if (sType === "performance") {
+          sText =
+            "This chart displays the number of completed tasks and the average cycle time (in days) over months.";
+        } else if (sType === "cycleTime") {
+          sText =
+            "This heat map chart displays the average cycle time by different business objects and tasks.";
+        } else if (sType === "aging") {
+          sText =
+            "This chart displays the aging of tasks by business object, categorized into 0-2 days, 3-7 days, and over 7 days.";
+        } else if (sType === "bottleneck") {
+          sText =
+            "This heatmap helps identify bottlenecks by showing open tasks grouped by priority and their aging buckets.";
+        } else if (sType === "outstanding") {
+          sText =
+            "This table lists the top 10 longest outstanding tasks, showing the user, aging in days, and current status.";        } else if (sType === "workloadGroup") {
+          sText =
+            "This chart compares the volume of open and completed tasks handled by each agent.";
+        } else if (sType === "workloadCycle") {
+          sText =
+            "This scatter chart displays the relationship between the number of tasks completed and the average cycle time for each agent.";        }
+
+        this._oChartInfoModel.setProperty("/text", sText);
+        this._oChartInfoPopover.openBy(oSourceButton);
       },
 
       onChartZoomIn: function (oEvent) {

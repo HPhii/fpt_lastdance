@@ -7,7 +7,10 @@
 >
     <VBox>
         <OverflowToolbar style="Clear">
+            <ToolbarSpacer width="35%" />
+            <Title text="Agent Completed vs Cycle Time" level="H4" />
             <ToolbarSpacer />
+            
             <Button
                 icon="sap-icon://zoom-in"
                 tooltip="Zoom In"
@@ -34,30 +37,16 @@
                     />
                 </customData>
             </Button>
-            <ToolbarSeparator />
             <Button
-                icon="sap-icon://filter"
-                tooltip="Filter"
+                icon="sap-icon://message-information"
+                tooltip="Information"
                 type="Transparent"
-                press="onChartOpenFilter"
+                press=".onChartInfoPress"
             >
                 <customData>
                     <core:CustomData
-                        key="chartId"
-                        value="CycleTimeScatterChart"
-                    />
-                </customData>
-            </Button>
-            <Button
-                icon="sap-icon://full-screen"
-                tooltip="Toggle Full Screen"
-                type="Transparent"
-                press="onChartToggleFullScreen"
-            >
-                <customData>
-                    <core:CustomData
-                        key="chartId"
-                        value="CycleTimeScatterChart"
+                        key="chartType"
+                        value="workloadCycle"
                     />
                 </customData>
             </Button>
@@ -118,7 +107,7 @@
                     visible: true
                 },
                 title: {
-                    visible: true,
+                    visible: false,
                     text: 'Agent Completed vs Cycle Time'
                 }
             }"
