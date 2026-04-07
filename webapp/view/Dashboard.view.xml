@@ -45,18 +45,6 @@
 
                     <GenericTile
                         class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
-                        header="{i18n>dashboardReports}"
-                        subheader="{i18n>dashboardReportsSubheader}"
-                        press=".onNavToAnalytics"
-                        visible="{userRole>/isAdmin}"
-                    >
-                        <TileContent>
-                            <ImageContent src="sap-icon://bar-chart" />
-                        </TileContent>
-                    </GenericTile>
-
-                    <GenericTile
-                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
                         header="{i18n>dashboardSubstitution}"
                         subheader="{i18n>dashboardSubstitutionSubheader}"
                         press=".onNavToSubstitution"
@@ -100,6 +88,18 @@
                     >
                         <TileContent>
                             <ImageContent src="sap-icon://manager" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
+                        header="{i18n>dashboardReports}"
+                        subheader="{i18n>dashboardReportsSubheader}"
+                        press=".onNavToAnalytics"
+                        visible="{userRole>/isAdmin}"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://bar-chart" />
                         </TileContent>
                     </GenericTile>
 
