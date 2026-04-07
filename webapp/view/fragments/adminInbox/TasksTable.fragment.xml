@@ -106,11 +106,6 @@
                         tooltip="{i18n>tooltipHeaderSearch}"
                     />
                     <Button
-                        icon="sap-icon://sort"
-                        press=".onSortTasks"
-                        tooltip="{i18n>tooltipHeaderSort}"
-                    />
-                    <Button
                         icon="sap-icon://filter"
                         press=".onFilterTasks"
                         tooltip="{i18n>tooltipHeaderFilter}"
@@ -119,52 +114,132 @@
             </headerToolbar>
             <columns>
                 <Column>
-                    <Text text="{i18n>columnTaskWorkItemId}" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="WorkItemID"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="{i18n>columnTaskWorkItemId}"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
                 <Column
                     demandPopin="true"
                     minScreenWidth="Tablet"
                 >
-                    <Text text="{i18n>columnTaskName}" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="WorkItemText"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="{i18n>columnTaskName}"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
                 <Column
                     demandPopin="true"
                     minScreenWidth="Tablet"
                 >
-                    <Text text="{i18n>columnTaskCreationDate}" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="CreationDate"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="{i18n>columnTaskCreationDate}"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
                 <Column
                     demandPopin="true"
                     minScreenWidth="Tablet"
                 >
-                    <Text text="{i18n>columnTaskStatus}" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="TechnicalStatus"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="{i18n>columnTaskStatus}"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
                 <Column
                     demandPopin="true"
                     minScreenWidth="Desktop"
                     popinDisplay="Inline"
                 >
-                    <Text text="{i18n>columnTaskProcessStatus}" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="TechnicalStatusText"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="{i18n>columnTaskProcessStatus}"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
                 <Column
                     demandPopin="true"
                     minScreenWidth="Tablet"
                 >
-                    <Text text="{i18n>columnTaskPriority}" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="Priority"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="{i18n>columnTaskPriority}"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
                 <Column
                     demandPopin="true"
                     minScreenWidth="Desktop"
                     popinDisplay="Inline"
                 >
-                    <Text text="Claimed By" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="ClaimedByUser"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="Claimed By"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
                 <Column
                     demandPopin="true"
                     minScreenWidth="Desktop"
                     popinDisplay="Inline"
                 >
-                    <Text text="Responsible" />
+                    <customData>
+                        <core:CustomData
+                            key="sortKey"
+                            value="SampleResponsibleUser"
+                        />
+                    </customData>
+                    <Button
+                        type="Transparent"
+                        text="Responsible"
+                        press=".onColumnSortTasks"
+                    />
                 </Column>
             </columns>
             <ColumnListItem type="Navigation">

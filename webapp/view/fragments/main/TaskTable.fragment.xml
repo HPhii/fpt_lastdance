@@ -29,11 +29,6 @@
                 />
                 <ToolbarSpacer />
                 <OverflowToolbarButton
-                    icon="sap-icon://sort"
-                    press=".onSort"
-                    tooltip="{i18n>tooltipHeaderSort}"
-                />
-                <OverflowToolbarButton
                     icon="sap-icon://filter"
                     press=".onFilter"
                     tooltip="{i18n>tooltipHeaderFilter}"
@@ -89,7 +84,17 @@
                 id="colTaskName"
                 visible="{worklistView>/columns/taskName}"
             >
-                <Text text="{i18n>columnTaskName}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="TaskText"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskName}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colTaskID"
@@ -97,7 +102,17 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/taskID}"
             >
-                <Text text="{i18n>columnTaskId}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="TaskID"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskId}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colWorkItemID"
@@ -105,7 +120,17 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/workItemID}"
             >
-                <Text text="{i18n>columnTaskWorkItemId}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="WorkItemID"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskWorkItemId}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colCreationDate"
@@ -113,7 +138,17 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/creationDate}"
             >
-                <Text text="{i18n>columnTaskCreationDate}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="CreationDate"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskCreationDate}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colEndDate"
@@ -121,7 +156,17 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/actualDeadlineDate}"
             >
-                <Text text="{i18n>columnTaskEndDate}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="ActualDeadlineDate"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskEndDate}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colDaysToDeadline"
@@ -129,7 +174,17 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/daysToDeadline}"
             >
-                <Text text="{i18n>columnTaskDaysToDeadline}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="DaysToDeadline"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskDaysToDeadline}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colProcessStatus"
@@ -137,7 +192,17 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/technicalStatusText}"
             >
-                <Text text="{i18n>columnTaskProcessStatus}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="TechnicalStatusText"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskProcessStatus}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colStatus"
@@ -146,7 +211,17 @@
                 hAlign="Center"
                 visible="{worklistView>/columns/status}"
             >
-                <Text text="{i18n>columnTaskStatus}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="TechnicalStatus"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskStatus}"
+                    press=".onColumnSort"
+                />
             </Column>
 
             <Column
@@ -155,7 +230,17 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/assignedUser}"
             >
-                <Text text="{i18n>columnTaskAssignedUser}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="AssignedUser"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskAssignedUser}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colAssignedUserName"
@@ -163,14 +248,34 @@
                 demandPopin="true"
                 visible="{worklistView>/columns/assignedUserName}"
             >
-                <Text text="{i18n>columnTaskAssignedUserName}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="AssignedUserName"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskAssignedUserName}"
+                    press=".onColumnSort"
+                />
             </Column>
             <Column
                 id="colPriority"
                 hAlign="Center"
                 visible="{worklistView>/columns/priority}"
             >
-                <Text text="{i18n>columnTaskPriority}" />
+                <customData>
+                    <core:CustomData
+                        key="sortKey"
+                        value="Priority"
+                    />
+                </customData>
+                <Button
+                    type="Transparent"
+                    text="{i18n>columnTaskPriority}"
+                    press=".onColumnSort"
+                />
             </Column>
         </columns>
         <items>

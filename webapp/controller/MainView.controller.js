@@ -9,7 +9,8 @@ sap.ui.define([
   "sap/ui/model/Sorter",
   "../utils/ColumnSettingsDialog",
   "../utils/BulkDelegateDialog",
-  "../utils/TasksFilterDialog"
+  "../utils/TasksFilterDialog",
+  "../utils/ColumnSortHelper"
 ], function (
   BaseController,
   JSONModel,
@@ -21,7 +22,8 @@ sap.ui.define([
   Sorter,
   ColumnSettingsDialogHelper,
   BulkDelegateDialogHelper,
-  TasksFilterDialogHelper
+  TasksFilterDialogHelper,
+  ColumnSortHelper
 )
 {
   "use strict";
@@ -83,6 +85,7 @@ sap.ui.define([
       });
 
       this.getView().setModel(oViewModel, "worklistView");
+        ColumnSortHelper.setupDefaultSort(this, this._oList, "CreationDate", true);
 
       //Create an object of filters for filtering tasks based on their technical status
       this._mFilters = {
@@ -161,52 +164,9 @@ sap.ui.define([
       });
     },
 
-    onSort: function ()
+    onColumnSort: function (oEvent)
     {
-      if (!this._oSortDialog)
-      {
-        this._oSortDialog = new ViewSettingsDialog({
-          sortItems: [
-            new ViewSettingsItem({
-              text: "Task Name",
-              key: "TaskText",
-            }),
-            new ViewSettingsItem({
-              text: "Creation Date",
-              key: "CreationDate",
-            }),
-            new ViewSettingsItem({
-              text: "Priority",
-              key: "Priority",
-            }),
-            new ViewSettingsItem({
-              text: "Days to Deadline",
-              key: "DaysToDeadline",
-            }),
-            new ViewSettingsItem({
-              text: "User ID",
-              key: "AssignedUser",
-            }),
-          ],
-          confirm: function (oEvent)
-          {
-            var oParams = oEvent.getParameters();
-            var oBinding = this._oList.getBinding("items");
-            var aSorters = [];
-
-            if (oParams.sortItem)
-            {
-              var sPath = oParams.sortItem.getKey();
-              var bDescending = oParams.sortDescending;
-              aSorters.push(new Sorter(sPath, bDescending));
-            }
-
-            oBinding.sort(aSorters);
-          }.bind(this),
-        });
-      }
-
-      this._oSortDialog.open();
+      ColumnSortHelper.onColumnSort(this, oEvent, this._oList);
     },
 
     onFilter: function ()

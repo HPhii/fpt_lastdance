@@ -59,15 +59,19 @@ sap.ui.define([
                 sActionType = this._sActionType,
                 oPayload;
 
+            var bNavigateToMainView = false;
+
             switch (sActionType)
             {
                 case "approve":
                     oPayload = { REASON: sReason };
                     oController.callBoundAction("approve", oContext, oPayload);
+                    bNavigateToMainView = true;
                     break;
                 case "reject":
                     oPayload = { REASON: sReason };
                     oController.callBoundAction("reject", oContext, oPayload);
+                    bNavigateToMainView = true;
                     break;
                 case "executionDecision":
                     oPayload = { ELEMENT: this._sDecisionKey, REASON: sReason };
@@ -78,6 +82,13 @@ sap.ui.define([
             }
 
             this.onCancel();
+
+            if (bNavigateToMainView)
+            {
+                oController.getOwnerComponent().getRouter().navTo("RouteMainView", {
+                    layout: "OneColumn"
+                });
+            }
         }
 
     }

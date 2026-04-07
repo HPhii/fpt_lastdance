@@ -7,8 +7,9 @@ sap.ui.define([
     "sap/m/ViewSettingsDialog",
     "sap/m/ViewSettingsItem",
     "sap/ui/model/Sorter",
-    "../utils/TasksFilterDialog"
-], function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, ViewSettingsDialog, ViewSettingsItem, Sorter, TasksFilterDialogHelper)
+    "../utils/TasksFilterDialog",
+    "../utils/ColumnSortHelper"
+], function (BaseController, JSONModel, MessageBox, Filter, FilterOperator, ViewSettingsDialog, ViewSettingsItem, Sorter, TasksFilterDialogHelper, ColumnSortHelper)
 {
     "use strict";
 
@@ -44,6 +45,7 @@ sap.ui.define([
             });
 
             oView.setModel(oViewModel, "adminInboxViewModel");
+            ColumnSortHelper.setupDefaultSort(this, this.byId("adminInboxTasksTable"), "CreationDate", true);
 
             this._oRouter
                 .getRoute("RouteAdminInbox")
@@ -560,36 +562,9 @@ sap.ui.define([
             oBinding.filter(aFilters);
         },
 
-        onSortTasks: function (oEvent)
+        onColumnSortTasks: function (oEvent)
         {
-            if (!this._oSortTasksDialog)
-            {
-                this._oSortTasksDialog = new ViewSettingsDialog({
-                    sortItems: [
-                        new ViewSettingsItem({ text: "Creation Date", key: "CreationDate" }),
-                        new ViewSettingsItem({ text: "Priority", key: "Priority" }),
-                        new ViewSettingsItem({ text: "Status", key: "TechnicalStatus" }),
-                        new ViewSettingsItem({ text: "Task Name", key: "WorkItemText" })
-                    ],
-                    confirm: function (oEvent)
-                    {
-                        var oParams = oEvent.getParameters();
-                        var oBinding = this.byId("adminInboxTasksTable").getBinding("items");
-                        var aSorters = [];
-
-                        if (oParams.sortItem)
-                        {
-                            var sPath = oParams.sortItem.getKey();
-                            var bDescending = oParams.sortDescending;
-                            aSorters.push(new Sorter(sPath, bDescending));
-                        }
-
-                        oBinding.sort(aSorters);
-                    }.bind(this)
-                });
-            }
-
-            this._oSortTasksDialog.open();
+            ColumnSortHelper.onColumnSort(this, oEvent, this.byId("adminInboxTasksTable"));
         },
 
         onFilterTasks: function (oEvent)

@@ -33,6 +33,31 @@
     />
     <IconTabSeparator />
     <IconTabFilter
+        key="ondue"
+        icon="sap-icon://away"
+        iconColor="Critical"
+        text="{
+            parts:[
+                {path: 'i18n>WorklistFilterTasksOnDue'},
+                {path: 'statusFilterCounter>/isHasDueOn'}
+            ],
+            formatter: '.formatter.formatStatusTabIndicator'
+        }"
+    />
+    <IconTabFilter
+        key="overdue"
+        icon="sap-icon://lateness"
+        iconColor="Negative"
+        text="{
+            parts:[
+                {path: 'i18n>WorklistFilterTasksOverdue'},
+                {path: 'statusFilterCounter>/isHasOverdue'}
+            ],
+            formatter: '.formatter.formatStatusTabIndicator'
+        }"
+    />
+    <IconTabSeparator />
+    <IconTabFilter
         key="more"
         icon="sap-icon://overflow"
         text="{i18n>WorklistFilterTasksMore}"
@@ -81,31 +106,6 @@
                 iconColor="Negative"
                 text="{i18n>WorklistFilterTasksError}"
                 count="{statusFilterCounter>/errorCount}"
-            />
-            <IconTabSeparator />
-            <IconTabFilter
-                key="ondue"
-                icon="sap-icon://away"
-                iconColor="Critical"
-                text="{
-                    parts:[
-                        {path: 'i18n>WorklistFilterTasksOnDue'},
-                        {path: 'statusFilterCounter>/isHasDueOn'}
-                    ],
-                    formatter: '.formatter.formatStatusTabIndicator'
-                }"
-            />
-            <IconTabFilter
-                key="overdue"
-                icon="sap-icon://lateness"
-                iconColor="Negative"
-                text="{
-                    parts:[
-                        {path: 'i18n>WorklistFilterTasksOverdue'},
-                        {path: 'statusFilterCounter>/isHasOverdue'}
-                    ],
-                    formatter: '.formatter.formatStatusTabIndicator'
-                }"
             />
         </items>
     </IconTabFilter>
