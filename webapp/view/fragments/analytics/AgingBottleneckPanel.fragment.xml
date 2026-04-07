@@ -13,7 +13,10 @@
         <Panel>
             <VBox>
                 <OverflowToolbar style="Clear">
+                    <ToolbarSpacer width="35%" />
+                    <Title text="Task Aging by Business Object" level="H4" />
                     <ToolbarSpacer />
+                    
                     <Button
                         icon="sap-icon://zoom-in"
                         tooltip="Zoom In"
@@ -41,29 +44,18 @@
                         </customData>
                     </Button>
                     <ToolbarSeparator />
+                    
+                    
                     <Button
-                        icon="sap-icon://filter"
-                        tooltip="Filter"
+                        icon="sap-icon://message-information"
+                        tooltip="Information"
                         type="Transparent"
-                        press="onChartOpenFilter"
+                        press=".onChartInfoPress"
                     >
                         <customData>
                             <core:CustomData
-                                key="chartId"
-                                value="agingChart"
-                            />
-                        </customData>
-                    </Button>
-                    <Button
-                        icon="sap-icon://full-screen"
-                        tooltip="Toggle Full Screen"
-                        type="Transparent"
-                        press="onChartToggleFullScreen"
-                    >
-                        <customData>
-                            <core:CustomData
-                                key="chartId"
-                                value="agingChart"
+                                key="chartType"
+                                value="aging"
                             />
                         </customData>
                     </Button>
@@ -73,6 +65,17 @@
                 vizType="stacked_bar"
                 width="100%"
                 height="400px"
+                vizProperties="{
+                    title: {
+                        visible: false
+                    },
+                    valueAxis: {
+                        title: {
+                            text: 'Tasks',
+                            visible: true
+                        }
+                    }
+                }"
             >
                 <viz:dataset>
                     <viz.data:FlattenedDataset data="{agingModel>/AgingData}">
@@ -124,7 +127,11 @@
             direction="Column"
         >
             <OverflowToolbar style="Clear">
+                <ToolbarSpacer width="35%" />
+                <Title text="Bottleneck Heatmap by Priority and Aging" level="H4" />
                 <ToolbarSpacer />
+              
+                   
                 <Button
                     icon="sap-icon://zoom-in"
                     tooltip="Zoom In"
@@ -152,29 +159,18 @@
                     </customData>
                 </Button>
                 <ToolbarSeparator />
-                <Button
-                    icon="sap-icon://filter"
-                    tooltip="Filter"
+                
+                
+                  <Button
+                    icon="sap-icon://message-information"
+                    tooltip="Information"
                     type="Transparent"
-                    press="onChartOpenFilter"
+                    press=".onChartInfoPress"
                 >
-                    <customData>
+                 <customData>
                         <core:CustomData
-                            key="chartId"
-                            value="BottleneckHeatmapChart"
-                        />
-                    </customData>
-                </Button>
-                <Button
-                    icon="sap-icon://full-screen"
-                    tooltip="Toggle Full Screen"
-                    type="Transparent"
-                    press="onChartToggleFullScreen"
-                >
-                    <customData>
-                        <core:CustomData
-                            key="chartId"
-                            value="BottleneckHeatmapChart"
+                            key="chartType"
+                            value="bottleneck"
                         />
                     </customData>
                 </Button>
@@ -193,8 +189,7 @@
                         visible:true
                     },
                     title:{
-                        visible:true,
-                        text:'Bottleneck Heatmap by Priority and Aging'
+                        visible:false
                     },
                     interaction:{
                         selectability:{mode:'single'}
@@ -256,11 +251,29 @@
 
     <!-- Top Longest Outstanding Tasks -->
     <Panel
-        headerText="{i18n>longestOutstandingTitle}"
         class="sapUiSmallMargin "
         width="98.5%"
         visible="{userRole>/isAdmin}"
     >
+        <headerToolbar>
+            <OverflowToolbar style="Clear">
+                <Title text="{i18n>longestOutstandingTitle}" level="H4" />
+                <ToolbarSpacer />
+                <Button
+                    icon="sap-icon://message-information"
+                    tooltip="Information"
+                    type="Transparent"
+                    press=".onChartInfoPress"
+                >
+                    <customData>
+                        <core:CustomData
+                            key="chartType"
+                            value="outstanding"
+                        />
+                    </customData>
+                </Button>
+            </OverflowToolbar>
+        </headerToolbar>
         <Table
             items="{
                 path:'reportAnalytics>/TopAging',
@@ -295,7 +308,7 @@
 
                         <HBox
                             alignItems="Center"
-                            justifyContent="Center"
+                            justifyContent="Start"
                         >
                             <Text
                                 text="{reportAnalytics>DaysOpen}"
@@ -304,12 +317,12 @@
                                 textAlign="Right"
                             />
                             <ProgressIndicator
-                                percentValue="{= (${reportAnalytics>DaysOpen} / 150) * 100 }"
-                                displayValue=" "
+                                percentValue="{= ${reportAnalytics>DaysOpen} ? Math.min(100, (${reportAnalytics>DaysOpen} / 150) * 100) : 0 }"
                                 showValue="false"
-                                state="{= ${reportAnalytics>DaysOpen} > 60 ? 'Error' : (${reportAnalytics>DaysOpen} > 30 ? 'Warning' : 'Success') }"
+                                state="{= ${reportAnalytics>DaysOpen} > 600 ? 'Error' : (${reportAnalytics>DaysOpen} > 30 ? 'Warning' : 'Success') }"
                                 height="18px"
                                 width="80px"
+                                class="sapUiTinyMarginBottom"
                             />
                         </HBox>
 
