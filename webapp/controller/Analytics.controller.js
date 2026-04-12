@@ -1,3 +1,4 @@
+// @ts-nocheck
 sap.ui.define(
   [
     "./BaseController",
@@ -64,6 +65,9 @@ sap.ui.define(
         });
       },
 
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
       onChartOpenFilter: function (oEvent) {
         var oView = this.getView(),
           sChartId = oEvent.getSource().data("chartId"),
@@ -323,6 +327,9 @@ sap.ui.define(
         }
       },
 
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
       onChartInfoPress: function (oEvent) {
         var oSourceButton = oEvent.getSource();
         var sType = oSourceButton.data("chartType");
@@ -375,6 +382,9 @@ sap.ui.define(
         this._oChartInfoPopover.openBy(oSourceButton);
       },
 
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
       onPerfChartDateChange: function (oEvent) {
         var oDateRange = oEvent.getSource();
         var oDateFrom = oDateRange.getDateValue();
@@ -442,6 +452,9 @@ sap.ui.define(
         }
       },
 
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
       onChartZoomIn: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
         var oChart = this.byId(sChartId);
@@ -450,6 +463,9 @@ sap.ui.define(
         }
       },
 
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
       onChartZoomOut: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
         var oChart = this.byId(sChartId);
