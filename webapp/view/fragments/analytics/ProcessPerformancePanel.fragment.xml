@@ -18,6 +18,13 @@
                     <Title text="Tasks Completed and Avg Cycle Time" level="H4" />
                     <ToolbarSpacer />
                     
+                    <DateRangeSelection
+                        id="perfChartDateRange"
+                        width="250px"
+                        change=".onPerfChartDateChange"
+                        displayFormat="yyyy-MM-dd"
+                    />
+
                     <Button
                         icon="sap-icon://zoom-in"
                         tooltip="Zoom In"
@@ -94,19 +101,22 @@
                         data="{
                         path: 'performanceAnalytics>/ZC_GSP26SAP02_WF_PERF',
                         parameters: {
-                            $select: 'CreationYearMonth,IsCompletedCount,CycleTimeDays',
+                            $select: 'CreationDate,IsCompletedCount,CycleTimeDays',
                             $filter: 'StatusCategory eq \'Completed\''
                         },
                         sorter: {
-                            path: 'CreationYearMonth',
+                            path: 'CreationDate',
                             descending: false
                         }
                     }"
                     >
                         <viz.data:dimensions>
                             <viz.data:DimensionDefinition
-                                name="Month"
-                                value="{performanceAnalytics>CreationYearMonth}"
+                                name="Date"
+                                value="{
+                                    path: 'performanceAnalytics>CreationDate',
+                                    formatter: '.formatter.formatChartDate'
+                                }"
                             />
                         </viz.data:dimensions>
 
@@ -140,7 +150,7 @@
                     <viz.feeds:FeedItem
                         uid="categoryAxis"
                         type="Dimension"
-                        values="Month"
+                        values="Date"
                     />
                 </viz:feeds>
             </viz:VizFrame>
@@ -216,13 +226,6 @@
                                 visible:true,
                                 type:'value',
                                 hideWhenOverlap:true
-                            }
-                        },
-                        valueAxis: {
-                            scale: {
-                                fixedRange: true,
-                                minValue: 0,
-                                maxValue: 600
                             }
                         },
                         interaction:{

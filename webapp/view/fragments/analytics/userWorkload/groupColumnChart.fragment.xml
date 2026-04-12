@@ -73,7 +73,7 @@
                 categoryAxis: {
                     title: { visible: true },
                     layout: {
-                    maxVisibleCount: 50
+                        maxVisibleCount: 15
                     }
                 },
                 valueAxis: {

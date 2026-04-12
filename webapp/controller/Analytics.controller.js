@@ -34,6 +34,7 @@ sap.ui.define(
         this._loadStatusDonutChart();
         this._loadPriorityBarChart();
         this._connectPopovers();
+        this._initDefaultDateRange();
 
         var oView = this.getView();
         var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
@@ -289,6 +290,25 @@ sap.ui.define(
         });
       },
 
+      _initDefaultDateRange: function () {
+        var oDateRange = this.byId("perfChartDateRange");
+        if (oDateRange) {
+          var oToDate = new Date();
+          var oFromDate = new Date();
+          oFromDate.setMonth(oFromDate.getMonth() - 1);
+
+          oDateRange.setDateValue(oFromDate);
+          oDateRange.setSecondDateValue(oToDate);
+
+          // trigger the change event manually to apply filters
+          this.onPerfChartDateChange({
+            getSource: function () {
+              return oDateRange;
+            },
+          });
+        }
+      },
+
       _connectPopovers: function () {
         var oBundle = this.getView().getModel("i18n").getResourceBundle();
 
@@ -300,16 +320,6 @@ sap.ui.define(
             title: { text: oBundle.getText("userWorkloadColumnChartTitle") },
           });
           oColumnPopover.connect(oColumnChart.getVizUid());
-        }
-
-        var oScatterChart = this.byId("CycleTimeScatterChart");
-        var oScatterPopover = this.byId("CycleTimePopover");
-
-        if (oScatterChart && oScatterPopover) {
-          oScatterChart.setVizProperties({
-            title: { text: oBundle.getText("userWorkloadScatterChartTitle") },
-          });
-          oScatterPopover.connect(oScatterChart.getVizUid());
         }
       },
 
@@ -355,15 +365,81 @@ sap.ui.define(
             "This heatmap helps identify bottlenecks by showing open tasks grouped by priority and their aging buckets.";
         } else if (sType === "outstanding") {
           sText =
-            "This table lists the top 10 longest outstanding tasks, showing the user, aging in days, and current status.";        } else if (sType === "workloadGroup") {
+            "This table lists the top 10 longest outstanding tasks, showing the user, aging in days, and current status.";
+        } else if (sType === "workloadGroup") {
           sText =
             "This chart compares the volume of open and completed tasks handled by each agent.";
-        } else if (sType === "workloadCycle") {
-          sText =
-            "This scatter chart displays the relationship between the number of tasks completed and the average cycle time for each agent.";        }
+        }
 
         this._oChartInfoModel.setProperty("/text", sText);
         this._oChartInfoPopover.openBy(oSourceButton);
+      },
+
+      onPerfChartDateChange: function (oEvent) {
+        var oDateRange = oEvent.getSource();
+        var oDateFrom = oDateRange.getDateValue();
+        var oDateTo = oDateRange.getSecondDateValue();
+
+        var aFilters = [
+          new sap.ui.model.Filter(
+            "StatusCategory",
+            sap.ui.model.FilterOperator.EQ,
+            "Completed",
+          ),
+        ];
+
+        if (oDateFrom && oDateTo) {
+          sap.ui.require(
+            ["sap/ui/core/format/DateFormat"],
+            function (DateFormat) {
+              var oFormat = DateFormat.getDateInstance({
+                pattern: "yyyyMMdd",
+              });
+              var sDateFrom = oFormat.format(oDateFrom);
+              var sDateTo = oFormat.format(oDateTo);
+              aFilters.push(
+                new sap.ui.model.Filter(
+                  "CreationDate",
+                  sap.ui.model.FilterOperator.BT,
+                  sDateFrom,
+                  sDateTo,
+                ),
+              );
+
+              var oChart = this.byId("perfChartPanel");
+              var oDataset = oChart.getDataset();
+              var oBinding = oDataset.getBinding("data");
+              if (oBinding) {
+                oBinding.filter(aFilters);
+              }
+
+              var oHeatmapChart = this.byId("idHeatmapChart");
+              if (oHeatmapChart) {
+                var oHeatmapDataset = oHeatmapChart.getDataset();
+                var oHeatmapBinding = oHeatmapDataset.getBinding("data");
+                if (oHeatmapBinding) {
+                  oHeatmapBinding.filter(aFilters);
+                }
+              }
+            }.bind(this),
+          );
+        } else {
+          var oChart = this.byId("perfChartPanel");
+          var oDataset = oChart.getDataset();
+          var oBinding = oDataset.getBinding("data");
+          if (oBinding) {
+            oBinding.filter(aFilters);
+          }
+
+          var oHeatmapChart = this.byId("idHeatmapChart");
+          if (oHeatmapChart) {
+            var oHeatmapDataset = oHeatmapChart.getDataset();
+            var oHeatmapBinding = oHeatmapDataset.getBinding("data");
+            if (oHeatmapBinding) {
+              oHeatmapBinding.filter(aFilters);
+            }
+          }
+        }
       },
 
       onChartZoomIn: function (oEvent) {
