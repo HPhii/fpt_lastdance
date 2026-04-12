@@ -16,12 +16,6 @@
                 fragmentName="z.wf.zwfmanagement.view.fragments.analytics.userWorkload.groupColumnChart"
                 type="XML"
             />
-
-            <!-- Scatter Plot -->
-            <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.analytics.userWorkload.scatterChart"
-                type="XML"
-            />
         </FlexBox>
     </Panel>
 </core:FragmentDefinition>

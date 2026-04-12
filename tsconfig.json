@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "none",
+        "module": "es2015",
         "noEmit": true,
         "checkJs": true,
         "allowJs": true,
