@@ -9,9 +9,12 @@
         <!-- Chart Toolbar -->
         <OverflowToolbar style="Clear">
             <ToolbarSpacer width="35%" />
-            <Title text="Open vs Completed Tasks by Agent" level="H4" />
+            <Title
+                text="Open vs Completed Tasks by Agent"
+                level="H4"
+            />
             <ToolbarSpacer />
-            
+
             <Button
                 icon="sap-icon://zoom-in"
                 tooltip="Zoom In"
@@ -30,6 +33,19 @@
                 tooltip="Zoom Out"
                 type="Transparent"
                 press="onChartZoomOut"
+            >
+                <customData>
+                    <core:CustomData
+                        key="chartId"
+                        value="OpenCompletedColumnChart"
+                    />
+                </customData>
+            </Button>
+            <Button
+                icon="sap-icon://filter"
+                tooltip="Filter by User ID"
+                type="Transparent"
+                press=".onChartOpenFilter"
             >
                 <customData>
                     <core:CustomData

@@ -236,8 +236,9 @@ sap.ui.define(
       onOpenAddDialog: function ()
       {
         var oView = this.getView();
+        var sCurrentMode = oView.getModel("view").getProperty("/substMode") || "P";
 
-        AddSubstitutionDialogHelper.onOpen(oView);
+        AddSubstitutionDialogHelper.onOpen(oView, sCurrentMode);
       },
 
       // --- DELETE FUNCTION ---

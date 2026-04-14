@@ -13,13 +13,15 @@ sap.ui.define([
         _oView: null,
         _oAddSubstitutionDialog: null,
 
-        onOpen: function (oView)
+        onOpen: function (oView, sDefaultType)
         {
             this._oView = oView;
 
+            var sRuleType = (sDefaultType === "U" || sDefaultType === "P") ? sDefaultType : "P";
+
             // Initialize model to store temporary data for Dialog
             const oNewRuleModel = new JSONModel({
-                type: "P",
+                type: sRuleType,
                 substituteId: "",
                 profileId: "ALL", // Default fallback
                 beginDate: new Date(),
