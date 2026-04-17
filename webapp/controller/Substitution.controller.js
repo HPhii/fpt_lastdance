@@ -186,51 +186,6 @@ sap.ui.define(
       },
 
       /**
-       * Factory function to create Group Header with custom styling
-       */
-      createGroupHeader: function (oGroup)
-      {
-        const that = this;
-        const oView = this.getView();
-        let sUserId = "";
-
-        const oTable = this.byId("tableUnplanned");
-        if (oTable)
-        {
-          const oBinding = oTable.getBinding("items");
-          if (oBinding)
-          {
-            const aContexts = oBinding.getCurrentContexts();
-            for (let i = 0; i < aContexts.length; i++)
-            {
-              const oData = aContexts[i].getObject();
-
-              if (oData.SubstituteFullName === oGroup.key)
-              {
-                sUserId = oData.UserSubstitutedBy;
-                break;
-              }
-            }
-          }
-        }
-
-        return new sap.m.GroupHeaderListItem({
-          title: "👤 " + oGroup.key,
-          upperCase: false,
-          type: sap.m.ListType.Active,
-          press: function (oEvent)
-          {
-            var oSource = oEvent.getSource();
-
-            if (sUserId)
-            {
-              UserInfoPopoverHelper.onOpen(oView, oSource, sUserId);
-            }
-          }
-        });
-      },
-
-      /**
        * Open Add Substitution Dialog
        */
       onOpenAddDialog: function ()

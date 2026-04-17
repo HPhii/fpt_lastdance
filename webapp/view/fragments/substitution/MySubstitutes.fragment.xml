@@ -164,10 +164,8 @@
                     },
                     sorter: {
                         path: 'SubstituteFullName',
-                        descending: false,
-                        group: true
-                    },
-                    groupHeaderFactory: '.createGroupHeader'
+                        descending: false
+                    }
                 }"
                 visible="{= ${view>/substMode} === 'U'}"
                 sticky="ColumnHeaders"
@@ -177,6 +175,9 @@
                 class="sapUiSmallMarginTop"
             >
                 <columns>
+                    <Column width="12em">
+                        <Text text="{i18n>colSubstituteName}" />
+                    </Column>
                     <Column width="12em">
                         <Text text="{i18n>colTaskGroup}" />
                     </Column>
@@ -199,6 +200,11 @@
                 <items>
                     <ColumnListItem vAlign="Middle">
                         <cells>
+                            <Link
+                                text="{SubstituteFullName}"
+                                press=".onShowUserInfo"
+                                class="sapUiTinyMarginEnd sapUiTextBold"
+                            />
                             <Text text="{SubstitutionProfile}" />
                             <Text
                                 text="{
