@@ -163,6 +163,13 @@
                     <Title text="Task Cycle Time by Business Object" level="H4" />
                     <ToolbarSpacer />
                     
+                    <SearchField
+                        id="heatmapChartBOSearch"
+                        width="250px"
+                        placeholder="Search Business Object"
+                        search=".onHeatmapChartBOSearch"
+                    />
+
                     <Button
                         icon="sap-icon://zoom-in"
                         tooltip="Zoom In"

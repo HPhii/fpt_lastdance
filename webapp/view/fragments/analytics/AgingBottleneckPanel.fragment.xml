@@ -17,6 +17,13 @@
                     <Title text="Task Aging by Business Object" level="H4" />
                     <ToolbarSpacer />
                     
+                    <SearchField
+                        id="agingChartBOSearch"
+                        width="250px"
+                        placeholder="Search Business Object"
+                        search=".onAgingChartBOSearch"
+                    />
+
                     <Button
                         icon="sap-icon://zoom-in"
                         tooltip="Zoom In"
