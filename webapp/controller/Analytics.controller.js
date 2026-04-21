@@ -93,6 +93,32 @@ sap.ui.define(
         ChartFilterDialogHelper.onOpen(oView, sChartId);
       },
 
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
+      onChartResetFilter: function (oEvent)
+      {
+        var sChartId = oEvent.getSource().data("chartId");
+        var oChart = this.byId(sChartId);
+        if (!oChart)
+        {
+          return;
+        }
+
+        var oDataset = oChart.getDataset();
+        if (oDataset) {
+          var oBinding = oDataset.getBinding("data");
+          if (oBinding) {
+            var aFilters = [];
+            // Preserve base filter for workload chart
+            if (sChartId === "OpenCompletedColumnChart") {
+              aFilters.push(new sap.ui.model.Filter("ActualAgent", sap.ui.model.FilterOperator.NE, "Unassigned"));
+            }
+            oBinding.filter(aFilters);
+          }
+        }
+      },
+
       _loadGroupedColumnChartUserIds: function ()
       {
         var oView = this.getView();

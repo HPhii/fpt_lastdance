@@ -64,6 +64,19 @@
                         </customData>
                     </Button>
                     <Button
+                        icon="sap-icon://clear-filter"
+                        tooltip="Reset Filter"
+                        type="Transparent"
+                        press=".onChartResetFilter"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="OpenCompletedColumnChart"
+                            />
+                        </customData>
+                    </Button>
+                    <Button
                         icon="sap-icon://message-information"
                         tooltip="Information"
                         type="Transparent"
