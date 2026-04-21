@@ -36,11 +36,13 @@ sap.ui.define([
         onCancelForward: function ()
         {
             var oUserInput = this._oView.byId("forwardUserInput");
+            var oReasonInput = this._oView.byId("forwardReasonInput");
 
             this._oForwardDialog.then(function (oDialog)
             {
                 oDialog.close();
                 oUserInput.setValue("");
+                oReasonInput.setValue("");
             });
         },
 
@@ -49,7 +51,9 @@ sap.ui.define([
             var oView = this._oView;
             var oContext = oView.getBindingContext();
             var oUserInput = oView.byId("forwardUserInput");
+            var oReasonInput = oView.byId("forwardReasonInput");
             var sUserId = oUserInput.getValue();
+            var sReason = oReasonInput.getValue();
 
             if (!sUserId)
             {
@@ -57,7 +61,10 @@ sap.ui.define([
                 return;
             }
 
-            const payload = { USER_ID: sUserId };
+            const payload = {
+                USER_ID: sUserId,
+                REASON: sReason
+            };
 
             oView.getController().callBoundAction("forward", oContext, payload);
 
@@ -65,6 +72,7 @@ sap.ui.define([
             {
                 oDialog.close();
                 oUserInput.setValue("");
+                oReasonInput.setValue("");
             });
         },
 

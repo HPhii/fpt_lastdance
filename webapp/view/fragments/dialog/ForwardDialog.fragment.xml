@@ -22,6 +22,16 @@
                     required="true"
                     valueHelpRequest=".onOpenUserSearchHelp"
                 />
+                <Label
+                    labelFor="forwardReasonInput"
+                    text="{i18n>forwardReasonLabel}"
+                />
+                <TextArea
+                    id="forwardReasonInput"
+                    width="100%"
+                    placeholder="{i18n>forwardReasonPlaceholder}"
+                    growing="true"
+                />
             </VBox>
         </content>
         <buttons>
