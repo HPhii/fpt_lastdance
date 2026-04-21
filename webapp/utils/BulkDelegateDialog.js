@@ -4,8 +4,9 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/m/Token",
     "../utils/UserSearchHelpDialog",
-    "../utils/TasksSearchHelpDialog"
-], function (Fragment, MessageBox, MessageToast, Token, UserSearchHelpDialogHelper, TasksSearchHelpDialogHelper)
+    "../utils/TasksSearchHelpDialog",
+    "../utils/BulkDelegateResultDialog"
+], function (Fragment, MessageBox, MessageToast, Token, UserSearchHelpDialogHelper, TasksSearchHelpDialogHelper, BulkDelegateResultDialogHelper)
 {
     "use strict";
 
@@ -35,6 +36,46 @@ sap.ui.define([
             {
                 oDialog.open();
                 that._fillTaskTokens();
+
+                var oMultiInput = oView.byId("multiTaskInput");
+                if (!oMultiInput.data("validatorAdded"))
+                {
+                    oMultiInput.addValidator(function (args)
+                    {
+                        if (args.suggestionObject)
+                        {
+                            oMultiInput.setValueState("None");
+                            return new Token({
+                                key: args.suggestionObject.getKey(),
+                                text: args.suggestionObject.getText()
+                            });
+                        }
+
+                        var text = args.text;
+                        var oModel = oView.getModel();
+
+                        return new Promise(function (resolve, reject)
+                        {
+                            var sPath = "/WfTasks('" + text + "')";
+                            var oBinding = oModel.bindContext(sPath);
+
+                            oMultiInput.setBusy(true);
+                            oBinding.requestObject().then(function (oData)
+                            {
+                                oMultiInput.setBusy(false);
+                                oMultiInput.setValueState("None");
+                                resolve(new Token({ key: oData.WorkItemID, text: oData.WorkItemText }));
+                            }).catch(function ()
+                            {
+                                oMultiInput.setBusy(false);
+                                oMultiInput.setValueState("Error");
+                                oMultiInput.setValueStateText("Work item does not exist");
+                                reject();
+                            });
+                        });
+                    });
+                    oMultiInput.data("validatorAdded", true);
+                }
             });
         },
 
@@ -96,30 +137,89 @@ sap.ui.define([
                 oOperation.setParameter(sKey, oPayload[sKey]);
             });
 
+            var oMessageManager = sap.ui.getCore().getMessageManager();
+            var iMessagesBefore = oMessageManager.getMessageModel().getData().length;
+
             oView.setBusy(true);
             oOperation.execute().then(
                 function ()
                 {
-                    that._clearInputs();
-                    that._oBulkDelegateDialog.then(function (oDialog)
-                    {
-                        oDialog.close();
-                    });
-
                     oView.setBusy(false);
-
-                    MessageToast.show("Delegation successful.");
                     oModel.refresh();
+                    var oList = oView.byId("idTasksList");
+                    if (oList && oList.getBinding("items"))
+                    {
+                        oList.getBinding("items").refresh();
+                    }
+
+                    var aMessages = oMessageManager.getMessageModel().getData().slice(iMessagesBefore);
+
+                    if (aMessages.length > 0)
+                    {
+                        BulkDelegateResultDialogHelper.show(oView, aMessages, false, "Delegation completed. Please check the statuses below.", function ()
+                        {
+                            that._clearInputs();
+                            that._oBulkDelegateDialog.then(function (d) { d.close(); });
+                        });
+                    } else
+                    {
+                        that._clearInputs();
+                        that._oBulkDelegateDialog.then(function (oDialog)
+                        {
+                            oDialog.close();
+                        });
+                        MessageToast.show("Delegation successful.");
+                    }
                 }
             ).catch(
                 function (oError)
                 {
                     oView.setBusy(false);
-                    MessageBox.error("Error: " + oError.message);
+
+                    var aDetails = [];
+                    var oMainErrorMsg = null;
+
+                    if (oError.error)
+                    {
+                        oMainErrorMsg = {
+                            code: oError.error.code || "Error",
+                            message: oError.error.message || oError.message,
+                            numericSeverity: 4
+                        };
+                        aDetails.push(oMainErrorMsg);
+
+                        if (oError.error.details)
+                        {
+                            aDetails = aDetails.concat(oError.error.details);
+                        }
+                    } else
+                    {
+                        oMainErrorMsg = {
+                            code: "Error",
+                            message: oError.message,
+                            numericSeverity: 4
+                        };
+                        aDetails.push(oMainErrorMsg);
+                        aDetails = aDetails.concat(oMessageManager.getMessageModel().getData().slice(iMessagesBefore));
+                    }
+
+                    if (aDetails && aDetails.length > 0)
+                    {
+                        BulkDelegateResultDialogHelper.show(oView, aDetails, true, "An error occurred during delegation. Please see details below.", function ()
+                        {
+                            that._clearInputs();
+                            that._oBulkDelegateDialog.then(function (d) { d.close(); });
+                        });
+                    } else
+                    {
+                        MessageBox.error("Error: " + oError.message);
+                    }
                 }
             );
 
         },
+
+
 
         onCloseDelegateDialog: function ()
         {
@@ -134,7 +234,16 @@ sap.ui.define([
         {
             var oView = this._oView;
             oView.byId("delegateUserInput").setValue("");
-            oView.byId("multiTaskInput").removeAllTokens();
+            var oMultiTaskInput = oView.byId("multiTaskInput");
+            oMultiTaskInput.removeAllTokens();
+            oMultiTaskInput.setValueState("None");
+            oMultiTaskInput.setValue("");
+        },
+
+        onTaskLiveChange: function (oEvent)
+        {
+            var oInput = oEvent.getSource();
+            oInput.setValueState("None");
         },
 
         onOpenUserSearchHelp: function ()

@@ -13,48 +13,27 @@
             <VBox class="sapUiSmallMargin">
                 <items>
                     <Label
-                        text="Agent"
+                        text="User ID"
                         labelFor="chartFilterAgentInput"
                     />
                     <MultiInput
                         width="100%"
                         id="chartFilterAgentInput"
-                        suggestionItems="{ 
-                        path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
-                            parameters : {
-                                $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
-                                $filter: 'ActualAgent ne \'Unassigned\''
-                            }
-                        }"
+                        showSuggestion="true"
+                        startSuggestion="1"
+                        showValueHelp="false"
+                        liveChange=".onChartFilterUserLiveChange"
+                        suggestionItemSelected=".onChartFilterSuggestionSelect"
+                        suggestionItems="{chartFilterUsers>/userIds}"
                         placeholder="{i18n>tasksMultiInputPlaceholder}"
                     >
                         <suggestionItems>
                             <core:Item
-                                key="{workloadAnalytics>ActualAgent}"
-                                text="{workloadAnalytics>ActualAgent}"
+                                key="{chartFilterUsers>UserId}"
+                                text="{chartFilterUsers>UserId}"
                             />
                         </suggestionItems>
                     </MultiInput>
-
-                    <Label
-                        text="Open tasks (&gt;=)"
-                        labelFor="chartFilterOpenInput"
-                    />
-                    <Input
-                        id="chartFilterOpenInput"
-                        placeholder="Min open tasks"
-                        type="Number"
-                    />
-
-                    <Label
-                        text="Completed tasks (&gt;=)"
-                        labelFor="chartFilterCompletedInput"
-                    />
-                    <Input
-                        id="chartFilterCompletedInput"
-                        placeholder="Min completed tasks"
-                        type="Number"
-                    />
                 </items>
             </VBox>
         </content>

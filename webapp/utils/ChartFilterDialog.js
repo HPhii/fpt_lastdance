@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/Fragment",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Fragment, Filter, FilterOperator)
+    "sap/ui/model/FilterOperator",
+    "sap/m/Token"
+], function (Fragment, Filter, FilterOperator, Token)
 {
     "use strict";
 
@@ -30,76 +31,160 @@ sap.ui.define([
             this._oFilterDialog.then(function (oDialog)
             {
                 oDialog.data("chartId", sChartId);
-                oView.byId("chartFilterAgentInput").setValue("");
-                oView.byId("chartFilterOpenInput").setValue("");
-                oView.byId("chartFilterCompletedInput").setValue("");
-                oDialog.open();
-            });
-        },
-
-
-        onChartOpenFilter: function (oEvent)
-        {
-            var sChartId = oEvent.getSource().data("chartId");
-            var oChart = this.byId(sChartId);
-            if (!oChart)
-            {
-                return;
-            }
-
-            if (!this._oFilterDialog)
-            {
-                this._oFilterDialog = Fragment.load({
-                    id: this.getView().getId(),
-                    name: "z.wf.zwfmanagement.view.fragments.dialog.ChartFilterDialog",
-                    controller: this,
-                }).then(function (oDialog)
-                {
-                    this.getView().addDependent(oDialog);
-                    return oDialog;
-                }.bind(this));
-            }
-
-            this._oFilterDialog.then(function (oDialog)
-            {
-                oDialog.data("chartId", sChartId);
-
-                this.byId("chartFilterAgentInput").setValue("");
-                this.byId("chartFilterOpenInput").setValue("");
-                this.byId("chartFilterCompletedInput").setValue("");
-
+                this._resetDialogInputs();
                 oDialog.open();
             }.bind(this));
         },
 
+        _resetDialogInputs: function ()
+        {
+            if (!this._oView)
+            {
+                return;
+            }
+
+            var oAgentInput = this._oView.byId("chartFilterAgentInput");
+
+            if (oAgentInput)
+            {
+                oAgentInput.setTokens([]);
+                oAgentInput.setValue("");
+            }
+        },
+
+        _getChartBinding: function (sChartId)
+        {
+            if (!this._oView)
+            {
+                return null;
+            }
+
+            var oChart = this._oView.byId(sChartId);
+            if (!oChart || !oChart.getDataset)
+            {
+                return null;
+            }
+
+            var oDataset = oChart.getDataset();
+            if (!oDataset)
+            {
+                return null;
+            }
+
+            return oDataset.getBinding("data");
+        },
+
+        _normalizeUserId: function (sValue)
+        {
+            return String(sValue || "").trim().toUpperCase();
+        },
+
+        onChartFilterUserLiveChange: function (oEvent)
+        {
+            var oInput = oEvent.getSource();
+            var sValue = oInput.getValue() || "";
+            var sUpperValue = sValue.toUpperCase();
+
+            if (sValue !== sUpperValue)
+            {
+                oInput.setValue(sUpperValue);
+            }
+        },
+
+        onChartFilterSuggestionSelect: function (oEvent)
+        {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            var oInput = oEvent.getSource();
+
+            if (!oSelectedItem || !oInput)
+            {
+                return;
+            }
+
+            var sUserId = this._normalizeUserId(oSelectedItem.getKey() || oSelectedItem.getText());
+            if (!sUserId)
+            {
+                return;
+            }
+
+            var bExists = oInput.getTokens().some(function (oToken)
+            {
+                return oToken.getKey() === sUserId;
+            });
+
+            if (!bExists)
+            {
+                oInput.addToken(new Token({
+                    key: sUserId,
+                    text: sUserId
+                }));
+            }
+
+            oInput.setValue("");
+        },
+
         onApplyChartFilter: function ()
         {
-            var oDialog = this.byId("chartFilterDialog");
+            if (!this._oView)
+            {
+                return;
+            }
+
+            var oDialog = this._oView.byId("chartFilterDialog");
             if (!oDialog)
             {
                 return;
             }
 
-            var sAgentVal = this.byId("chartFilterAgentInput").getTokens().map(function (oToken) { return oToken.getKey(); }).join(", ");
-            var sOpenVal = this.byId("chartFilterOpenInput").getValue();
-            var sCompletedVal = this.byId("chartFilterCompletedInput").getValue();
+            var oAgentInput = this._oView.byId("chartFilterAgentInput");
+
+            var aTokens = oAgentInput ? oAgentInput.getTokens() : [];
+            var sTypedUserIds = oAgentInput ? oAgentInput.getValue() : "";
+            var mSeen = {};
+            var aSelectedUserIds = [];
+
+            aTokens.forEach(function (oToken)
+            {
+                var sUserId = this._normalizeUserId(oToken.getKey() || oToken.getText());
+                if (!sUserId || mSeen[sUserId])
+                {
+                    return;
+                }
+
+                mSeen[sUserId] = true;
+                aSelectedUserIds.push(sUserId);
+            }.bind(this));
+
+            sTypedUserIds.split(/[\s,;]+/).forEach(function (sUserId)
+            {
+                var sNormalizedUserId = this._normalizeUserId(sUserId);
+                if (!sNormalizedUserId || mSeen[sNormalizedUserId])
+                {
+                    return;
+                }
+
+                mSeen[sNormalizedUserId] = true;
+                aSelectedUserIds.push(sNormalizedUserId);
+            }.bind(this));
 
             var oBinding = this._getChartBinding(oDialog.data("chartId"));
             if (oBinding)
             {
                 var aFilters = [];
-                if (sAgentVal)
+
+                if (aSelectedUserIds.length > 0)
                 {
-                    aFilters.push(new Filter("ActualAgent", FilterOperator.Contains, sAgentVal));
+                    var aAgentFilters = aSelectedUserIds.map(function (sUserId)
+                    {
+                        return new Filter("ActualAgent", FilterOperator.EQ, sUserId);
+                    });
+
+                    aFilters.push(new Filter({
+                        filters: aAgentFilters,
+                        and: false
+                    }));
                 }
-                if (sOpenVal)
-                {
-                    aFilters.push(new Filter("IsOpenCount", FilterOperator.GE, Number(sOpenVal)));
-                }
-                if (sCompletedVal)
-                {
-                    aFilters.push(new Filter("IsCompletedCount", FilterOperator.GE, Number(sCompletedVal)));
-                }
+
                 oBinding.filter(aFilters);
             }
 
@@ -108,15 +193,16 @@ sap.ui.define([
 
         onCancelChartFilter: function ()
         {
-            var oView = this._oView;
+            if (!this._oFilterDialog)
+            {
+                return;
+            }
 
             this._oFilterDialog.then(function (oDialog)
             {
                 oDialog.close();
-                oView.byId("chartFilterAgentInput").setTokens([]);
-                oView.byId("chartFilterOpenInput").setValue("");
-                oView.byId("chartFilterCompletedInput").setValue("");
-            });
+                this._resetDialogInputs();
+            }.bind(this));
         },
     };
 });

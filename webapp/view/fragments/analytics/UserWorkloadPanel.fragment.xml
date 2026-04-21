@@ -1,6 +1,9 @@
 <core:FragmentDefinition
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
 >
     <Panel
         class="sapUiSmallMargin "
@@ -11,11 +14,165 @@
             width="100%"
             direction="Column"
         >
-            <!-- Group Column Chart -->
-            <core:Fragment
-                fragmentName="z.wf.zwfmanagement.view.fragments.analytics.userWorkload.groupColumnChart"
-                type="XML"
-            />
+            <VBox>
+                <!-- Chart Toolbar -->
+                <OverflowToolbar style="Clear">
+                    <ToolbarSpacer width="35%" />
+                    <Title
+                        text="Open vs Completed Tasks by Agent"
+                        level="H4"
+                    />
+                    <ToolbarSpacer />
+
+                    <Button
+                        icon="sap-icon://zoom-in"
+                        tooltip="Zoom In"
+                        type="Transparent"
+                        press="onChartZoomIn"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="OpenCompletedColumnChart"
+                            />
+                        </customData>
+                    </Button>
+                    <Button
+                        icon="sap-icon://zoom-out"
+                        tooltip="Zoom Out"
+                        type="Transparent"
+                        press="onChartZoomOut"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="OpenCompletedColumnChart"
+                            />
+                        </customData>
+                    </Button>
+                    <Button
+                        icon="sap-icon://filter"
+                        tooltip="Filter by User ID"
+                        type="Transparent"
+                        press=".onChartOpenFilter"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="OpenCompletedColumnChart"
+                            />
+                        </customData>
+                    </Button>
+                    <Button
+                        icon="sap-icon://clear-filter"
+                        tooltip="Reset Filter"
+                        type="Transparent"
+                        press=".onChartResetFilter"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartId"
+                                value="OpenCompletedColumnChart"
+                            />
+                        </customData>
+                    </Button>
+                    <Button
+                        icon="sap-icon://message-information"
+                        tooltip="Information"
+                        type="Transparent"
+                        press=".onChartInfoPress"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="chartType"
+                                value="workloadGroup"
+                            />
+                        </customData>
+                    </Button>
+                </OverflowToolbar>
+
+                <!-- VizFrame -->
+                <viz:VizFrame
+                    id="OpenCompletedColumnChart"
+                    uiConfig="{applicationSet:'fiori'}"
+                    class="sapUiSmallMargin"
+                    width="100%"
+                    vizType='column'
+                    vizProperties="{
+                        interaction: {
+                            zoom: { enablement: 'enabled' },
+                            selectability: { mode: 'single' }
+                        },
+                        plotArea: {
+                            dataLabel: { visible: true },
+                            isScrollable: true,
+                            colorPalette: ['#E78C07','#2B7C2B']
+                        },
+                        categoryAxis: {
+                            title: { visible: true },
+                            layout: {
+                                maxVisibleCount: 15
+                            }
+                        },
+                        valueAxis: {
+                            title: { visible: true }
+                        },
+                        legend: {
+                            visible: true
+                        },
+                        title: {
+                            visible: false
+                        }
+                    }"
+                >
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset
+                            data="{
+                                path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
+                                parameters : {
+                                    $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
+                                    $filter: 'ActualAgent ne \'Unassigned\''
+                                }
+                            }"
+                        >
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition
+                                    name="Agent"
+                                    value="{ActualAgent}"
+                                />
+                            </viz.data:dimensions>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition
+                                    name="Open"
+                                    value="{IsOpenCount}"
+                                />
+                                <viz.data:MeasureDefinition
+                                    name="Completed"
+                                    value="{IsCompletedCount}"
+                                />
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+
+                    <viz:feeds>
+                        <viz.feeds:FeedItem
+                            id='valueAxisFeed'
+                            uid="valueAxis"
+                            type="Measure"
+                            values="Open,Completed"
+                        />
+                        <viz.feeds:FeedItem
+                            id='categoryAxisFeed'
+                            uid="categoryAxis"
+                            type="Dimension"
+                            values="Agent"
+                        />
+                    </viz:feeds>
+                    <viz:dependents>
+                        <viz:Popover id="OpenCompletedPopover" />
+                    </viz:dependents>
+                </viz:VizFrame>
+            </VBox>
         </FlexBox>
     </Panel>
 </core:FragmentDefinition>

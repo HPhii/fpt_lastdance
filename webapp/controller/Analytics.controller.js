@@ -19,7 +19,12 @@ sap.ui.define(
           priorityData: [],
         });
 
+        var oChartFilterUsersModel = new JSONModel({
+          userIds: [],
+        });
+
         this.getView().setModel(oStatsModel, "statsAnalyticsModel");
+        this.getView().setModel(oChartFilterUsersModel, "chartFilterUsers");
 
         this.oRouter = this.getOwnerComponent().getRouter();
 
@@ -34,6 +39,7 @@ sap.ui.define(
         this._loadBottleneckHeatmap();
         this._loadStatusDonutChart();
         this._loadPriorityBarChart();
+        this._loadGroupedColumnChartUserIds();
         this._connectPopovers();
         this._initDefaultDateRange();
 
@@ -77,6 +83,91 @@ sap.ui.define(
         }
 
         ChartFilterDialogHelper.onOpen(oView, sChartId);
+      },
+
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
+      onChartResetFilter: function (oEvent) {
+        var sChartId = oEvent.getSource().data("chartId");
+        var oChart = this.byId(sChartId);
+        if (!oChart) {
+          return;
+        }
+
+        var oDataset = oChart.getDataset();
+        if (oDataset) {
+          var oBinding = oDataset.getBinding("data");
+          if (oBinding) {
+            var aFilters = [];
+            // Preserve base filter for workload chart
+            if (sChartId === "OpenCompletedColumnChart") {
+              aFilters.push(
+                new sap.ui.model.Filter(
+                  "ActualAgent",
+                  sap.ui.model.FilterOperator.NE,
+                  "Unassigned",
+                ),
+              );
+            }
+            oBinding.filter(aFilters);
+          }
+        }
+      },
+
+      _loadGroupedColumnChartUserIds: function () {
+        var oView = this.getView();
+        var oWorkloadModel = oView.getModel("workloadAnalytics");
+        var oChartFilterUsersModel = oView.getModel("chartFilterUsers");
+
+        if (!oChartFilterUsersModel) {
+          oChartFilterUsersModel = new JSONModel({
+            userIds: [],
+          });
+          oView.setModel(oChartFilterUsersModel, "chartFilterUsers");
+        }
+
+        if (!oWorkloadModel) {
+          oChartFilterUsersModel.setProperty("/userIds", []);
+          return;
+        }
+
+        oWorkloadModel.read("/ZC_GSP26SAP02_WF_AGT", {
+          urlParameters: {
+            $select: "ActualAgent",
+            $filter: "ActualAgent ne 'Unassigned'",
+          },
+          success: function (oData) {
+            var aResults = oData.results || [];
+            var mSeen = {};
+            var aUserIds = [];
+
+            aResults.forEach(function (oItem) {
+              var sUserId = String(oItem.ActualAgent || "")
+                .trim()
+                .toUpperCase();
+
+              if (!sUserId || mSeen[sUserId]) {
+                return;
+              }
+
+              mSeen[sUserId] = true;
+              aUserIds.push({
+                UserId: sUserId,
+              });
+            });
+
+            aUserIds.sort(function (a, b) {
+              return a.UserId.localeCompare(b.UserId);
+            });
+
+            oChartFilterUsersModel.setProperty("/userIds", aUserIds);
+          }.bind(this),
+          error: function (oError) {
+            oChartFilterUsersModel.setProperty("/userIds", []);
+            console.error("Failed to load grouped chart users:", oError);
+          }.bind(this),
+        });
       },
 
       /* AGING CHART */
@@ -422,15 +513,6 @@ sap.ui.define(
               if (oBinding) {
                 oBinding.filter(aFilters);
               }
-
-              var oHeatmapChart = this.byId("idHeatmapChart");
-              if (oHeatmapChart) {
-                var oHeatmapDataset = oHeatmapChart.getDataset();
-                var oHeatmapBinding = oHeatmapDataset.getBinding("data");
-                if (oHeatmapBinding) {
-                  oHeatmapBinding.filter(aFilters);
-                }
-              }
             }.bind(this),
           );
         } else {
@@ -439,15 +521,6 @@ sap.ui.define(
           var oBinding = oDataset.getBinding("data");
           if (oBinding) {
             oBinding.filter(aFilters);
-          }
-
-          var oHeatmapChart = this.byId("idHeatmapChart");
-          if (oHeatmapChart) {
-            var oHeatmapDataset = oHeatmapChart.getDataset();
-            var oHeatmapBinding = oHeatmapDataset.getBinding("data");
-            if (oHeatmapBinding) {
-              oHeatmapBinding.filter(aFilters);
-            }
           }
         }
       },
@@ -471,6 +544,72 @@ sap.ui.define(
         var oChart = this.byId(sChartId);
         if (oChart) {
           oChart.zoom({ direction: "out" });
+        }
+      },
+
+      /**
+       * Handle search for heatmap chart
+       * @param {sap.ui.base.Event} oEvent
+       */
+      onHeatmapChartBOSearch: function (oEvent) {
+        var sQuery = oEvent.getParameter("query");
+        var aFilters = [
+          new sap.ui.model.Filter(
+            "StatusCategory",
+            sap.ui.model.FilterOperator.EQ,
+            "Completed",
+          ),
+        ];
+
+        if (sQuery && sQuery.trim().length > 0) {
+          aFilters.push(
+            new sap.ui.model.Filter(
+              "BusinessObjectDesc",
+              sap.ui.model.FilterOperator.Contains,
+              sQuery,
+            ),
+          );
+        }
+
+        var oHeatmapChart = this.byId("idHeatmapChart");
+        if (oHeatmapChart) {
+          var oHeatmapDataset = oHeatmapChart.getDataset();
+          if (oHeatmapDataset) {
+            var oHeatmapBinding = oHeatmapDataset.getBinding("data");
+            if (oHeatmapBinding) {
+              oHeatmapBinding.filter(aFilters);
+            }
+          }
+        }
+      },
+
+      /**
+       * Handle search for aging chart
+       * @param {sap.ui.base.Event} oEvent
+       */
+      onAgingChartBOSearch: function (oEvent) {
+        var sQuery = oEvent.getParameter("query");
+        var aFilters = [];
+
+        if (sQuery && sQuery.trim().length > 0) {
+          aFilters.push(
+            new sap.ui.model.Filter(
+              "BusinessObjectDesc",
+              sap.ui.model.FilterOperator.Contains,
+              sQuery,
+            ),
+          );
+        }
+
+        var oAgingChart = this.byId("agingChart");
+        if (oAgingChart) {
+          var oDataset = oAgingChart.getDataset();
+          if (oDataset) {
+            var oBinding = oDataset.getBinding("data");
+            if (oBinding) {
+              oBinding.filter(aFilters);
+            }
+          }
         }
       },
     });

@@ -29,8 +29,26 @@
                         level="H3"
                     />
                     <Text text="{WorkItemID}" />
+                    <ObjectStatus 
+                        text="{TechnicalStatusText}"
+                        state="{
+                            path: 'TechnicalStatus',
+                            formatter: '.formatter.formatTechnicalStatus'
+                        }"
+                        class="sapUiTinyMarginTop sapUiTextBold"
+                    />
                 </VBox>
-                <Text text="{PriorityText}" />
+                <ObjectStatus
+                    text="{PriorityText}"
+                    state="{
+                        path: 'Priority',
+                        formatter: '.formatter.formatPriorityState'
+                    }"
+                    icon="{
+                        path: 'Priority',
+                        formatter: '.formatter.formatPriorityIcon'
+                    }"
+                />
             </HBox>
         </CustomListItem>
     </SelectDialog>

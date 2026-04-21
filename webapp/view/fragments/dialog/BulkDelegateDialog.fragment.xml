@@ -58,6 +58,7 @@
                     }"
                     placeholder="{i18n>tasksMultiInputPlaceholder}"
                     valueHelpRequest=".onOpenTaskSearchHelp"
+                    liveChange=".onTaskLiveChange"
                 >
                     <suggestionItems>
                         <core:Item
