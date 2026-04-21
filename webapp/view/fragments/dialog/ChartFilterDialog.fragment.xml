@@ -21,6 +21,7 @@
                         id="chartFilterAgentInput"
                         showSuggestion="true"
                         startSuggestion="1"
+                        showValueHelp="false"
                         liveChange=".onChartFilterUserLiveChange"
                         suggestionItemSelected=".onChartFilterSuggestionSelect"
                         suggestionItems="{chartFilterUsers>/userIds}"
