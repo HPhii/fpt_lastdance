@@ -34,7 +34,6 @@
                     </layoutData>
                     <tileContent>
                         <TileContent
-                            footer="{i18n>totalOpenTasksText}"
                             unit="{i18n>tasksUnit}"
                         >
                             <content>
@@ -68,7 +67,6 @@
                     </layoutData>
                     <tileContent>
                         <TileContent
-                            footer="{i18n>CompletedTasksThisMonthText}"
                             unit="{i18n>tasksUnit}"
                         >
                             <content>
@@ -102,7 +100,6 @@
                     </layoutData>
                     <tileContent>
                         <TileContent
-                            footer="{i18n>OverdueTasksText}"
                             unit="{i18n>tasksUnit}"
                         >
                             <content>
@@ -136,7 +133,6 @@
                     </layoutData>
                     <tileContent>
                         <TileContent
-                            footer="{i18n>CompletionRateText}"
                             unit="%"
                         >
                             <content>
