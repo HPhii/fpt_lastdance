@@ -146,6 +146,11 @@ sap.ui.define([
                 {
                     oView.setBusy(false);
                     oModel.refresh();
+                    var oList = oView.byId("idTasksList");
+                    if (oList && oList.getBinding("items"))
+                    {
+                        oList.getBinding("items").refresh();
+                    }
 
                     var aMessages = oMessageManager.getMessageModel().getData().slice(iMessagesBefore);
 
