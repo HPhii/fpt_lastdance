@@ -5,13 +5,11 @@ sap.ui.define(
     "sap/ui/model/json/JSONModel",
     "../utils/ChartFilterDialog",
   ],
-  function (BaseController, JSONModel, ChartFilterDialogHelper)
-  {
+  function (BaseController, JSONModel, ChartFilterDialogHelper) {
     "use strict";
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Analytics", {
-      onInit: function ()
-      {
+      onInit: function () {
         BaseController.prototype.onInit.apply(this, arguments);
 
         var oStatsModel = new JSONModel({
@@ -36,8 +34,7 @@ sap.ui.define(
       },
 
       /* ROUTE MATCHED */
-      _onObjectMatched: function ()
-      {
+      _onObjectMatched: function () {
         this._loadAgingChart();
         this._loadBottleneckHeatmap();
         this._loadStatusDonutChart();
@@ -58,20 +55,17 @@ sap.ui.define(
               "IsOpenCount,IsCompletedThisMonth,IsOverdueCount,TaskCounter,IsCompletedCount",
           },
 
-          success: function (oData)
-          {
+          success: function (oData) {
             oStatsModel.setProperty("/busy", false);
 
             var aResults = oData.results || [];
 
-            if (aResults.length > 0)
-            {
+            if (aResults.length > 0) {
               oStatsModel.setProperty("/result", aResults[0]);
             }
           }.bind(this),
 
-          error: function (oError)
-          {
+          error: function (oError) {
             console.error("Failed to fetch analytics data:", oError);
           }.bind(this),
         });
@@ -80,35 +74,60 @@ sap.ui.define(
       /**
        * @param {sap.ui.base.Event} oEvent
        */
-      onChartOpenFilter: function (oEvent)
-      {
+      onChartOpenFilter: function (oEvent) {
         var oView = this.getView(),
           sChartId = oEvent.getSource().data("chartId"),
           oChart = this.byId(sChartId);
-        if (!oChart)
-        {
+        if (!oChart) {
           return;
         }
 
         ChartFilterDialogHelper.onOpen(oView, sChartId);
       },
 
-      _loadGroupedColumnChartUserIds: function ()
-      {
+      /**
+       * @param {sap.ui.base.Event} oEvent
+       */
+      onChartResetFilter: function (oEvent) {
+        var sChartId = oEvent.getSource().data("chartId");
+        var oChart = this.byId(sChartId);
+        if (!oChart) {
+          return;
+        }
+
+        var oDataset = oChart.getDataset();
+        if (oDataset) {
+          var oBinding = oDataset.getBinding("data");
+          if (oBinding) {
+            var aFilters = [];
+            // Preserve base filter for workload chart
+            if (sChartId === "OpenCompletedColumnChart") {
+              aFilters.push(
+                new sap.ui.model.Filter(
+                  "ActualAgent",
+                  sap.ui.model.FilterOperator.NE,
+                  "Unassigned",
+                ),
+              );
+            }
+            oBinding.filter(aFilters);
+          }
+        }
+      },
+
+      _loadGroupedColumnChartUserIds: function () {
         var oView = this.getView();
         var oWorkloadModel = oView.getModel("workloadAnalytics");
         var oChartFilterUsersModel = oView.getModel("chartFilterUsers");
 
-        if (!oChartFilterUsersModel)
-        {
+        if (!oChartFilterUsersModel) {
           oChartFilterUsersModel = new JSONModel({
             userIds: [],
           });
           oView.setModel(oChartFilterUsersModel, "chartFilterUsers");
         }
 
-        if (!oWorkloadModel)
-        {
+        if (!oWorkloadModel) {
           oChartFilterUsersModel.setProperty("/userIds", []);
           return;
         }
@@ -118,20 +137,17 @@ sap.ui.define(
             $select: "ActualAgent",
             $filter: "ActualAgent ne 'Unassigned'",
           },
-          success: function (oData)
-          {
+          success: function (oData) {
             var aResults = oData.results || [];
             var mSeen = {};
             var aUserIds = [];
 
-            aResults.forEach(function (oItem)
-            {
+            aResults.forEach(function (oItem) {
               var sUserId = String(oItem.ActualAgent || "")
                 .trim()
                 .toUpperCase();
 
-              if (!sUserId || mSeen[sUserId])
-              {
+              if (!sUserId || mSeen[sUserId]) {
                 return;
               }
 
@@ -141,15 +157,13 @@ sap.ui.define(
               });
             });
 
-            aUserIds.sort(function (a, b)
-            {
+            aUserIds.sort(function (a, b) {
               return a.UserId.localeCompare(b.UserId);
             });
 
             oChartFilterUsersModel.setProperty("/userIds", aUserIds);
           }.bind(this),
-          error: function (oError)
-          {
+          error: function (oError) {
             oChartFilterUsersModel.setProperty("/userIds", []);
             console.error("Failed to load grouped chart users:", oError);
           }.bind(this),
@@ -157,15 +171,13 @@ sap.ui.define(
       },
 
       /* AGING CHART */
-      _loadAgingChart: function ()
-      {
+      _loadAgingChart: function () {
         var oView = this.getView();
         var oModel = oView.getModel("bottleneckAnalytics");
 
         var oChart = this.byId("agingChart");
 
-        if (oChart)
-        {
+        if (oChart) {
           oChart.setVizProperties({
             title: {
               text: "Open Tasks by Business Object Type and Aging Bucket",
@@ -176,19 +188,16 @@ sap.ui.define(
         }
 
         oModel.read("/ZC_GSP26SAP02_WF_AGIG", {
-          success: function (oData)
-          {
+          success: function (oData) {
             var aResults = oData.results || [];
             var mGrouped = {};
 
-            aResults.forEach(function (item)
-            {
+            aResults.forEach(function (item) {
               var obj = item.BusinessObjectDesc || item.BusinessObjectType;
               var bucket = item.AgingBucket;
               var count = Number(item.IsOpenCount);
 
-              if (!mGrouped[obj])
-              {
+              if (!mGrouped[obj]) {
                 mGrouped[obj] = {
                   BusinessObjectDesc: obj,
                   ZeroToTwoDays: 0,
@@ -197,18 +206,15 @@ sap.ui.define(
                 };
               }
 
-              if (bucket && bucket.includes("0-2"))
-              {
+              if (bucket && bucket.includes("0-2")) {
                 mGrouped[obj]["ZeroToTwoDays"] = count;
               }
 
-              if (bucket && bucket.includes("3-7"))
-              {
+              if (bucket && bucket.includes("3-7")) {
                 mGrouped[obj]["ThreeToSevenDays"] = count;
               }
 
-              if (bucket && bucket.includes(">7"))
-              {
+              if (bucket && bucket.includes(">7")) {
                 mGrouped[obj]["OverSevenDays"] = count;
               }
             });
@@ -220,16 +226,14 @@ sap.ui.define(
             oView.setModel(oJSON, "agingModel");
           }.bind(this),
 
-          error: function (oError)
-          {
+          error: function (oError) {
             console.error("OData ERROR:", oError);
           },
         });
       },
 
       /* BOTTLENECK HEATMAP */
-      _loadBottleneckHeatmap: function ()
-      {
+      _loadBottleneckHeatmap: function () {
         var oView = this.getView();
         var oModel = oView.getModel("bottleneckAnalytics");
 
@@ -238,16 +242,14 @@ sap.ui.define(
             $select: "PriorityLevel,AgingBucket,IsOpenCount",
           },
 
-          success: function (oData)
-          {
+          success: function (oData) {
             var aRaw = oData.results || [];
 
             var aPriorities = [];
             var aBuckets = [];
             var mData = {};
 
-            aRaw.forEach(function (item)
-            {
+            aRaw.forEach(function (item) {
               var p = item.PriorityLevel || "";
               var b = item.AgingBucket || "";
               var c = Number(item.IsOpenCount) || 0;
@@ -257,8 +259,7 @@ sap.ui.define(
                 p.indexOf("N/A") !== -1 ||
                 b === "" ||
                 p === ""
-              )
-              {
+              ) {
                 return;
               }
 
@@ -270,10 +271,8 @@ sap.ui.define(
             });
 
             var aHeatData = [];
-            aPriorities.forEach(function (p)
-            {
-              aBuckets.forEach(function (b)
-              {
+            aPriorities.forEach(function (p) {
+              aBuckets.forEach(function (b) {
                 var key = p + "|||" + b;
                 aHeatData.push({
                   PriorityLevel: p,
@@ -290,16 +289,14 @@ sap.ui.define(
             oView.setModel(oJSON, "bottleneckModel");
           }.bind(this),
 
-          error: function (oError)
-          {
+          error: function (oError) {
             console.error("Heatmap load error:", oError);
           },
         });
       },
 
       /* STATUS DONUT CHART - Group Data Manually */
-      _loadStatusDonutChart: function ()
-      {
+      _loadStatusDonutChart: function () {
         var oView = this.getView();
         var oModel = oView.getModel("statsAnalytics");
 
@@ -310,15 +307,13 @@ sap.ui.define(
           urlParameters: {
             $select: "StatusCategory,TaskCounter",
           },
-          success: function (oData)
-          {
+          success: function (oData) {
             oStatsModel.setProperty("/donutBusy", false);
 
             var aRaw = oData.results || [];
             var mData = {};
 
-            aRaw.forEach(function (item)
-            {
+            aRaw.forEach(function (item) {
               var status = item.StatusCategory || "Unknown";
               var count = Number(item.TaskCounter) || 0;
 
@@ -326,8 +321,7 @@ sap.ui.define(
             });
 
             var aGroupedData = [];
-            for (var key in mData)
-            {
+            for (var key in mData) {
               aGroupedData.push({
                 StatusCategory: key,
                 TaskCounter: mData[key],
@@ -339,8 +333,7 @@ sap.ui.define(
             });
             oView.setModel(oDonutModel, "donutModel");
           }.bind(this),
-          error: function (oError)
-          {
+          error: function (oError) {
             oStatsModel.setProperty("/donutBusy", false);
             console.error("Donut chart data error:", oError);
           }.bind(this),
@@ -348,8 +341,7 @@ sap.ui.define(
       },
 
       /* PRIORITY BAR CHART - Group Data Manually */
-      _loadPriorityBarChart: function ()
-      {
+      _loadPriorityBarChart: function () {
         var oView = this.getView();
         var oModel = oView.getModel("statsAnalytics");
 
@@ -360,15 +352,13 @@ sap.ui.define(
           urlParameters: {
             $select: "PriorityLevel,TaskCounter",
           },
-          success: function (oData)
-          {
+          success: function (oData) {
             oStatsModel.setProperty("/priorityBusy", false);
 
             var aRaw = oData.results || [];
             var mData = {};
 
-            aRaw.forEach(function (item)
-            {
+            aRaw.forEach(function (item) {
               var priority = item.PriorityLevel || "Unknown";
               var count = Number(item.TaskCounter) || 0;
 
@@ -376,8 +366,7 @@ sap.ui.define(
             });
 
             var aGroupedData = [];
-            for (var key in mData)
-            {
+            for (var key in mData) {
               aGroupedData.push({
                 PriorityLevel: key,
                 TaskCounter: mData[key],
@@ -389,19 +378,16 @@ sap.ui.define(
             });
             oView.setModel(oPriorityModel, "priorityModel");
           }.bind(this),
-          error: function (oError)
-          {
+          error: function (oError) {
             oStatsModel.setProperty("/priorityBusy", false);
             console.error("Priority chart data error:", oError);
           }.bind(this),
         });
       },
 
-      _initDefaultDateRange: function ()
-      {
+      _initDefaultDateRange: function () {
         var oDateRange = this.byId("perfChartDateRange");
-        if (oDateRange)
-        {
+        if (oDateRange) {
           var oToDate = new Date();
           var oFromDate = new Date();
           oFromDate.setMonth(oFromDate.getMonth() - 1);
@@ -411,23 +397,20 @@ sap.ui.define(
 
           // trigger the change event manually to apply filters
           this.onPerfChartDateChange({
-            getSource: function ()
-            {
+            getSource: function () {
               return oDateRange;
             },
           });
         }
       },
 
-      _connectPopovers: function ()
-      {
+      _connectPopovers: function () {
         var oBundle = this.getView().getModel("i18n").getResourceBundle();
 
         var oColumnChart = this.byId("OpenCompletedColumnChart");
         var oColumnPopover = this.byId("OpenCompletedPopover");
 
-        if (oColumnChart && oColumnPopover)
-        {
+        if (oColumnChart && oColumnPopover) {
           oColumnChart.setVizProperties({
             title: { text: oBundle.getText("userWorkloadColumnChartTitle") },
           });
@@ -438,14 +421,12 @@ sap.ui.define(
       /**
        * @param {sap.ui.base.Event} oEvent
        */
-      onChartInfoPress: function (oEvent)
-      {
+      onChartInfoPress: function (oEvent) {
         var oSourceButton = oEvent.getSource();
         var sType = oSourceButton.data("chartType");
 
         var oView = this.getView();
-        if (!this._oChartInfoPopover)
-        {
+        if (!this._oChartInfoPopover) {
           this._oChartInfoPopover = sap.ui.xmlfragment(
             oView.getId(),
             "z.wf.zwfmanagement.view.fragments.analytics.ChartInfoPopover",
@@ -462,36 +443,28 @@ sap.ui.define(
         var oBundle = oView.getModel("i18n").getResourceBundle();
         var sText = "";
 
-        if (sType === "status")
-        {
+        if (sType === "status") {
           sText =
             "This chart displays the distribution of total tasks by their status (Open, In Process, Completed...).";
-        } else if (sType === "priority")
-        {
+        } else if (sType === "priority") {
           sText =
             "This chart displays the number of tasks in processing based on their priority (High, Medium, Low).";
-        } else if (sType === "performance")
-        {
+        } else if (sType === "performance") {
           sText =
             "This chart displays the number of completed tasks and the average cycle time (in days) over months.";
-        } else if (sType === "cycleTime")
-        {
+        } else if (sType === "cycleTime") {
           sText =
             "This heat map chart displays the average cycle time by different business objects and tasks.";
-        } else if (sType === "aging")
-        {
+        } else if (sType === "aging") {
           sText =
             "This chart displays the aging of tasks by business object, categorized into 0-2 days, 3-7 days, and over 7 days.";
-        } else if (sType === "bottleneck")
-        {
+        } else if (sType === "bottleneck") {
           sText =
             "This heatmap helps identify bottlenecks by showing open tasks grouped by priority and their aging buckets.";
-        } else if (sType === "outstanding")
-        {
+        } else if (sType === "outstanding") {
           sText =
             "This table lists the top 10 longest outstanding tasks, showing the user, aging in days, and current status.";
-        } else if (sType === "workloadGroup")
-        {
+        } else if (sType === "workloadGroup") {
           sText =
             "This chart compares the volume of open and completed tasks handled by each agent.";
         }
@@ -503,8 +476,7 @@ sap.ui.define(
       /**
        * @param {sap.ui.base.Event} oEvent
        */
-      onPerfChartDateChange: function (oEvent)
-      {
+      onPerfChartDateChange: function (oEvent) {
         var oDateRange = oEvent.getSource();
         var oDateFrom = oDateRange.getDateValue();
         var oDateTo = oDateRange.getSecondDateValue();
@@ -517,12 +489,10 @@ sap.ui.define(
           ),
         ];
 
-        if (oDateFrom && oDateTo)
-        {
+        if (oDateFrom && oDateTo) {
           sap.ui.require(
             ["sap/ui/core/format/DateFormat"],
-            function (DateFormat)
-            {
+            function (DateFormat) {
               var oFormat = DateFormat.getDateInstance({
                 pattern: "yyyyMMdd",
               });
@@ -540,42 +510,17 @@ sap.ui.define(
               var oChart = this.byId("perfChartPanel");
               var oDataset = oChart.getDataset();
               var oBinding = oDataset.getBinding("data");
-              if (oBinding)
-              {
+              if (oBinding) {
                 oBinding.filter(aFilters);
-              }
-
-              var oHeatmapChart = this.byId("idHeatmapChart");
-              if (oHeatmapChart)
-              {
-                var oHeatmapDataset = oHeatmapChart.getDataset();
-                var oHeatmapBinding = oHeatmapDataset.getBinding("data");
-                if (oHeatmapBinding)
-                {
-                  oHeatmapBinding.filter(aFilters);
-                }
               }
             }.bind(this),
           );
-        } else
-        {
+        } else {
           var oChart = this.byId("perfChartPanel");
           var oDataset = oChart.getDataset();
           var oBinding = oDataset.getBinding("data");
-          if (oBinding)
-          {
+          if (oBinding) {
             oBinding.filter(aFilters);
-          }
-
-          var oHeatmapChart = this.byId("idHeatmapChart");
-          if (oHeatmapChart)
-          {
-            var oHeatmapDataset = oHeatmapChart.getDataset();
-            var oHeatmapBinding = oHeatmapDataset.getBinding("data");
-            if (oHeatmapBinding)
-            {
-              oHeatmapBinding.filter(aFilters);
-            }
           }
         }
       },
@@ -583,12 +528,10 @@ sap.ui.define(
       /**
        * @param {sap.ui.base.Event} oEvent
        */
-      onChartZoomIn: function (oEvent)
-      {
+      onChartZoomIn: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
         var oChart = this.byId(sChartId);
-        if (oChart)
-        {
+        if (oChart) {
           oChart.zoom({ direction: "in" });
         }
       },
@@ -596,13 +539,77 @@ sap.ui.define(
       /**
        * @param {sap.ui.base.Event} oEvent
        */
-      onChartZoomOut: function (oEvent)
-      {
+      onChartZoomOut: function (oEvent) {
         var sChartId = oEvent.getSource().data("chartId");
         var oChart = this.byId(sChartId);
-        if (oChart)
-        {
+        if (oChart) {
           oChart.zoom({ direction: "out" });
+        }
+      },
+
+      /**
+       * Handle search for heatmap chart
+       * @param {sap.ui.base.Event} oEvent
+       */
+      onHeatmapChartBOSearch: function (oEvent) {
+        var sQuery = oEvent.getParameter("query");
+        var aFilters = [
+          new sap.ui.model.Filter(
+            "StatusCategory",
+            sap.ui.model.FilterOperator.EQ,
+            "Completed",
+          ),
+        ];
+
+        if (sQuery && sQuery.trim().length > 0) {
+          aFilters.push(
+            new sap.ui.model.Filter(
+              "BusinessObjectDesc",
+              sap.ui.model.FilterOperator.Contains,
+              sQuery,
+            ),
+          );
+        }
+
+        var oHeatmapChart = this.byId("idHeatmapChart");
+        if (oHeatmapChart) {
+          var oHeatmapDataset = oHeatmapChart.getDataset();
+          if (oHeatmapDataset) {
+            var oHeatmapBinding = oHeatmapDataset.getBinding("data");
+            if (oHeatmapBinding) {
+              oHeatmapBinding.filter(aFilters);
+            }
+          }
+        }
+      },
+
+      /**
+       * Handle search for aging chart
+       * @param {sap.ui.base.Event} oEvent
+       */
+      onAgingChartBOSearch: function (oEvent) {
+        var sQuery = oEvent.getParameter("query");
+        var aFilters = [];
+
+        if (sQuery && sQuery.trim().length > 0) {
+          aFilters.push(
+            new sap.ui.model.Filter(
+              "BusinessObjectDesc",
+              sap.ui.model.FilterOperator.Contains,
+              sQuery,
+            ),
+          );
+        }
+
+        var oAgingChart = this.byId("agingChart");
+        if (oAgingChart) {
+          var oDataset = oAgingChart.getDataset();
+          if (oDataset) {
+            var oBinding = oDataset.getBinding("data");
+            if (oBinding) {
+              oBinding.filter(aFilters);
+            }
+          }
         }
       },
     });

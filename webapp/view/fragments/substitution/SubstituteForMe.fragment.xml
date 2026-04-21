@@ -41,7 +41,11 @@
                     path: '/Substitutions',
                     parameters: {
                         $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
-                    }
+                    },
+                    filters: [
+                        {path: 'Direction', operator: 'EQ', value1: 'INCOMING'},
+                        {path: 'SubstitutionType', operator: 'EQ', value1: 'P'}
+                    ]
                 }"
                 visible="{= ${view>/substMode} === 'P'}"
                 sticky="ColumnHeaders"
@@ -116,7 +120,11 @@
                     path: '/Substitutions',
                     parameters: {
                         $select: 'UserSubstitutedBy,UserSubstitutedFor,BeginDate,EndDate,SubstitutionProfile,RuleStatus,SubstituteFullName,OwnerFullName,SubstitutionType,Direction,Active'
-                    }
+                    },
+                    filters: [
+                        {path: 'Direction', operator: 'EQ', value1: 'INCOMING'},
+                        {path: 'SubstitutionType', operator: 'EQ', value1: 'U'}
+                    ]
                 }"
                 visible="{= ${view>/substMode} === 'U'}"
                 sticky="ColumnHeaders"

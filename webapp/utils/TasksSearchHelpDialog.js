@@ -1,11 +1,15 @@
 sap.ui.define([
     "sap/ui/core/Fragment",
     'sap/m/Token',
-], function (Fragment, Token)
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "../model/formatter"
+], function (Fragment, Token, Filter, FilterOperator, formatter)
 {
     "use strict";
 
     return {
+        formatter: formatter,
         _oView: null,
         _oTasksSearchHelpDialog: null,
 
@@ -30,6 +34,20 @@ sap.ui.define([
             {
                 oDialog.open();
             });
+        },
+
+        _handleValueHelpSearch: function (oEvent)
+        {
+            var sValue = oEvent.getParameter("value");
+            var oFilter = new Filter({
+                filters: [
+                    new Filter("WorkItemText", FilterOperator.Contains, sValue),
+                    new Filter("WorkItemID", FilterOperator.Contains, sValue)
+                ],
+                and: false
+            });
+            var oBinding = oEvent.getSource().getBinding("items");
+            oBinding.filter(sValue ? [oFilter] : []);
         },
 
         onCloseTaskSearchHelp: function (evt)

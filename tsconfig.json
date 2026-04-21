@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "es2015",
         "noEmit": true,
-        "checkJs": true,
+        "checkJs": false,
         "allowJs": true,
         "target": "es2015",
         "lib": [

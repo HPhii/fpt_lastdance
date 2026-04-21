@@ -1,0 +1,48 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog
+        id="bulkDelegateResultDialog"
+        title="{resultModel>/title}"
+        state="{resultModel>/state}"
+        contentWidth="600px"
+    >
+        <content>
+            <VBox>
+                <Text text="{resultModel>/mainMessage}" class="sapUiSmallMargin" />
+                <Table items="{resultModel>/messages}">
+                    <columns>
+                        <Column width="4em" hAlign="Center">
+                            <Text text="Status" />
+                        </Column>
+                        <Column>
+                            <Text text="Message" />
+                        </Column>
+                        <Column width="6em">
+                            <Text text="Code" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectStatus
+                                    icon="{resultModel>icon}"
+                                    state="{resultModel>state}"
+                                />
+                                <Text text="{resultModel>message}" />
+                                <Text text="{resultModel>code}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button
+                text="Close"
+                press=".onCloseBulkDelegateResultDialog"
+            />
+        </beginButton>
+    </Dialog>
+</core:FragmentDefinition>
