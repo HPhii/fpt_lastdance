@@ -10,7 +10,12 @@
             sorter: {
                 path: 'Priority',
                 descending: false
-            }        
+            },
+            filters: [{
+                path: 'TechnicalStatus',
+                operator: 'EQ',
+                value1: 'SELECTED'
+            }]
         }"
         search="_handleValueHelpSearch"
         confirm="onCloseTaskSearchHelp"
@@ -30,7 +35,7 @@
                     />
                     <Text text="{WorkItemID}" />
                     <ObjectStatus 
-                        text="{TechnicalStatusText}"
+                        text="{TechnicalStatus}"
                         state="{
                             path: 'TechnicalStatus',
                             formatter: '.formatter.formatTechnicalStatus'

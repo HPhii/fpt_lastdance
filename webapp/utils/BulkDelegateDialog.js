@@ -63,6 +63,12 @@ sap.ui.define([
                             oBinding.requestObject().then(function (oData)
                             {
                                 oMultiInput.setBusy(false);
+                                if (oData.TechnicalStatus !== "SELECTED") {
+                                    oMultiInput.setValueState("Error");
+                                    oMultiInput.setValueStateText("Only SELECTED tasks can be delegated");
+                                    reject();
+                                    return;
+                                }
                                 oMultiInput.setValueState("None");
                                 resolve(new Token({ key: oData.WorkItemID, text: oData.WorkItemText }));
                             }).catch(function ()

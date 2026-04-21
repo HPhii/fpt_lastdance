@@ -39,15 +39,28 @@ sap.ui.define([
         _handleValueHelpSearch: function (oEvent)
         {
             var sValue = oEvent.getParameter("value");
+            
+            var aProcessFilters = [
+                new Filter("TechnicalStatus", FilterOperator.EQ, "SELECTED")
+            ];
+
+            if (sValue) {
+                aProcessFilters.push(new Filter({
+                    filters: [
+                        new Filter("WorkItemText", FilterOperator.Contains, sValue),
+                        new Filter("WorkItemID", FilterOperator.Contains, sValue)
+                    ],
+                    and: false
+                }));
+            }
+
             var oFilter = new Filter({
-                filters: [
-                    new Filter("WorkItemText", FilterOperator.Contains, sValue),
-                    new Filter("WorkItemID", FilterOperator.Contains, sValue)
-                ],
-                and: false
+                filters: aProcessFilters,
+                and: true
             });
+
             var oBinding = oEvent.getSource().getBinding("items");
-            oBinding.filter(sValue ? [oFilter] : []);
+            oBinding.filter([oFilter]);
         },
 
         onCloseTaskSearchHelp: function (evt)

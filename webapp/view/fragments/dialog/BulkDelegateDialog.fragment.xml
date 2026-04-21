@@ -54,7 +54,12 @@
                                 group: true,
                                 descending: false 
                             }
-                        ]
+                        ],
+                        filters: [{
+                            path: 'TechnicalStatus',
+                            operator: 'EQ',
+                            value1: 'SELECTED'
+                        }]
                     }"
                     placeholder="{i18n>tasksMultiInputPlaceholder}"
                     valueHelpRequest=".onOpenTaskSearchHelp"
