@@ -43,7 +43,7 @@ sap.ui.define(
 
       _onRouteMatched: function ()
       {
-        this._applyFilters();
+        // Filters are now statically defined in XML bindings to prevent unfiltered init requests.
       },
 
       /**
@@ -95,95 +95,15 @@ sap.ui.define(
         {
           this.getView().getModel("view").setProperty("/substMode", "U");
         }
-
-        this._applyFilters();
       },
 
       onModeSelect: function (oEvent)
       {
         const sKey = oEvent.getParameter("item").getKey();
         this.getView().getModel("view").setProperty("/substMode", sKey);
-
-        this._applyFilters();
       },
 
-      _applyFilters: function ()
-      {
-        const oIconTabBar = this.byId("substitutionTabBar");
-        const sSelectedTab = oIconTabBar.getSelectedKey();
-        const sMode = this.getView().getModel("view").getProperty("/substMode");
 
-        if (sSelectedTab === "outgoing")
-        {
-          // Outgoing tab: Filter by Direction = OUTGOING AND SubstitutionType = P or U
-          this._filterOutgoingTables(sMode);
-        } else if (sSelectedTab === "incoming")
-        {
-          // Incoming tab: Filter by Direction = INCOMING AND SubstitutionType = P or U
-          this._filterIncomingTable(sMode);
-        }
-      },
-
-      _filterOutgoingTables: function (sMode)
-      {
-        const aFilters = [
-          new Filter("Direction", FilterOperator.EQ, "OUTGOING"),
-          new Filter("SubstitutionType", FilterOperator.EQ, sMode),
-        ];
-
-        const oTablePlanned = this.byId("tablePlanned");
-        const oTableUnplanned = this.byId("tableUnplanned");
-
-        if (oTablePlanned)
-        {
-          const oBinding = oTablePlanned.getBinding("items");
-          if (oBinding)
-          {
-            oBinding.filter(aFilters);
-          }
-        }
-
-        if (oTableUnplanned)
-        {
-          const oBinding = oTableUnplanned.getBinding("items");
-          if (oBinding)
-          {
-            oBinding.filter(aFilters);
-          }
-        }
-      },
-
-      /**
-       * Filter tables in Incoming tab based on Mode (Planned/Unplanned)
-       */
-      _filterIncomingTable: function (sMode)
-      {
-        const aFilters = [
-          new Filter("Direction", FilterOperator.EQ, "INCOMING"),
-          new Filter("SubstitutionType", FilterOperator.EQ, sMode),
-        ];
-
-        const oTablePlanned = this.byId("tableIncomingPlanned");
-        const oTableUnplanned = this.byId("tableIncomingUnplanned");
-
-        if (oTablePlanned)
-        {
-          const oBinding = oTablePlanned.getBinding("items");
-          if (oBinding)
-          {
-            oBinding.filter(aFilters);
-          }
-        }
-
-        if (oTableUnplanned)
-        {
-          const oBinding = oTableUnplanned.getBinding("items");
-          if (oBinding)
-          {
-            oBinding.filter(aFilters);
-          }
-        }
-      },
 
       /**
        * Open Add Substitution Dialog
