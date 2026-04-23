@@ -1,13 +1,16 @@
 sap.ui.define(
   ["sap/ui/core/format/DateFormat", "sap/ui/core/format/FileSizeFormat"],
-  function (DateFormat, FileSizeFormat) {
+  function (DateFormat, FileSizeFormat)
+  {
     "use strict";
 
     return {
-      formatTechnicalStatus: function (sStatus) {
+      formatTechnicalStatus: function (sStatus)
+      {
         if (!sStatus) return "None";
 
-        switch (sStatus) {
+        switch (sStatus)
+        {
           // --- POSITIVE GROUP ---
           case "COMPLETED":
           case "CHECKED":
@@ -35,22 +38,27 @@ sap.ui.define(
         }
       },
 
-      formatChartDate: function (sDate) {
+      formatChartDate: function (sDate)
+      {
         if (!sDate) return "";
         var oDate = sDate;
-        if (typeof sDate === "string") {
-          if (sDate.length === 8 && !isNaN(sDate)) {
+        if (typeof sDate === "string")
+        {
+          if (sDate.length === 8 && !isNaN(sDate))
+          {
             var y = sDate.substring(0, 4);
             var m = sDate.substring(4, 6);
             var d = sDate.substring(6, 8);
             oDate = new Date(y, parseInt(m, 10) - 1, d);
-          } else if (sDate.indexOf("/Date(") === 0) {
+          } else if (sDate.indexOf("/Date(") === 0)
+          {
             var timestamp = parseInt(
               sDate.substring(sDate.indexOf("(") + 1, sDate.indexOf(")")),
               10,
             );
             oDate = new Date(timestamp);
-          } else {
+          } else
+          {
             oDate = new Date(sDate);
           }
         }
@@ -60,8 +68,10 @@ sap.ui.define(
         return oFormat.format(oDate);
       },
 
-      formatPriorityIcon: function (sPriority) {
-        switch (sPriority) {
+      formatPriorityIcon: function (sPriority)
+      {
+        switch (sPriority)
+        {
           case "1":
           case "2":
             return "sap-icon://high-priority";
@@ -81,8 +91,10 @@ sap.ui.define(
         }
       },
 
-      formatPriorityState: function (sPriority) {
-        switch (sPriority) {
+      formatPriorityState: function (sPriority)
+      {
+        switch (sPriority)
+        {
           case "1":
           case "2":
             return "Error";
@@ -101,8 +113,10 @@ sap.ui.define(
         }
       },
 
-      formatPriorityText: function (sPriority) {
-        switch (sPriority) {
+      formatPriorityText: function (sPriority)
+      {
+        switch (sPriority)
+        {
           case "1":
             return "Highest";
           case "2":
@@ -131,16 +145,19 @@ sap.ui.define(
        * @param {string} sNumberOfDays
        * @returns {string} Formatted text for days to deadline
        */
-      formatDaysToDeadlineText: function (sNumberOfDays) {
+      formatDaysToDeadlineText: function (sNumberOfDays)
+      {
         if (!sNumberOfDays) return "N/A";
 
         if (
           sNumberOfDays === "9,999" ||
           sNumberOfDays === "9999" ||
           sNumberOfDays === "9.999"
-        ) {
+        )
+        {
           return "-";
-        } else if (parseInt(sNumberOfDays, 10) <= 0) {
+        } else if (parseInt(sNumberOfDays, 10) <= 0)
+        {
           return "";
         }
 
@@ -151,7 +168,8 @@ sap.ui.define(
        * Formatter for status text
        * @param {string} sStatus - The status value (e.g., "Active", "Inactive")
        */
-      formatStatusText: function (sStatus) {
+      formatStatusText: function (sStatus)
+      {
         return sStatus;
       },
 
@@ -160,13 +178,16 @@ sap.ui.define(
        * @param {string} sStatus - The status value (e.g., "Active", "Inactive", "Cancelled")
        * @returns {string} - The corresponding ObjectStatus state ("Success", "Error", "None")
        */
-      formatStatusState: function (sStatus) {
-        if (!sStatus) {
+      formatStatusState: function (sStatus)
+      {
+        if (!sStatus)
+        {
           return "None";
         }
 
         // Check case-insensitive
-        switch (sStatus.toUpperCase()) {
+        switch (sStatus.toUpperCase())
+        {
           case "ACTIVE":
             return "Success";
           case "INACTIVE":
@@ -182,22 +203,27 @@ sap.ui.define(
        * @param {string} sStatus - The status value (e.g., "Active", "Inactive")
        * @returns {string} - The corresponding SAP icon URI
        */
-      formatStatusIcon: function (sStatus) {
-        if (!sStatus) {
+      formatStatusIcon: function (sStatus)
+      {
+        if (!sStatus)
+        {
           return "";
         }
-        if (sStatus.toUpperCase() === "ACTIVE") {
+        if (sStatus.toUpperCase() === "ACTIVE")
+        {
           return "sap-icon://status-positive";
         }
         return "sap-icon://status-inactive";
       },
 
-      formatDaysToStartText: function (sRuleStatus, iDays) {
+      formatDaysToStartText: function (sRuleStatus, iDays)
+      {
         if (
           sRuleStatus === "Inactive" &&
           iDays !== null &&
           iDays !== undefined
-        ) {
+        )
+        {
           const oResourceBundle = this.getView()
             .getModel("i18n")
             .getResourceBundle();
@@ -207,17 +233,22 @@ sap.ui.define(
         return "";
       },
 
-      formatDaysToDeadlineTitle: function (bIsOverdue, bIsDueOn) {
-        if (bIsOverdue) {
+      formatDaysToDeadlineTitle: function (bIsOverdue, bIsDueOn)
+      {
+        if (bIsOverdue)
+        {
           return "(Overdue)";
         }
-        if (bIsDueOn) {
+        if (bIsDueOn)
+        {
           return "(Within a Week)";
         }
       },
 
-      formatDateOrNA: function (sType, sDate) {
-        if (!sDate) {
+      formatDateOrNA: function (sType, sDate)
+      {
+        if (!sDate)
+        {
           return "N/A";
         }
 
@@ -227,7 +258,8 @@ sap.ui.define(
         });
         const oDate = oInputFormat.parse(sDate);
 
-        if (!oDate) {
+        if (!oDate)
+        {
           return sDate; // Fallback if parse fails
         }
 
@@ -237,7 +269,8 @@ sap.ui.define(
         return oOutputFormat.format(oDate);
       },
 
-      formatFileSize: function (iSizeInBytes) {
+      formatFileSize: function (iSizeInBytes)
+      {
         var oFileSizeFormat = FileSizeFormat.getInstance({
           binaryFilesize: false,
           decimals: 2,
@@ -246,8 +279,10 @@ sap.ui.define(
         return oFileSizeFormat.format(iSizeInBytes);
       },
 
-      formatAttachmentIcon: function (sFileExtension) {
-        switch (sFileExtension.toLowerCase()) {
+      formatAttachmentIcon: function (sFileExtension)
+      {
+        switch (sFileExtension.toLowerCase())
+        {
           case "png":
           case "jpg":
           case "jpeg":
@@ -270,8 +305,10 @@ sap.ui.define(
         }
       },
 
-      formatCompletionRate: function (sCompleted, sTotal) {
-        if (!sCompleted || !sTotal || parseInt(sTotal, 10) === 0) {
+      formatCompletionRate: function (sCompleted, sTotal)
+      {
+        if (!sCompleted || !sTotal || parseInt(sTotal, 10) === 0)
+        {
           return 0;
         }
         var fCompleted = parseFloat(sCompleted);
@@ -282,14 +319,27 @@ sap.ui.define(
         return Math.round(fRate * 100) / 100;
       },
 
-      formatStatusTabIndicator: function (sText, bHasTasks) {
-        if (bHasTasks) {
+      formatStatusTabIndicator: function (sText, bHasTasks)
+      {
+        if (bHasTasks)
+        {
           return sText + " •";
         }
         return sText;
       },
 
-      formatCompletionRateColor: function (sCompleted, sTotal) {
+      formatOnDueIconColor: function (bHasTasks)
+      {
+        return bHasTasks ? "Critical" : "Neutral";
+      },
+
+      formatOverdueIconColor: function (bHasTasks)
+      {
+        return bHasTasks ? "Negative" : "Neutral";
+      },
+
+      formatCompletionRateColor: function (sCompleted, sTotal)
+      {
         var total = parseFloat(sTotal) || 0;
         var completed = parseFloat(sCompleted) || 0;
 
@@ -300,8 +350,10 @@ sap.ui.define(
         if (pct >= 0) return "Error";
       },
 
-      formatTraceLogIcon: function (sStatus) {
-        switch (sStatus) {
+      formatTraceLogIcon: function (sStatus)
+      {
+        switch (sStatus)
+        {
           case "COMPLETED":
             return "sap-icon://complete";
           case "READY":
@@ -319,8 +371,10 @@ sap.ui.define(
         }
       },
 
-      formatTraceLogState: function (sStatus) {
-        switch (sStatus) {
+      formatTraceLogState: function (sStatus)
+      {
+        switch (sStatus)
+        {
           case "COMPLETED":
             return "Positive";
           case "READY":

@@ -340,7 +340,7 @@ sap.ui.define([
 
             var oListBinding = oODataModel.bindList("/ActiveUsers");
 
-            oListBinding.requestContexts(0, 1000).then(function (aContexts)
+            oListBinding.requestContexts(0, 100).then(function (aContexts)
             {
                 var aUsers = aContexts.map(function (oContext)
                 {

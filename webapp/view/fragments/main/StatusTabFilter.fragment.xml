@@ -35,7 +35,10 @@
     <IconTabFilter
         key="ondue"
         icon="sap-icon://away"
-        iconColor="Critical"
+        iconColor="{
+            path: 'statusFilterCounter>/isHasDueOn',
+            formatter: '.formatter.formatOnDueIconColor'
+        }"
         text="{
             parts:[
                 {path: 'i18n>WorklistFilterTasksOnDue'},
@@ -47,7 +50,10 @@
     <IconTabFilter
         key="overdue"
         icon="sap-icon://lateness"
-        iconColor="Negative"
+        iconColor="{
+            path: 'statusFilterCounter>/isHasOverdue',
+            formatter: '.formatter.formatOverdueIconColor'
+        }"
         text="{
             parts:[
                 {path: 'i18n>WorklistFilterTasksOverdue'},
