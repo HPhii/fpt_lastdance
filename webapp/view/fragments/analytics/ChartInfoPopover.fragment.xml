@@ -5,7 +5,6 @@
 	<Popover
 		id="chartInfoPopover"
 		placement="Bottom"
-		title="{i18n>chartInfoTitle}"
 		showHeader="false"
 		contentWidth="250px"
 	>

@@ -215,7 +215,6 @@ sap.ui.define([
         success: function (oData)
         {
           var aResults = oData.results || [];
-          console.log("[ProductivityChart] raw results:", aResults.length, aResults);
 
           var aTransformed = aResults.reduce(function (acc, oItem)
           {
@@ -251,8 +250,6 @@ sap.ui.define([
           {
             return a.CompletionDate - b.CompletionDate;
           });
-
-          console.log("[ProductivityChart] transformed:", aTransformed.length, aTransformed);
 
           oView.getModel("productivityModel").setData({
             data: aTransformed,
@@ -369,13 +366,6 @@ sap.ui.define([
       var oView = this.getView();
       var oModel = this.getOwnerComponent().getModel("userProductivityAnalytics");
 
-      var mTypeLabels = {
-        "BUS2009001": "Purchase Requisition",
-        "CL_MM_PUR_WF_OBJECT_PO": "Purchase Order",
-        "CL_MM_PUR_WF_OBJECT_RFQ": "Request for Quotation",
-        "Unknown": "Order"
-      };
-
       oView.setModel(new JSONModel({ data: [], loading: true }), "workflowTypeModel");
 
       if (!oModel)
@@ -386,21 +376,20 @@ sap.ui.define([
 
       oModel.read("/ZC_GSP26SAP02_MYPERF", {
         urlParameters: {
-          $select: "BusinessObjectType,CompletedCount"
+          $select: "BusinessObjectType,BusinessObjectDesc,CompletedCount"
         },
         success: function (oData)
         {
           var aResults = oData.results || [];
-          console.log("[WorkflowTypeChart] raw results:", aResults.length, aResults);
 
           var aTransformed = aResults.reduce(function (acc, oItem)
           {
-            var sCode = String(oItem.BusinessObjectType || "");
+            var sDesc = String(oItem.BusinessObjectDesc || "");
             var iCount = parseFloat(oItem.CompletedCount) || 0;
-            if (!sCode || sCode === "null" || iCount === 0) { return acc; }
+            if (iCount === 0) { return acc; }
 
             acc.push({
-              Type: mTypeLabels[sCode] || sCode,
+              Type: sDesc && sDesc !== "null" ? sDesc : "Other",
               Category: "Completed Tasks",
               Count: iCount
             });
@@ -409,8 +398,6 @@ sap.ui.define([
 
           // Sort descending so highest workload appears first
           aTransformed.sort(function (a, b) { return b.Count - a.Count; });
-
-          console.log("[WorkflowTypeChart] transformed:", aTransformed.length, aTransformed);
 
           oView.getModel("workflowTypeModel").setData({
             data: aTransformed,
@@ -529,11 +516,11 @@ sap.ui.define([
           var sSlaColor;
           var sSlaState;
 
-          if (fSlaHitRate >= 95)
+          if (fSlaHitRate >= 80)
           {
             sSlaColor = "Good";
             sSlaState = "Success";
-          } else if (fSlaHitRate >= 80)
+          } else if (fSlaHitRate >= 65)
           {
             sSlaColor = "Critical";
             sSlaState = "Warning";
@@ -568,6 +555,61 @@ sap.ui.define([
           oAggregateModel.setProperty("/loading", false);
         }
       });
+    },
+
+    onChartInfoPress: function (oEvent, sTypeParam)
+    {
+      var oSourceButton, sType;
+
+      // Handle different UI5 XML view parameter passing styles
+      if (typeof oEvent === "string")
+      {
+        sType = oEvent;
+      } else
+      {
+        oSourceButton = oEvent.getSource();
+        sType = sTypeParam || oSourceButton.data("chartType");
+      }
+
+      var sText = "";
+      if (sType === "productivity")
+      {
+        sText = "This chart displays the trend of your daily task completions alongside the average processing time.";
+      } else if (sType === "workload")
+      {
+        sText = "This heat map displays your completed tasks distributed across different document types.";
+      } else
+      {
+        sText = "Information about this chart.";
+      }
+
+      if (!oSourceButton)
+      {
+        sap.ui.require(["sap/m/MessageBox"], function (MessageBox)
+        {
+          MessageBox.information(sText);
+        });
+        return;
+      }
+
+      var oView = this.getView();
+      if (!this._oChartInfoPopover)
+      {
+        this._oChartInfoPopover = sap.ui.xmlfragment(
+          oView.getId(),
+          "z.wf.zwfmanagement.view.fragments.analytics.ChartInfoPopover",
+          this
+        );
+        oView.addDependent(this._oChartInfoPopover);
+        this._oChartInfoModel = new sap.ui.model.json.JSONModel({ text: "" });
+        this._oChartInfoPopover.setModel(
+          this._oChartInfoModel,
+          "chartInfoModel"
+        );
+      }
+
+      this._oChartInfoModel.setProperty("/text", sText);
+      this._oChartInfoPopover.openBy(oSourceButton);
     }
   });
 });

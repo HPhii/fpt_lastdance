@@ -7,10 +7,19 @@
 >
     <Panel
         class="sapUiSmallMargin workflowTypePanel"
-        headerText="{i18n>workloadDistributionHeader}"
         width="98.5%"
     >
         <VBox class="sapUiSmallMargin">
+            <Toolbar style="Clear">
+                <ToolbarSpacer />
+                <Title text="{i18n>workloadDistributionHeader}" level="H4" />
+                <ToolbarSpacer />
+                <Button icon="sap-icon://message-information" type="Transparent" press=".onChartInfoPress">
+                    <customData>
+                        <core:CustomData key="chartType" value="workload" />
+                    </customData>
+                </Button>
+            </Toolbar>
             <viz:VizFrame
                 id="workflowTypeVizFrame"
                 vizType="heatmap"
