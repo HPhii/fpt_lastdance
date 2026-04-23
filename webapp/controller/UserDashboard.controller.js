@@ -374,13 +374,6 @@ sap.ui.define([
       var oView = this.getView();
       var oModel = this.getOwnerComponent().getModel("userProductivityAnalytics");
 
-      var mTypeLabels = {
-        "BUS2009001":              "Purchase Requisition",
-        "CL_MM_PUR_WF_OBJECT_PO":  "Purchase Order",
-        "CL_MM_PUR_WF_OBJECT_RFQ": "Request for Quotation",
-        "Unknown":                 "Order"
-      };
-
       oView.setModel(new JSONModel({ data: [], loading: true }), "workflowTypeModel");
 
       if (!oModel)
@@ -391,7 +384,7 @@ sap.ui.define([
 
       oModel.read("/ZC_GSP26SAP02_MYPERF", {
         urlParameters: {
-          $select: "BusinessObjectType,CompletedCount"
+          $select: "BusinessObjectType,BusinessObjectDesc,CompletedCount"
         },
         success: function (oData)
         {
@@ -400,12 +393,12 @@ sap.ui.define([
 
           var aTransformed = aResults.reduce(function (acc, oItem)
           {
-            var sCode  = String(oItem.BusinessObjectType || "");
+            var sDesc  = String(oItem.BusinessObjectDesc || "");
             var iCount = parseFloat(oItem.CompletedCount) || 0;
-            if (!sCode || sCode === "null" || iCount === 0) { return acc; }
+            if (iCount === 0) { return acc; }
 
             acc.push({
-              Type:     mTypeLabels[sCode] || sCode,
+              Type:     sDesc && sDesc !== "null" ? sDesc : "Other",
               Category: "Completed Tasks",
               Count:    iCount
             });
@@ -533,10 +526,10 @@ sap.ui.define([
           var sSlaColor;
           var sSlaState;
 
-          if (fSlaHitRate >= 95) {
+          if (fSlaHitRate >= 80) {
             sSlaColor = "Good";
             sSlaState = "Success";
-          } else if (fSlaHitRate >= 80) {
+          } else if (fSlaHitRate >= 65) {
             sSlaColor = "Critical";
             sSlaState = "Warning";
           } else {
