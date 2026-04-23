@@ -66,7 +66,6 @@ sap.ui.define([
         tableBusyDelay: 0,
         detailVisible: false,
         detailBusy: false,
-        listMode: "SingleSelectMaster",
         columns: {
           taskName: true,
           taskID: false,
@@ -85,7 +84,7 @@ sap.ui.define([
       });
 
       this.getView().setModel(oViewModel, "worklistView");
-        ColumnSortHelper.setupDefaultSort(this, this._oList, "CreationDate", true);
+      ColumnSortHelper.setupDefaultSort(this, this._oList, "CreationDate", true);
 
       //Create an object of filters for filtering tasks based on their technical status
       this._mFilters = {
@@ -241,13 +240,6 @@ sap.ui.define([
         return;
       }
 
-      // Check if in multi-select mode
-      var sMode = oViewModel.getProperty("/listMode");
-      if (sMode === "MultiSelect")
-      {
-        return;
-      }
-
       var oNextUIState = oHelper.getNextUIState(1);
       var id = oContext.getPath().split("'")[1];
 
@@ -259,45 +251,6 @@ sap.ui.define([
       });
     },
 
-    onTaskPress: function (oEvent)
-    {
-      var oView = this.getView(),
-        oList = this.byId("idTasksList"),
-        oListItem = oEvent.getSource(),
-        oViewModel = oView.getModel("worklistView"),
-        oResourceBundle = oView.getModel("i18n").getResourceBundle(),
-        sCurrentMode = oViewModel.getProperty("/listMode");
-
-      if (sCurrentMode === "MultiSelect")
-      {
-        oList.setSelectedItem(oListItem, !oListItem.getSelected());
-        oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [oList.getSelectedItems().length]));
-      }
-
-      return;
-    },
-
-    onToggleMultiSelect: function ()
-    {
-      var oView = this.getView(),
-        oViewModel = oView.getModel("worklistView"),
-        oResourceBundle = oView.getModel("i18n").getResourceBundle(),
-        sCurrentMode = oViewModel.getProperty("/listMode");
-
-      if (sCurrentMode === "MultiSelect")
-      {
-        // Switch to single select
-        oViewModel.setProperty("/listMode", "SingleSelectMaster");
-        oViewModel.setProperty("/tableTitle", "");
-      } else
-      {
-        // Switch to multi select and hide detail
-        oViewModel.setProperty("/listMode", "MultiSelect");
-        oViewModel.setProperty("/detailVisible", false);
-        oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [0]));
-      }
-      this._oList.removeSelections(true);
-    },
 
     onFilterStatus: function (oEvent)
     {
@@ -351,34 +304,6 @@ sap.ui.define([
       {
         oBinding.filter([]);
       }
-    },
-
-    onSelectAll: function ()
-    {
-      var oView = this.getView(),
-        oList = this.byId("idTasksList"),
-        aItems = oList.getItems(),
-        oResourceBundle = oView.getModel("i18n").getResourceBundle(),
-        oViewModel = oView.getModel("worklistView");
-
-      aItems.forEach(function (oItem)
-      {
-        oList.setSelectedItem(oItem, true)
-      });
-
-      oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [oList.getSelectedItems().length]));
-    },
-
-    onDeselectAll: function ()
-    {
-      var oView = this.getView(),
-        oList = this.byId("idTasksList"),
-        oViewModel = oView.getModel("worklistView"),
-        oResourceBundle = oView.getModel("i18n").getResourceBundle();
-
-      oViewModel.setProperty("/tableTitle", oResourceBundle.getText("selectedItemsTitle", [0]));
-
-      oList.removeSelections(true);
     },
 
     onNavBackToDashboard: function ()

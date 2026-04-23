@@ -11,7 +11,7 @@
         growingThreshold="20"
         class="sapFDynamicPageAlignContent sapUiTinyMargin"
         width="auto"
-        mode="{worklistView>/listMode}"
+        mode="SingleSelectMaster"
         selectionChange=".onSelectionChange"
         items="{ 
             path: '/WfTasks',
@@ -42,25 +42,6 @@
                     icon="sap-icon://action-settings"
                     press=".onCustomColumn"
                     tooltip="Settings"
-                />
-                <OverflowToolbarButton
-                    text="{i18n>tableHeaderSelectAll}"
-                    press=".onSelectAll"
-                    icon="sap-icon://multiselect-all"
-                    visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
-                />
-                <OverflowToolbarButton
-                    text="{i18n>tableHeaderDeselectAll}"
-                    press=".onDeselectAll"
-                    icon="sap-icon://multiselect-none"
-                    visible="{= ${worklistView>/listMode} === 'MultiSelect' }"
-                />
-                <OverflowToolbarButton
-                    icon="sap-icon://multi-select"
-                    press=".onToggleMultiSelect"
-                    tooltip="Toggle Multi-Select Mode"
-                    type="{= ${worklistView>/listMode} === 'MultiSelect' ? 'Emphasized' : 'Default' }"
-                    visible="{= !${worklistView>/detailVisible} }"
                 />
                 <SearchField
                     id="searchTaskField"
