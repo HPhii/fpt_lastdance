@@ -137,7 +137,6 @@ sap.ui.define([
                 Object.keys(oParameters).forEach(function (sKey)
                 {
                     oOperation.setParameter(sKey, oParameters[sKey]);
-                    console.log(">>>>", sKey, oParameters[sKey]);
                 });
             }
 

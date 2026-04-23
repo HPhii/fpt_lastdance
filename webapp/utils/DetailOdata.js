@@ -25,7 +25,6 @@ sap.ui.define([
          */
         callODataService: function (oView, oConfig)
         {
-            console.log(oConfig);
 
             // Get existing model
             var oCurrentModel = oView.getModel("businessModel");
@@ -89,14 +88,12 @@ sap.ui.define([
                 events: {
                     dataReceived: function ()
                     {
-                        console.log("Business Object Loaded: " + sPath);
                         oViewModel.setProperty("/bodyBusy", false);
                         that._setHeaderTitleValues(oView, oConfig.entitySet);
                     },
                     dataRequested: function ()
                     {
                         oViewModel.setProperty("/bodyBusy", true);
-                        console.log("Requesting Business Object Data: " + sPath);
                     }
                 }
             });
@@ -128,7 +125,6 @@ sap.ui.define([
                 events: {
                     dataReceived: function ()
                     {
-                        console.log("Business Object Loaded: " + sPath);
                         oViewModel.setProperty("/bodyBusy", false);
                         that._setHeaderTitleValues(oView, oConfig.entitySet);
 
@@ -138,8 +134,6 @@ sap.ui.define([
                     dataRequested: function ()
                     {
                         oViewModel.setProperty("/bodyBusy", true);
-
-                        console.log("Requesting Business Object Data: " + sPath);
                     }
                 }
             });
@@ -182,7 +176,6 @@ sap.ui.define([
                             oModel = new JSONModel(oData);
                         }
                         oView.setModel(oModel, sExpandParam);
-                        console.log(sExpandParam + " loaded successfully");
                     }.bind(this),
 
                     error: function (oError)

@@ -39,12 +39,13 @@ sap.ui.define([
         _handleValueHelpSearch: function (oEvent)
         {
             var sValue = oEvent.getParameter("value");
-            
+
             var aProcessFilters = [
                 new Filter("TechnicalStatus", FilterOperator.EQ, "SELECTED")
             ];
 
-            if (sValue) {
+            if (sValue)
+            {
                 aProcessFilters.push(new Filter({
                     filters: [
                         new Filter("WorkItemText", FilterOperator.Contains, sValue),
@@ -72,8 +73,6 @@ sap.ui.define([
             {
                 var aExistingKeys = oMultiInput.getTokens().map(function (oToken)
                 {
-                    console.log(oToken.getKey());
-
                     return oToken.getKey();
                 });
 

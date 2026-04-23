@@ -68,8 +68,6 @@ sap.ui.define(
 
         var sPath = "/WfTasks(WorkItemID='" + window.decodeURIComponent(sPropertyPath) + "')";
 
-        console.log("Detail view matched, binding to:", sPath);
-
         oView.bindElement({
           path: sPath,
           parameters: {
@@ -367,9 +365,6 @@ sap.ui.define(
             {
               return parseInt(a.LogCounter, 10) - parseInt(b.LogCounter, 10);
             });
-
-            console.log(aSorted);
-
 
             // Build nodes
             var aNodes = aSorted.map(function (oLog)
