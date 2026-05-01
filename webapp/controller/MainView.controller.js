@@ -79,7 +79,7 @@ sap.ui.define([
           assignedUserName: false,
           actualDeadlineDate: false,
           technicalStatusText: false,
-          userSubstitutedBy: true
+          userSubstitutedFor: true
         }
       });
 
