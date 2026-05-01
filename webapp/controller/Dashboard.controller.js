@@ -6,6 +6,7 @@ sap.ui.define(
 
     return BaseController.extend("z.wf.zwfmanagement.controller.Dashboard", {
       _oRouter: null,
+      _fioriURL: "https://s40lp1.ucc.cit.tum.de:8100/sap/bc/ui5_ui5/ui2/ushell/shells/abap/FioriLaunchpad.html?sap-client=324&sap-language=EN&appState=lean",
 
       onInit: function ()
       {
@@ -44,6 +45,24 @@ sap.ui.define(
       onNavToAdminInbox: function ()
       {
         this._oRouter.navTo("RouteAdminInbox");
+      },
+
+      onNavToManageWF_RFQs: function ()
+      {
+        var sUrl = `${this._fioriURL}#RequestForQuotation-manageWorkflows?ScenarioId=WS00800302`;
+        MLibrary.URLHelper.redirect(sUrl, true);
+      },
+
+      onNavToManageWF_PRs: function ()
+      {
+        var sUrl = `${this._fioriURL}#PurchaseRequisition-manageWorkflows?ScenarioId=WS00800157%2CWS00800173%2CWS02000458%2CWS02000471%2CWS02000434%2CWS02000438&type=lean`;
+        MLibrary.URLHelper.redirect(sUrl, true);
+      },
+
+      onNavToManageWF_POs: function ()
+      {
+        var sUrl = `${this._fioriURL}#PurchaseOrder-manageWorkflows?ScenarioId=WS00800238`;
+        MLibrary.URLHelper.redirect(sUrl, true);
       },
 
       onNavToRoleManagement: function ()

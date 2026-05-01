@@ -163,6 +163,46 @@
                     </GenericTile>
                 </HBox>
             </VBox>
+
+            <VBox class="sapUiMediumMargin">
+                <Title text="{i18n>dashboardStandardWorkflow}" />
+
+                <HBox
+                    wrap="Wrap"
+                    renderType="Bare"
+                    class="sapUiTinyMarginTop"
+                >
+                    <GenericTile
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
+                        header="{i18n>dashboardManageWfRFQs}"
+                        press=".onNavToManageWF_RFQs"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://process" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
+                        header="{i18n>dashboardManageWfPRs}"
+                        press=".onNavToManageWF_PRs"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://process" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom"
+                        header="{i18n>dashboardManageWfPOs}"
+                        press=".onNavToManageWF_POs"
+                    >
+                        <TileContent>
+                            <ImageContent src="sap-icon://process" />
+                        </TileContent>
+                    </GenericTile>
+                </HBox>
+            </VBox>
         </content>
     </Page>
 </mvc:View>
