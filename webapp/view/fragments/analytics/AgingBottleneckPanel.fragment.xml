@@ -287,11 +287,14 @@
                 length: 10,
                 parameters: {
                     $orderby: 'DaysOpen desc',
-                    $select: 'CreatedByUser,DaysOpen,StatusCategory'
+                    $select: 'CreatedByUser,DaysOpen,StatusCategory,WorkItemID'
                 }
             }"
         >
             <columns>
+                <Column>
+                    <Text text="Workitem ID" />
+                </Column>
                 <Column>
                     <Text text="User" />
                 </Column>
@@ -311,6 +314,7 @@
             <items>
                 <ColumnListItem>
                     <cells>
+                        <Text text="{reportAnalytics>WorkItemID}" />
                         <Text text="{reportAnalytics>CreatedByUser}" />
 
                         <HBox
