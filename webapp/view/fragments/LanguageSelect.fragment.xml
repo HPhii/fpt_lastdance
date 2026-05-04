@@ -30,9 +30,14 @@
             additionalText="DE"
         />
         <core:ListItem
-            key="jp"
+            key="ja"
             text="日本語"
-            additionalText="JP"
+            additionalText="JA"
+        />
+        <core:ListItem
+            key="vi"
+            text="Tiếng Việt"
+            additionalText="VI"
         />
     </Select>
 </core:FragmentDefinition>

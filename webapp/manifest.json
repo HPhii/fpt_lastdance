@@ -173,7 +173,8 @@
           "supportedLocales": [
             "en",
             "de",
-            "jp"
+            "ja",
+            "vi"
           ],
           "fallbackLocale": "en"
         }
