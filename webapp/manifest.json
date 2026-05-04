@@ -172,7 +172,8 @@
           "bundleName": "z.wf.zwfmanagement.i18n.i18n",
           "supportedLocales": [
             "en",
-            "de"
+            "de",
+            "jp"
           ],
           "fallbackLocale": "en"
         }

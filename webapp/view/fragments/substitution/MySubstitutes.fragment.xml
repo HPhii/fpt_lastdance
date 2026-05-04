@@ -4,7 +4,7 @@
 >
     <IconTabFilter
         id="tabOutgoing"
-        text="{i18n>substTabOutgoing}"
+        text="{i18n>substTabIncoming}"
         icon="sap-icon://outgoing-call"
         key="outgoing"
     >
