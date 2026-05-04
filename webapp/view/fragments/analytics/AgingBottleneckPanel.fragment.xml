@@ -287,7 +287,7 @@
                 length: 10,
                 parameters: {
                     $orderby: 'DaysOpen desc',
-                    $select: 'CreatedByUser,DaysOpen,StatusCategory,WorkItemID'
+                    select: 'CreatedByUser,DaysOpen,StatusCategory,WorkItemID'
                 }
             }"
         >

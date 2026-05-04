@@ -101,7 +101,7 @@
                         data="{
                         path: 'performanceAnalytics>/ZC_GSP26SAP02_WF_PERF',
                         parameters: {
-                            $select: 'CreationDate,IsCompletedCount,CycleTimeDays',
+                            select: 'CreationDate,IsCompletedCount,CycleTimeDays',
                             $filter: 'StatusCategory eq \'Completed\''
                         },
                         sorter: {
@@ -245,28 +245,28 @@
                         <viz.data:FlattenedDataset
                             data="{
                             path:'performanceAnalytics>/ZC_GSP26SAP02_WF_PERF',
-                            parameters:{
-                                $select: 'BusinessObjectDesc,TaskID,IsCompletedCount,CycleTimeDays',
-                                $filter: 'StatusCategory eq \'Completed\''
-                            }
-                        }"
-                        >
-                            <viz.data:dimensions>
-                                <viz.data:DimensionDefinition
-                                    name="BusinessObject"
-                                    value="{performanceAnalytics>BusinessObjectDesc}"
-                                />
+                                parameters:{
+                                    select: 'BusinessObjectDesc,TaskID,IsCompletedCount,CycleTimeDays',
+                                    $filter: 'StatusCategory eq \'Completed\''
+                                }
+                            }"
+                            >
+                                <viz.data:dimensions>
+                                    <viz.data:DimensionDefinition
+                                        name="BusinessObject"
+                                        value="{performanceAnalytics>BusinessObjectDesc}"
+                                    />
 
-                                <viz.data:DimensionDefinition
-                                    name="Task"
-                                    value="{performanceAnalytics>TaskID}"
-                                />
-                            </viz.data:dimensions>
+                                    <viz.data:DimensionDefinition
+                                        name="Task"
+                                        value="{performanceAnalytics>TaskID}"
+                                    />
+                                </viz.data:dimensions>
 
-                            <viz.data:measures>
-                                <viz.data:MeasureDefinition
-                                    name="AvgCycle"
-                                    value="{performanceAnalytics>CycleTimeDays}"
+                                <viz.data:measures>
+                                    <viz.data:MeasureDefinition
+                                        name="AvgCycle"
+                                        value="{performanceAnalytics>CycleTimeDays}"
                                 />
                             </viz.data:measures>
                         </viz.data:FlattenedDataset>

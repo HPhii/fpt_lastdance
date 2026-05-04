@@ -15,6 +15,7 @@ sap.ui.define(
         var oStatsModel = new JSONModel({
           busy: false,
           result: {},
+          donutBusy: false,
           priorityBusy: false,
           priorityData: [],
         });
@@ -25,9 +26,7 @@ sap.ui.define(
 
         this.getView().setModel(oStatsModel, "statsAnalyticsModel");
         this.getView().setModel(oChartFilterUsersModel, "chartFilterUsers");
-
         this.oRouter = this.getOwnerComponent().getRouter();
-
         this.oRouter
           .getRoute("RouteAnalytics")
           .attachPatternMatched(this._onObjectMatched, this);
@@ -39,36 +38,10 @@ sap.ui.define(
         this._loadBottleneckHeatmap();
         this._loadStatusDonutChart();
         this._loadPriorityBarChart();
+        this._loadStatsSummary();
         this._loadGroupedColumnChartUserIds();
         this._connectPopovers();
         this._initDefaultDateRange();
-
-        var oView = this.getView();
-        var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
-        var oStatsModel = oView.getModel("statsAnalyticsModel");
-
-        oStatsModel.setProperty("/busy", true);
-
-        oStatsAnalyticsModel.read("/ZC_GSP26SAP02_WF_ANALYTICS", {
-          urlParameters: {
-            $select:
-              "IsOpenCount,IsCompletedThisMonth,IsOverdueCount,TaskCounter,IsCompletedCount",
-          },
-
-          success: function (oData) {
-            oStatsModel.setProperty("/busy", false);
-
-            var aResults = oData.results || [];
-
-            if (aResults.length > 0) {
-              oStatsModel.setProperty("/result", aResults[0]);
-            }
-          }.bind(this),
-
-          error: function (oError) {
-            console.error("Failed to fetch analytics data:", oError);
-          }.bind(this),
-        });
       },
 
       /**
@@ -385,6 +358,35 @@ sap.ui.define(
         });
       },
 
+      _loadStatsSummary: function () {
+        var oView = this.getView();
+        var oStatsAnalyticsModel = oView.getModel("statsAnalytics");
+        var oStatsModel = oView.getModel("statsAnalyticsModel");
+
+        oStatsModel.setProperty("/busy", true);
+
+        oStatsAnalyticsModel.read("/ZC_GSP26SAP02_WF_ANALYTICS", {
+          urlParameters: {
+            $select:
+              "IsOpenCount,IsCompletedThisMonth,IsOverdueCount,TaskCounter,IsCompletedCount",
+          },
+
+          success: function (oData) {
+            oStatsModel.setProperty("/busy", false);
+
+            var aResults = oData.results || [];
+
+            if (aResults.length > 0) {
+              oStatsModel.setProperty("/result", aResults[0]);
+            }
+          }.bind(this),
+
+          error: function (oError) {
+            console.error("Failed to fetch analytics data:", oError);
+          }.bind(this),
+        });
+      },
+
       _initDefaultDateRange: function () {
         var oDateRange = this.byId("perfChartDateRange");
         if (oDateRange) {
@@ -395,7 +397,6 @@ sap.ui.define(
           oDateRange.setDateValue(oFromDate);
           oDateRange.setSecondDateValue(oToDate);
 
-          // trigger the change event manually to apply filters
           this.onPerfChartDateChange({
             getSource: function () {
               return oDateRange;
@@ -584,7 +585,6 @@ sap.ui.define(
       },
 
       /**
-       * Handle search for aging chart
        * @param {sap.ui.base.Event} oEvent
        */
       onAgingChartBOSearch: function (oEvent) {

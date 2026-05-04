@@ -115,7 +115,13 @@
                             }
                         },
                         valueAxis: {
-                            title: { visible: true }
+                            title: { visible: true },
+                            scale: {
+                                fixedRange: true,
+                                minValue: 0,
+                                maxValue: 500
+                            },
+                            tickNumber: 4
                         },
                         legend: {
                             visible: true
@@ -130,7 +136,7 @@
                             data="{
                                 path: 'workloadAnalytics>/ZC_GSP26SAP02_WF_AGT',
                                 parameters : {
-                                    $select: 'ActualAgent,IsCompletedCount,IsOpenCount',
+                                    select: 'ActualAgent,IsCompletedCount,IsOpenCount',
                                     $filter: 'ActualAgent ne \'Unassigned\''
                                 }
                             }"
