@@ -46,7 +46,7 @@
                 <Text text="{i18n>userEmail}" />
             </Column>
             <Column>
-                <Text text="Total Active Work Items" />
+                <Text text="{i18n>totalActiveWorkItems}" />
             </Column>
         </columns>
         <ColumnListItem type="Navigation">

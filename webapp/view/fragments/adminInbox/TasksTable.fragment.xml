@@ -220,7 +220,7 @@
                     </customData>
                     <Button
                         type="Transparent"
-                        text="Claimed By"
+                        text="{i18n>claimedBy}"
                         press=".onColumnSortTasks"
                     />
                 </Column>
@@ -237,7 +237,7 @@
                     </customData>
                     <Button
                         type="Transparent"
-                        text="Responsible"
+                        text="{i18n>responsible}"
                         press=".onColumnSortTasks"
                     />
                 </Column>
