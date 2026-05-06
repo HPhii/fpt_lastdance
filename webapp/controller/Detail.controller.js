@@ -360,14 +360,21 @@ sap.ui.define(
               return;
             }
 
-            // Sort by LogCounter ascending
+            // Sort by LogDate and LogTime ascending, fallback to LogCounter
             var aSorted = aTraceLogs.slice().sort(function (a, b)
             {
-              return parseInt(a.LogCounter, 10) - parseInt(b.LogCounter, 10);
+              var sDateTimeA = (a.LogDate || "") + (a.LogTime || "");
+              var sDateTimeB = (b.LogDate || "") + (b.LogTime || "");
+
+              if (sDateTimeA === sDateTimeB)
+              {
+                return parseInt(a.LogCounter || "0", 10) - parseInt(b.LogCounter || "0", 10);
+              }
+              return sDateTimeA < sDateTimeB ? -1 : 1;
             });
 
             // Build nodes
-            var aNodes = aSorted.map(function (oLog)
+            var aNodes = aSorted.map(function (oLog, iIndex)
             {
               var sStatus;
               var sIcon;
@@ -397,7 +404,7 @@ sap.ui.define(
               }
 
               return {
-                key: oLog.StepWorkItemID,
+                key: oLog.StepWorkItemID + "-" + iIndex,
                 title: oLog.StepDescription,
                 icon: sIcon,
                 status: sStatus,

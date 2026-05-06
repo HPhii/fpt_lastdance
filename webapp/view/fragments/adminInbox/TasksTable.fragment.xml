@@ -102,7 +102,6 @@
                     <Button
                         icon="sap-icon://refresh"
                         press=".onRefreshTasks"
-                        tooltip="{i18n>tooltipRefresh}"
                     />
                     <SearchField
                         width="auto"

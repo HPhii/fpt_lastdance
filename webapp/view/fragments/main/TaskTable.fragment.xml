@@ -31,7 +31,6 @@
                 <Button
                     icon="sap-icon://refresh"
                     press=".onRefreshData"
-                    tooltip="{i18n>tooltipRefresh}"
                 />
                 <OverflowToolbarButton
                     icon="sap-icon://filter"
