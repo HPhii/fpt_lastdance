@@ -28,6 +28,11 @@
                     level="H2"
                 />
                 <ToolbarSpacer />
+                <Button
+                    icon="sap-icon://refresh"
+                    press=".onRefreshData"
+                    tooltip="{i18n>tooltipRefresh}"
+                />
                 <OverflowToolbarButton
                     icon="sap-icon://filter"
                     press=".onFilter"

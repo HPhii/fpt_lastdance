@@ -83,7 +83,7 @@
                 text="{i18n>WorklistFilterTasksCommitted}"
                 count="{statusFilterCounter>/committedCount}"
             />
-            <IconTabSeparator />
+            <!-- <IconTabSeparator />
             <IconTabFilter
                 key="checked"
                 icon="sap-icon://inspection"
@@ -97,7 +97,7 @@
                 iconColor="Positive"
                 text="{i18n>WorklistFilterTasksCompleted}"
                 count="{statusFilterCounter>/completedCount}"
-            />
+            /> -->
             <IconTabSeparator />
             <IconTabFilter
                 key="cancelled"

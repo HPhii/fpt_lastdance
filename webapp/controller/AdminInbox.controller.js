@@ -28,6 +28,7 @@ sap.ui.define([
                 ],
                 countTotal: 0,
                 countTotalTableHeader: 0,
+                countAllTasks: 0,
                 tasks: [],
                 users: [],
                 traceLogs: [],
@@ -125,6 +126,7 @@ sap.ui.define([
                     {
                         oViewModel.setProperty("/claimedByUsers", aClaimedByUser);
                         oViewModel.setProperty("/isClaimedByUsersLoaded", true);
+                        oViewModel.setProperty("/countAllTasks", aContexts ? aContexts.length : 0);
                         oViewModel.setProperty("/countTotal", aContexts ? aContexts.length : 0);
                         oViewModel.setProperty("/countSelectedStatus", aSelectedStatusCount);
                         oViewModel.setProperty("/countWaitingStatus", aWaitingStatusCount);
@@ -379,6 +381,7 @@ sap.ui.define([
                 ],
                 countTotal: 0,
                 countTotalTableHeader: 0,
+                countAllTasks: 0,
                 tasks: [],
                 users: [],
                 traceLogs: [],
@@ -530,6 +533,21 @@ sap.ui.define([
             }
 
             this._oFilterUsersDialog.open();
+        },
+
+        onRefreshTasks: function ()
+        {
+            var oTasksTable = this.byId("adminInboxTasksTable");
+            if (oTasksTable)
+            {
+                var oBinding = oTasksTable.getBinding("items");
+                if (oBinding)
+                {
+                    var oViewModel = this.getView().getModel("adminInboxViewModel");
+                    oViewModel.setProperty("/isTasksBusy", true);
+                    oBinding.refresh();
+                }
+            }
         },
 
         onSearchTasks: function (oEvent)

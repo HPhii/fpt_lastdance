@@ -17,7 +17,7 @@
                 <IconTabFilter
                     key="all"
                     text="{i18n>WorklistFilterTasksAll}"
-                    count="{adminInboxViewModel>/countTotal}"
+                    count="{adminInboxViewModel>/countAllTasks}"
                     showAll="true"
                 />
                 <IconTabSeparator />
@@ -99,6 +99,11 @@
                     </HBox>
 
                     <ToolbarSpacer />
+                    <Button
+                        icon="sap-icon://refresh"
+                        press=".onRefreshTasks"
+                        tooltip="{i18n>tooltipRefresh}"
+                    />
                     <SearchField
                         width="auto"
                         search=".onSearchTasks"

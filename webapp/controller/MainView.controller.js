@@ -273,6 +273,16 @@ sap.ui.define([
       oBinding.filter(this._mFilters[sKey]);
     },
 
+    onRefreshData: function ()
+    {
+      var oBinding = this._oList.getBinding("items");
+      if (oBinding)
+      {
+        oBinding.refresh();
+      }
+      this._loadStatusFilterCounter();
+    },
+
     onSearch: function (oEvent)
     {
       var sQuery = oEvent.getParameter("query");
